@@ -67,7 +67,7 @@
     if (_pageView == nil)
     {
         _pageView = [[KMPageView alloc] init];
-        [self.view addSubview:self.pageView];
+        [self.view insertSubview:self.pageView atIndex:0];
     }
     return _pageView;
 }
