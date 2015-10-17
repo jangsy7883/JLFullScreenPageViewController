@@ -8,13 +8,13 @@
 
 #import "KMPageView.h"
 
-@interface UIView (KMPagerView)
+@interface UIView (KMPageView)
 
 @property (nonatomic, readonly) UIViewController *superViewController;
 
 @end
 
-@implementation UIView (KMPagerView)
+@implementation UIView (KMPageView)
 
 - (UIViewController*)superViewController
 {
@@ -61,7 +61,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         _scrollPagingEnabled = NO;
         _currentIndex = NSNotFound;
         
-        self.scrollsToTop = NO;
+        self.scrollsToTop = YES;
         self.pagingEnabled = YES;
         self.directionalLockEnabled = YES;
         self.alwaysBounceVertical = NO;

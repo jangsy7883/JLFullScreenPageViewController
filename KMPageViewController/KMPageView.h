@@ -31,7 +31,7 @@
 @property (nonatomic, weak) id<KMPageViewDelegate>delegate;
 @property (nonatomic, weak) id<KMPageViewDataSource>dataSource;
 
-- (void) reloadData;
+- (void)reloadData;
 
 - (void)setCurrentIndex:(NSUInteger)currentIndex animated:(BOOL)animated;
 

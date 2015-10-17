@@ -1,6 +1,6 @@
 //
 //  main.m
-//  KMSegmentedPagerDemo
+//  KMPageViewControllerDemo
 //
 //  Created by IM049 on 2015. 10. 17..
 //  Copyright © 2015년 Dalkomm. All rights reserved.

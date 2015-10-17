@@ -10,7 +10,7 @@
 
 @interface KMSegmentedBar ()
 
-@property (nonatomic, strong) UIView *segmentedBar;
+@property (nonatomic, strong) UIView *lineView;
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) UIView *highlightedContentView;
 @property (nonatomic, strong) UIView *shadowView;
@@ -35,7 +35,7 @@
         _contentOffset = CGPointZero;
         _currnetIndex = 0;
         _itemSize = CGSizeMake(0, 50);
-        _segmentedBarHeight = 3;
+        _lineHeight = 3;
         
         _font = [UIFont systemFontOfSize:15];
         _titleColor = [UIColor whiteColor];
@@ -99,11 +99,11 @@
     CGRect newRect = [self rectAtButtonIndex:(offset > 0) ? index+1 : index];
  
     CGRect rect = CGRectMake(MAX(0, CGRectGetMinX(oldRect) + ((CGRectGetMinX(newRect) - CGRectGetMinX(oldRect)) * offset)),
-                             CGRectGetHeight(self.bounds)- _segmentedBarHeight,
+                             CGRectGetHeight(self.bounds)- _lineHeight,
                              MAX(0, CGRectGetWidth(oldRect) + ((CGRectGetWidth(newRect) - CGRectGetWidth(oldRect)) * offset)),
-                             _segmentedBarHeight);
+                             _lineHeight);
     
-    self.segmentedBar.frame = rect;
+    self.lineView.frame = rect;
 
     [CATransaction begin];
     [CATransaction setAnimationDuration:0.0];
@@ -187,9 +187,9 @@
     {
         NSString *title = [button titleForState:UIControlStateNormal];
         CGRect rect = CGRectMake(0,
-                                 CGRectGetHeight(self.bounds)- _segmentedBarHeight,
+                                 CGRectGetHeight(self.bounds)- _lineHeight,
                                  0,
-                                 _segmentedBarHeight);
+                                 _lineHeight);
         
         rect.size.width = [title boundingRectWithSize:CGSizeMake(CGFLOAT_MAX, CGFLOAT_MAX)
                                               options:(NSStringDrawingUsesLineFragmentOrigin|NSStringDrawingUsesFontLeading)
@@ -223,7 +223,6 @@
 {
     _shadowImage = shadowImage;
     
-    
     if (shadowImage)
     {
         self.shadowView = [[UIView alloc] init];
@@ -236,6 +235,12 @@
         self.shadowView = nil;
     }
 }
+
+- (void)setLineColor:(UIColor *)lineColor
+{
+    self.lineView.backgroundColor = lineColor;
+}
+
 #pragma mark - GETTERS
 
 - (UIView*)contentView
@@ -252,26 +257,39 @@
 {
     if (!_highlightedContentView)
     {
-        _maskLayer = [CALayer layer];
-        _maskLayer.contents = (id)[self circleImageColor:[UIColor blackColor] size:self.itemSize].CGImage;
-        
         _highlightedContentView = [[UIView alloc] init];
-        _highlightedContentView.layer.mask = _maskLayer;
         _highlightedContentView.clipsToBounds = YES;
         [self addSubview:_highlightedContentView];
     }
     return _highlightedContentView;
 }
 
-- (UIView*)segmentedBar
+- (UIView*)lineView
 {
-    if (!_segmentedBar)
+    if (!_lineView)
     {
-        _segmentedBar = [[UIView alloc] init];
-        _segmentedBar.backgroundColor = [UIColor blueColor];
-        [self addSubview:_segmentedBar];
+        _lineView = [[UIView alloc] init];
+        _lineView.backgroundColor = [UIColor clearColor];
+        [self addSubview:_lineView];
     }
-    return _segmentedBar;
+    return _lineView;
+}
+
+- (CALayer*)maskLayer
+{
+    if (!_maskLayer)
+    {
+        _maskLayer = [CALayer layer];
+        _maskLayer.contents = (id)[self circleImageColor:[UIColor blackColor] size:self.itemSize].CGImage;
+        
+        _highlightedContentView.layer.mask = _maskLayer;
+    }
+    return _maskLayer;
+}
+
+- (UIColor*)lineColor
+{
+    return self.lineView.backgroundColor;
 }
 
 #pragma mark - IMAGE
@@ -287,9 +305,9 @@
     {
         CGMutablePathRef path = CGPathCreateMutable();
 
-        CGPoint pos = CGPointMake(size.width/2, size.height/2); //Center Position
-        CGAffineTransform trans = CGAffineTransformMake(1, 0, 0, 1, pos.x, pos.y); //Transform of object
-        CGRect rect=(CGRect){.origin = CGPointMake(-pos.x, -pos.y), .size = size}; //CGRectMake(-20.5,-39.5,41,79);
+        CGPoint pos = CGPointMake(size.width/2, size.height/2);
+        CGAffineTransform trans = CGAffineTransformMake(1, 0, 0, 1, pos.x, pos.y);
+        CGRect rect=(CGRect){.origin = CGPointMake(-pos.x, -pos.y), .size = size};
         CGPathAddEllipseInRect(path, &trans, rect);
 
         CGContextSetFillColorWithColor(context, color.CGColor);

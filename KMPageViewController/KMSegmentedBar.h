@@ -10,24 +10,23 @@
 
 @class KMSegmentedBar;
 
-@protocol KMSegmentedViewDelegate <NSObject>
+@protocol KMSegmentedBarDelegate <NSObject>
 
-- (void)segmentedBar:(KMSegmentedBar*)segmentedView didSelectIndex:(NSInteger)index;
+- (void)segmentedBar:(KMSegmentedBar*)segmentedBar didSelectIndex:(NSInteger)index;
 
 @end
 
 @protocol KMSegmentedBarDataSource <NSObject>
 
-- (NSArray*)titlesInSegmentedBar:(KMSegmentedBar*)segmentedView;
+- (NSArray*)titlesInSegmentedBar:(KMSegmentedBar*)segmentedBar;
 
 @end
 
 @interface KMSegmentedBar : UIView
 
-@property (nonatomic, readonly) UIView *segmentedBar;
-
 @property (nonatomic, assign) CGSize itemSize;
-@property (nonatomic, assign) CGFloat segmentedBarHeight;
+@property (nonatomic, assign) CGFloat lineHeight;
+@property (nonatomic, strong) UIColor *lineColor;
 
 @property (nonatomic, strong) UIFont *font;
 @property (nonatomic, strong) UIColor *titleColor;
@@ -35,7 +34,7 @@
 @property (nonatomic, strong) UIImage *shadowImage;
 
 @property (nonatomic, weak) id<KMSegmentedBarDataSource> dataSource;
-@property (nonatomic, weak) id<KMSegmentedViewDelegate> delegate;
+@property (nonatomic, weak) id<KMSegmentedBarDelegate> delegate;
 
 - (void)reloadData;
 - (void)scrollDidContentOffset:(CGPoint)contentOffset;
