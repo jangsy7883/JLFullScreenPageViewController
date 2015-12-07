@@ -22,7 +22,7 @@
 {
     [super viewDidLoad];
     
-    _headerViewHeight = 40;
+    self.automaticallyAdjustsScrollViewInsets = NO;
 }
 
 - (void)viewWillLayoutSubviews
@@ -35,7 +35,7 @@
     self.headerView.frame = CGRectMake(0,
                                        self.topLayoutGuide.length,
                                        CGRectGetWidth(viewRect),
-                                       _headerViewHeight);
+                                       CGRectGetHeight(self.headerView.frame));
         
     //PAGE
     CGFloat pageY = self.headerView == nil ? self.topLayoutGuide.length : CGRectGetMaxY(self.headerView.frame);
@@ -67,7 +67,7 @@
     if (_pageView == nil)
     {
         _pageView = [[KMPageView alloc] init];
-        [self.view insertSubview:self.pageView atIndex:0];
+        [self.view insertSubview:_pageView atIndex:0];
     }
     return _pageView;
 }

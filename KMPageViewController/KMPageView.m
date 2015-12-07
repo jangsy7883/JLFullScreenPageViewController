@@ -68,7 +68,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         self.alwaysBounceHorizontal = NO;
         self.showsVerticalScrollIndicator = NO;
         self.showsHorizontalScrollIndicator = NO;
-        self.keyboardDismissMode = UIScrollViewKeyboardDismissModeOnDrag;
+        self.keyboardDismissMode = UIScrollViewKeyboardDismissModeNone;
         self.scrollEnabled = NO;
         
         [self addObserver:self
@@ -90,7 +90,13 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    self.contentSize = CGSizeMake(CGRectGetWidth(self.bounds) * self.count, CGRectGetHeight(self.bounds));
+
+    CGSize size = CGSizeMake(CGRectGetWidth(self.bounds) * self.count, CGRectGetHeight(self.bounds));
+    
+    if (CGSizeEqualToSize(size, self.contentSize) == NO)
+    {
+        self.contentSize = size;
+    }
 }
 
 #pragma mark - reload
@@ -114,7 +120,6 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         return;
     }
     
-    
     for (int i = 0; i < self.count; i++)
     {
         UIViewController *viewController = [self.dataSource pageView:self viewControllerForPageAtIndex:i];
@@ -122,7 +127,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         if (viewController)
         {
             if (i <= (int)index+1 && i >= (int)index-1)
-            {
+            {                
                 viewController.view.frame = CGRectMake(CGRectGetWidth(self.bounds) * i,
                                                        0,
                                                        CGRectGetWidth(self.bounds),
@@ -137,9 +142,9 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
             }
             else if (viewController.parentViewController)
             {
-                //                [viewController.view removeFromSuperview];
-                //                [viewController willMoveToParentViewController:nil];
-                //                [viewController removeFromParentViewController];
+//                [viewController.view removeFromSuperview];
+//                [viewController willMoveToParentViewController:nil];
+//                [viewController removeFromParentViewController];
             }
         }
     }
@@ -151,8 +156,8 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if (_currentIndex == NSNotFound) return;    
-        
+    if (_currentIndex == NSNotFound) return;
+    
     if (context == KMPagerViewKVOContext)
     {
         if ([keyPath isEqualToString:@"contentOffset"])
@@ -163,8 +168,8 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
             if (new.x != old.x)
             {
                 [self setCurrentIndex:lround(self.contentOffset.x / self.frame.size.width)
-                              animated:NO
-                              isScroll:NO];
+                             animated:NO
+                             isScroll:NO];
             }
         }
         else if ([keyPath isEqualToString:@"frame"])

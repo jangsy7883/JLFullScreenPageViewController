@@ -15,7 +15,5 @@
 @property (nonatomic, readonly) KMPageView *pageView;
 @property (nonatomic, strong) UIView *headerView;
 
-@property (nonatomic, assign) CGFloat headerViewHeight;
-
 @end
 

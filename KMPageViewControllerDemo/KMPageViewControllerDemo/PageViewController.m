@@ -34,14 +34,19 @@
 {
     [super viewDidLoad];
     
+
+    
     self.segmentedBar = [[KMSegmentedBar alloc] init];
     self.segmentedBar.backgroundColor = [UIColor darkGrayColor];
     self.segmentedBar.titleColor = [UIColor blackColor];
     self.segmentedBar.highlightedTitleColor = [UIColor whiteColor];
-    self.segmentedBar.lineColor = [UIColor whiteColor];
+    self.segmentedBar.separatorColor = [UIColor whiteColor];
     self.segmentedBar.delegate = self;
     self.segmentedBar.dataSource = self;
-    
+    self.segmentedBar.frame = CGRectMake(0,
+                                         0,
+                                         CGRectGetWidth(self.view.bounds),
+                                         40);
     self.headerView = self.segmentedBar;
     self.pageView.dataSource = self;
     self.pageView.delegate = self;
@@ -98,7 +103,7 @@
 {
     if ([scrollView isKindOfClass:[KMPageView class]])
     {
-        [self.segmentedBar scrollDidContentOffset:scrollView.contentOffset];
+        [self.segmentedBar scrollDidContentOffset:scrollView.contentOffset.x / scrollView.frame.size.width];
     }
 }
 

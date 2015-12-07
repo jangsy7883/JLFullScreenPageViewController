@@ -12,21 +12,32 @@
 
 @protocol KMSegmentedBarDelegate <NSObject>
 
-- (void)segmentedBar:(KMSegmentedBar*)segmentedBar didSelectIndex:(NSInteger)index;
+- (void)segmentedBar:(KMSegmentedBar*)segmentedView didSelectIndex:(NSInteger)index;
 
 @end
 
 @protocol KMSegmentedBarDataSource <NSObject>
 
-- (NSArray*)titlesInSegmentedBar:(KMSegmentedBar*)segmentedBar;
+- (NSArray*)titlesInSegmentedBar:(KMSegmentedBar*)segmentedView;
 
 @end
 
 @interface KMSegmentedBar : UIView
 
-@property (nonatomic, assign) CGSize itemSize;
-@property (nonatomic, assign) CGFloat lineHeight;
-@property (nonatomic, strong) UIColor *lineColor;
+/**
+ * barItmeSizFit이 YES일 경우 버튼 하나의 크기가 텍스트 길이로 맞춰진다.
+ * barItmeSizFit이 NO일 경우 뷰의 크기에 맞춰 균등하게 정해진다.
+ * @method  barItmeSizFit
+ * @date 2015.11.12
+ * @author Jangsy7883,
+ */
+@property (nonatomic, assign, getter=isBarItmeSizFit) BOOL barItmeSizFit;
+
+//Separator
+@property (nonatomic, assign) CGFloat separatorHeight;
+@property (nonatomic, strong) UIColor *separatorColor;
+
+@property (nonatomic, assign) CGFloat fitMargin;
 
 @property (nonatomic, strong) UIFont *font;
 @property (nonatomic, strong) UIColor *titleColor;
@@ -37,6 +48,6 @@
 @property (nonatomic, weak) id<KMSegmentedBarDelegate> delegate;
 
 - (void)reloadData;
-- (void)scrollDidContentOffset:(CGPoint)contentOffset;
+- (void)scrollDidContentOffset:(CGFloat)contentOffset;
 
 @end
