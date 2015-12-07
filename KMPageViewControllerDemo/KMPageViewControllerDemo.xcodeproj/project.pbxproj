@@ -12,12 +12,12 @@
 		0FBA64A91BD23A7A00124112 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0FBA64A71BD23A7A00124112 /* Main.storyboard */; };
 		0FBA64AB1BD23A7A00124112 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0FBA64AA1BD23A7A00124112 /* Assets.xcassets */; };
 		0FBA64AE1BD23A7A00124112 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0FBA64AC1BD23A7A00124112 /* LaunchScreen.storyboard */; };
-		0FBA64BE1BD23A8100124112 /* KMContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64B71BD23A8100124112 /* KMContentView.m */; settings = {ASSET_TAGS = (); }; };
-		0FBA64BF1BD23A8100124112 /* KMPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64B91BD23A8100124112 /* KMPageView.m */; settings = {ASSET_TAGS = (); }; };
-		0FBA64C01BD23A8100124112 /* KMPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64BB1BD23A8100124112 /* KMPageViewController.m */; settings = {ASSET_TAGS = (); }; };
-		0FBA64C11BD23A8100124112 /* KMSegmentedBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64BD1BD23A8100124112 /* KMSegmentedBar.m */; settings = {ASSET_TAGS = (); }; };
-		0FBA64C41BD23ABE00124112 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64C31BD23ABE00124112 /* TableViewController.m */; settings = {ASSET_TAGS = (); }; };
-		0FBA64C71BD23AC500124112 /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64C61BD23AC500124112 /* PageViewController.m */; settings = {ASSET_TAGS = (); }; };
+		0FBA64BE1BD23A8100124112 /* KMContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64B71BD23A8100124112 /* KMContentView.m */; };
+		0FBA64BF1BD23A8100124112 /* KMPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64B91BD23A8100124112 /* KMPageView.m */; };
+		0FBA64C01BD23A8100124112 /* KMPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64BB1BD23A8100124112 /* KMPageViewController.m */; };
+		0FBA64C11BD23A8100124112 /* KMSegmentedBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64BD1BD23A8100124112 /* KMSegmentedBar.m */; };
+		0FBA64C41BD23ABE00124112 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64C31BD23ABE00124112 /* TableViewController.m */; };
+		0FBA64C71BD23AC500124112 /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64C61BD23AC500124112 /* PageViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -337,6 +337,7 @@
 				0FBA64B41BD23A7A00124112 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

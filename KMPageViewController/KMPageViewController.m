@@ -20,9 +20,8 @@
 
 - (void)viewDidLoad
 {
-    [super viewDidLoad];
-    
     self.automaticallyAdjustsScrollViewInsets = NO;
+    [super viewDidLoad];
 }
 
 - (void)viewWillLayoutSubviews
@@ -67,7 +66,7 @@
     if (_pageView == nil)
     {
         _pageView = [[KMPageView alloc] init];
-        [self.view insertSubview:_pageView atIndex:0];
+        [self.view insertSubview:self.pageView atIndex:0];
     }
     return _pageView;
 }
