@@ -7,6 +7,7 @@
 //
 
 #import "TableViewController.h"
+#import "KMPageViewController.h"
 
 @interface TableViewController ()
 
@@ -25,12 +26,12 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    return 5;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return 100;
+    return 10;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -41,6 +42,11 @@
     return cell;
 }
 
+-(NSString*)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
+{
+    return [NSString stringWithFormat:@"section %ld",(long)section];
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UIViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Table1"];
@@ -49,4 +55,5 @@
     [self.navigationController pushViewController:viewController animated:self];
     
 }
+
 @end

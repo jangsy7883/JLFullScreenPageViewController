@@ -22,22 +22,23 @@
 
 @end
 
+typedef NS_ENUM(NSInteger, KMSegmentedBarStyle)
+{
+    KMSegmentedBarStyleRightFit = 0,
+    KMSegmentedBarStyleEqualSegment,
+    KMSegmentedBarStyleEqualMargin,
+};
+
 @interface KMSegmentedBar : UIView
 
-/**
- * barItmeSizFit이 YES일 경우 버튼 하나의 크기가 텍스트 길이로 맞춰진다.
- * barItmeSizFit이 NO일 경우 뷰의 크기에 맞춰 균등하게 정해진다.
- * @method  barItmeSizFit
- * @date 2015.11.12
- * @author Jangsy7883,
- */
-@property (nonatomic, assign, getter=isBarItmeSizFit) BOOL barItmeSizFit;
+@property (nonatomic, assign) KMSegmentedBarStyle barStyle;
 
 //Separator
 @property (nonatomic, assign) CGFloat separatorHeight;
 @property (nonatomic, strong) UIColor *separatorColor;
 
-@property (nonatomic, assign) CGFloat fitMargin;
+@property (nonatomic, assign) UIEdgeInsets contentInsets;
+@property (nonatomic, assign) CGFloat itemMergin;
 
 @property (nonatomic, strong) UIFont *font;
 @property (nonatomic, strong) UIColor *titleColor;
@@ -47,7 +48,11 @@
 @property (nonatomic, weak) id<KMSegmentedBarDataSource> dataSource;
 @property (nonatomic, weak) id<KMSegmentedBarDelegate> delegate;
 
+@property (nonatomic, assign) NSInteger selectedIndex;
+
 - (void)reloadData;
 - (void)scrollDidContentOffset:(CGFloat)contentOffset;
+
+- (void)setSelectedIndex:(NSInteger)selectedIndex animated:(BOOL)animated;
 
 @end

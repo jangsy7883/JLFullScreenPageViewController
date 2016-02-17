@@ -7,14 +7,37 @@
 //
 
 #import "KMPageView.h"
+#import "KMPageViewController.h"
 
+@interface KMPageViewController ()
+
+- (void)addChildScrollView:(UIScrollView *)scrollView;
+- (void)removeChildScrollView:(UIScrollView *)scrollView;
+
+@end
 @interface UIView (KMPageView)
 
 @property (nonatomic, readonly) UIViewController *superViewController;
+@property (nonatomic, readonly) KMPageViewController *pageViewController;
 
 @end
 
 @implementation UIView (KMPageView)
+
+- (KMPageViewController*)pageViewController
+{
+    for (UIView* next = self; next; next = next.superview)
+    {
+        UIResponder* nextResponder = [next nextResponder];
+        
+        if ([nextResponder isKindOfClass:[KMPageViewController class]])
+        {
+            return (KMPageViewController*)nextResponder;
+        }
+    }
+
+    return nil;
+}
 
 - (UIViewController*)superViewController
 {
@@ -29,6 +52,7 @@
     }
     return nil;
 }
+
 @end
 
 @interface KMPageView ()
@@ -105,7 +129,10 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 {
     for (UIView *view in self.subviews)
     {
+        
         [view removeFromSuperview];
+        [self.pageViewController removeChildScrollView:(UIScrollView*)view];
+        
         [view.superViewController willMoveToParentViewController:nil];
         [view.superViewController removeFromParentViewController];
     }
@@ -136,15 +163,11 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
                 if (viewController.parentViewController == nil)
                 {
                     [self addSubview:viewController.view];
-                    [self.superViewController addChildViewController:viewController];
-                    [viewController didMoveToParentViewController:self.superViewController];
+                    NSLog(@"_______");
+                    [self.pageViewController addChildScrollView:(UIScrollView*)viewController.view];
+                    [self.pageViewController addChildViewController:viewController];
+                    [viewController didMoveToParentViewController:self.pageViewController];
                 }
-            }
-            else if (viewController.parentViewController)
-            {
-//                [viewController.view removeFromSuperview];
-//                [viewController willMoveToParentViewController:nil];
-//                [viewController removeFromParentViewController];
             }
         }
     }

@@ -34,10 +34,11 @@
 {
     [super viewDidLoad];
     
+    self.navigationBar = [[UINavigationBar alloc] init];
 
-    
     self.segmentedBar = [[KMSegmentedBar alloc] init];
     self.segmentedBar.backgroundColor = [UIColor darkGrayColor];
+    self.segmentedBar.barStyle = KMSegmentedBarStyleEqualSegment;
     self.segmentedBar.titleColor = [UIColor blackColor];
     self.segmentedBar.highlightedTitleColor = [UIColor whiteColor];
     self.segmentedBar.separatorColor = [UIColor whiteColor];
@@ -58,6 +59,12 @@
     [self.segmentedBar reloadData];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self.navigationController setNavigationBarHidden:YES animated:animated];
+}
 
 #pragma mark - KMPagerView datasource
 

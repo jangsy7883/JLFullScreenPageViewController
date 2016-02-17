@@ -10,8 +10,6 @@
 
 @interface KMSegmentedBar ()
 
-@property (nonatomic, assign) CGSize itemSize;
-
 @property (nonatomic, strong) UIView *lineView;
 @property (nonatomic, strong) UIView *contentView;
 @property (nonatomic, strong) UIView *highlightedContentView;
@@ -19,7 +17,6 @@
 
 @property (nonatomic, strong) CALayer *maskLayer;
 
-@property (nonatomic, assign) NSInteger currnetIndex;
 @property (nonatomic, assign) CGFloat contentOffset;
 
 @end
@@ -31,12 +28,12 @@
 - (void)commonInit
 {
     self.backgroundColor = [UIColor whiteColor];
-    _barItmeSizFit = NO;
+    _barStyle = KMSegmentedBarStyleEqualMargin;
     _contentOffset = 0;
-    _currnetIndex = 0;
-    _itemSize = CGSizeZero;
     _separatorHeight = 3;
-    _fitMargin = 17;
+    
+    _itemMergin = 0;
+    _contentInsets = UIEdgeInsetsMake(3, 12, 0, 12);
     
     _font = [UIFont systemFontOfSize:15];
     _titleColor = [UIColor whiteColor];
@@ -66,6 +63,11 @@
 
 #pragma mark - view lifecycle
 
+- (CGFloat)equalMarginWithAllButtonSize:(CGSize)size withButtonCount:(NSInteger)count
+{
+    return ((CGRectGetWidth(self.bounds) - (MAX(0, self.contentInsets.left - (_itemMergin/2)) + MAX(0, self.contentInsets.right - (_itemMergin/2)))) - (([self contentSizeForAllButtons].width) + (_itemMergin*count))) / (count-1);
+}
+
 - (void)layoutSubviews
 {
     [super layoutSubviews];
@@ -76,6 +78,7 @@
                                        CGRectGetWidth(self.bounds),
                                        self.shadowImage.size.height);
     
+    CGFloat margin = 0;
     NSInteger count = [[self.dataSource titlesInSegmentedBar:self] count];
     CGRect rect = CGRectZero;
     
@@ -83,27 +86,61 @@
     {
         view.frame = self.bounds;
         
-        rect.origin.x = _barItmeSizFit ? 1.5 : (CGRectGetWidth(view.frame) - ((CGRectGetWidth(view.bounds) / count) * count))/ 2;
-        rect.size = CGSizeMake(CGRectGetWidth(view.bounds) / count,
-                               CGRectGetHeight(view.bounds));
+        //FIRST X, SIZE
+        rect.size.height = CGRectGetHeight(view.bounds) - (self.contentInsets.top+self.contentInsets.bottom);
+        
+        switch (_barStyle)
+        {
+            case KMSegmentedBarStyleRightFit:
+                rect.origin = CGPointMake(MAX(0, self.contentInsets.left - (_itemMergin/2)), self.contentInsets.top);
+                break;
+            case KMSegmentedBarStyleEqualSegment:
+                rect.origin = CGPointMake(self.contentInsets.left, self.contentInsets.top);
+                rect.size.width = (CGRectGetWidth(view.bounds) - (self.contentInsets.left + self.contentInsets.right)) / count;
+                break;
+            case KMSegmentedBarStyleEqualMargin:
+                rect.origin = CGPointMake(MAX(0, self.contentInsets.left - (_itemMergin/2)), self.contentInsets.top);
+                margin = [self equalMarginWithAllButtonSize:[self contentSizeForAllButtons] withButtonCount:count];
+                break;
+            default:
+                break;
+        }
         
         for (UIView *subview in view.subviews)
         {
             if ([subview isKindOfClass:[UIButton class]])
             {
-                if (_barItmeSizFit)
-                    rect.size.width = [self contentSizeForButton:(UIButton*)subview].width + _fitMargin;
+                //WIDTH
+                switch (_barStyle) {
+                    case KMSegmentedBarStyleRightFit:
+                        rect.size.width = [self contentSizeForButton:(UIButton*)subview].width + _itemMergin;
+                        break;
+                    case KMSegmentedBarStyleEqualMargin:
+                        rect.size.width = [self contentSizeForButton:(UIButton*)subview].width + _itemMergin;
+                        break;
+                    default:
+                        break;
+                }
                 
+                //SET FRAME
                 subview.frame = rect;
-                rect.origin.x = CGRectGetMaxX(rect);
+                
+                //NEXT X
+                switch (_barStyle) {
+                    case KMSegmentedBarStyleEqualMargin:
+                        rect.origin.x = CGRectGetMaxX(rect) + margin;
+                        break;
+                    default:
+                        rect.origin.x = CGRectGetMaxX(rect);
+                        break;
+                }
             }
         }
     }
-    
-    [self layoutSeparatorWithContentOffset:_contentOffset];
+    [self layoutSeparatorWithContentOffset:_contentOffset animated:NO];
 }
 
-- (void)layoutSeparatorWithContentOffset:(CGFloat)contentOffset
+- (void)layoutSeparatorWithContentOffset:(CGFloat)contentOffset animated:(BOOL)animated
 {
     if (CGRectEqualToRect(self.bounds, CGRectZero))
     {
@@ -112,30 +149,37 @@
     
     int index = contentOffset;
     CGFloat offset = contentOffset - index;
+    CGFloat mergin = 20;
     
     CGRect oldRect = [self rectAtButtonIndex:index];
     CGRect newRect = [self rectAtButtonIndex:(offset > 0) ? index+1 : index];
     
-    CGRect rect = CGRectMake(MAX(0, CGRectGetMinX(oldRect) + ((CGRectGetMinX(newRect) - CGRectGetMinX(oldRect)) * offset)),
-                             CGRectGetHeight(self.bounds)- _separatorHeight,
-                             MAX(0, CGRectGetWidth(oldRect) + ((CGRectGetWidth(newRect) - CGRectGetWidth(oldRect)) * offset)),
+    
+    CGRect rect = CGRectMake(MAX(0, (CGRectGetMinX(oldRect)-(mergin/2)) + (((CGRectGetMinX(newRect)-(mergin/2)) - (CGRectGetMinX(oldRect)-(mergin/2))) * offset)),
+                             CGRectGetHeight(self.bounds) - _separatorHeight - _contentInsets.bottom,
+                             MAX(0, (CGRectGetWidth(oldRect)+mergin) + (((CGRectGetWidth(newRect)+mergin) - (CGRectGetWidth(oldRect)+mergin)) * offset)),
                              _separatorHeight);
     
-    self.lineView.frame = rect;
+    if (animated)
+    {
+        [UIView animateWithDuration:0.25 animations:^{
+            self.lineView.frame = rect;
+        }];
+    }
+    else
+    {
+        self.lineView.frame = rect;
+    }
     
     [CATransaction begin];
-    [CATransaction setAnimationDuration:0.0];
+    [CATransaction setAnimationDuration:animated ? 0.25 : 0.0];
     self.maskLayer.frame = CGRectMake(CGRectGetMinX(rect)-5,
                                       0,
                                       CGRectGetWidth(rect)+10,
                                       CGRectGetHeight(self.bounds)+10);
     [CATransaction commit];
-    
-    if (offset == 0)
-    {
-        _currnetIndex = index;
-    }
 }
+
 #pragma mark - reload
 
 - (void)reloadData
@@ -168,7 +212,6 @@
         [button addTarget:self action:@selector(pressedButton:) forControlEvents:UIControlEventTouchUpInside];
         [button setTitle:titles[i] forState:UIControlStateNormal];
         [button setTitleColor:self.highlightedTitleColor forState:UIControlStateNormal];
-        
         [self.highlightedContentView addSubview:button];
     }
     
@@ -187,6 +230,21 @@
 }
 
 #pragma mark - frame
+
+- (CGSize)contentSizeForAllButtons
+{
+    CGFloat width = 0;
+    
+    for (UIView *subview in self.contentView.subviews)
+    {
+        if ([subview isKindOfClass:[UIButton class]])
+        {
+            width += [self contentSizeForButton:(UIButton*)subview].width;
+        }
+    }
+    
+    return CGSizeMake(width, CGRectGetHeight(self.bounds) - (self.contentInsets.top+self.contentInsets.bottom));
+}
 
 - (CGSize)contentSizeForButton:(UIButton*)button
 {
@@ -241,8 +299,8 @@
 - (void)scrollDidContentOffset:(CGFloat)contentOffset
 {
     _contentOffset = contentOffset;
-    [self layoutIfNeeded];
-    [self setNeedsLayout];
+    
+    [self layoutSeparatorWithContentOffset:_contentOffset animated:NO];
 }
 
 #pragma mark - SETTERS
@@ -269,7 +327,33 @@
     self.lineView.backgroundColor = separatorColor;
 }
 
+- (void)setSelectedIndex:(NSInteger)selectedIndex
+{
+    [self setSelectedIndex:selectedIndex animated:NO];
+}
+
+- (void)setSelectedIndex:(NSInteger)selectedIndex animated:(BOOL)animated
+{
+    if (animated)
+    {
+        if (_contentOffset != selectedIndex)
+        {
+            _contentOffset = selectedIndex;
+            [self layoutSeparatorWithContentOffset:_contentOffset animated:YES];
+        }
+        
+    }
+    else
+    {
+        [self scrollDidContentOffset:selectedIndex];
+    }
+}
 #pragma mark - GETTERS
+
+- (NSInteger)selectedIndex
+{
+    return ceilf(_contentOffset);
+}
 
 - (UIView*)contentView
 {
@@ -352,5 +436,6 @@
     
     return image;
 }
+
 
 @end

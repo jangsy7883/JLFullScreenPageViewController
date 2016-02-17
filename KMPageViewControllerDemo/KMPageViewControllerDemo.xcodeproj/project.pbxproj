@@ -12,7 +12,6 @@
 		0FBA64A91BD23A7A00124112 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0FBA64A71BD23A7A00124112 /* Main.storyboard */; };
 		0FBA64AB1BD23A7A00124112 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0FBA64AA1BD23A7A00124112 /* Assets.xcassets */; };
 		0FBA64AE1BD23A7A00124112 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0FBA64AC1BD23A7A00124112 /* LaunchScreen.storyboard */; };
-		0FBA64BE1BD23A8100124112 /* KMContentView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64B71BD23A8100124112 /* KMContentView.m */; };
 		0FBA64BF1BD23A8100124112 /* KMPageView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64B91BD23A8100124112 /* KMPageView.m */; };
 		0FBA64C01BD23A8100124112 /* KMPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64BB1BD23A8100124112 /* KMPageViewController.m */; };
 		0FBA64C11BD23A8100124112 /* KMSegmentedBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64BD1BD23A8100124112 /* KMSegmentedBar.m */; };
@@ -29,8 +28,6 @@
 		0FBA64AA1BD23A7A00124112 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0FBA64AD1BD23A7A00124112 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0FBA64AF1BD23A7A00124112 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		0FBA64B61BD23A8100124112 /* KMContentView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMContentView.h; sourceTree = "<group>"; };
-		0FBA64B71BD23A8100124112 /* KMContentView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMContentView.m; sourceTree = "<group>"; };
 		0FBA64B81BD23A8100124112 /* KMPageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMPageView.h; sourceTree = "<group>"; };
 		0FBA64B91BD23A8100124112 /* KMPageView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMPageView.m; sourceTree = "<group>"; };
 		0FBA64BA1BD23A8100124112 /* KMPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMPageViewController.h; sourceTree = "<group>"; };
@@ -100,8 +97,6 @@
 		0FBA64B51BD23A8100124112 /* KMPageViewController */ = {
 			isa = PBXGroup;
 			children = (
-				0FBA64B61BD23A8100124112 /* KMContentView.h */,
-				0FBA64B71BD23A8100124112 /* KMContentView.m */,
 				0FBA64B81BD23A8100124112 /* KMPageView.h */,
 				0FBA64B91BD23A8100124112 /* KMPageView.m */,
 				0FBA64BA1BD23A8100124112 /* KMPageViewController.h */,
@@ -183,7 +178,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0FBA64BE1BD23A8100124112 /* KMContentView.m in Sources */,
 				0FBA64C71BD23AC500124112 /* PageViewController.m in Sources */,
 				0FBA64A31BD23A7A00124112 /* AppDelegate.m in Sources */,
 				0FBA64BF1BD23A8100124112 /* KMPageView.m in Sources */,
