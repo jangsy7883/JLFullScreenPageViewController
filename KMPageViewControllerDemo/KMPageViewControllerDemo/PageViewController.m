@@ -34,8 +34,13 @@
 {
     [super viewDidLoad];
     
-    self.navigationBar = [[UINavigationBar alloc] init];
 
+    UINavigationItem *item = [[UINavigationItem alloc] init];
+    item.title = @"KMPageViewController";
+    
+    self.navigationBar = [[UINavigationBar alloc] init];
+    self.navigationBar.items = @[item];
+    
     self.segmentedBar = [[KMSegmentedBar alloc] init];
     self.segmentedBar.backgroundColor = [UIColor darkGrayColor];
     self.segmentedBar.barStyle = KMSegmentedBarStyleEqualSegment;

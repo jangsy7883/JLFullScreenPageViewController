@@ -206,6 +206,23 @@ static void * const KMScrollViewKVOContext = (void*)&KMScrollViewKVOContext;
     }
 }
 
+
+#pragma mark - navigationBar
+
+- (void)setNavigationBarItemsAlpha:(CGFloat)barItemsAlpha
+{
+    for (UIView *view in self.navigationBar.subviews)
+    {
+        bool isBackgroundView = (view == self.navigationBar.subviews.firstObject);
+        bool isViewHidden = view.hidden || view.alpha < FLT_EPSILON;
+        
+        if (!isBackgroundView && !isViewHidden)
+        {
+            view.alpha = MAX(barItemsAlpha, FLT_EPSILON);
+        }
+    }
+}
+
 #pragma  mark - content view controller
 
 - (void)addContentViewController:(UIViewController *)viewController
@@ -273,6 +290,11 @@ static void * const KMScrollViewKVOContext = (void*)&KMScrollViewKVOContext;
         else if([keyPath isEqualToString:@"frame"])
         {
             [self layoutContentInsetAllChildScrollViews];
+            
+            CGFloat minimumLocation = self.topLayoutGuide.length - CGRectGetHeight(self.navigationBar.frame);
+            CGFloat alpha = -(CGRectGetMinY(self.contentHeaderView.frame) - minimumLocation) / minimumLocation;
+            
+            [self setNavigationBarItemsAlpha:alpha];
         }
     }
     else
