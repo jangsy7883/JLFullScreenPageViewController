@@ -20,7 +20,6 @@
 
 @end
 
-
 @interface UIViewController (KMPageViewController)
 
 @property (nonatomic, weak, readonly) KMPageViewController *pageViewController;

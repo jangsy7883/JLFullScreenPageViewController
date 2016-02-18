@@ -17,6 +17,7 @@
 		0FBA64C11BD23A8100124112 /* KMSegmentedBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64BD1BD23A8100124112 /* KMSegmentedBar.m */; };
 		0FBA64C41BD23ABE00124112 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64C31BD23ABE00124112 /* TableViewController.m */; };
 		0FBA64C71BD23AC500124112 /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64C61BD23AC500124112 /* PageViewController.m */; };
+		7EB720A61C75458900C9D103 /* KMPageViewController.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 7EB720A51C75458900C9D103 /* KMPageViewController.podspec */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +39,7 @@
 		0FBA64C31BD23ABE00124112 /* TableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TableViewController.m; sourceTree = "<group>"; };
 		0FBA64C51BD23AC500124112 /* PageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PageViewController.h; sourceTree = "<group>"; };
 		0FBA64C61BD23AC500124112 /* PageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageViewController.m; sourceTree = "<group>"; };
+		7EB720A51C75458900C9D103 /* KMPageViewController.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = KMPageViewController.podspec; path = ../KMPageViewController.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 		0FBA64921BD23A7A00124112 = {
 			isa = PBXGroup;
 			children = (
+				7EB720A51C75458900C9D103 /* KMPageViewController.podspec */,
 				0FBA64B51BD23A8100124112 /* KMPageViewController */,
 				0FBA649D1BD23A7A00124112 /* KMPageViewControllerDemo */,
 				0FBA649C1BD23A7A00124112 /* Products */,
@@ -165,6 +168,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7EB720A61C75458900C9D103 /* KMPageViewController.podspec in Resources */,
 				0FBA64AE1BD23A7A00124112 /* LaunchScreen.storyboard in Resources */,
 				0FBA64AB1BD23A7A00124112 /* Assets.xcassets in Resources */,
 				0FBA64A91BD23A7A00124112 /* Main.storyboard in Resources */,

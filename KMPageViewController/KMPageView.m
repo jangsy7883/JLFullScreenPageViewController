@@ -11,33 +11,18 @@
 
 @interface KMPageViewController ()
 
-- (void)addChildScrollView:(UIScrollView *)scrollView;
-- (void)removeChildScrollView:(UIScrollView *)scrollView;
+- (void)addContentViewController:(UIViewController *)viewController;
+- (void)removeContentViewController:(UIViewController *)viewController;
 
 @end
+
 @interface UIView (KMPageView)
 
 @property (nonatomic, readonly) UIViewController *superViewController;
-@property (nonatomic, readonly) KMPageViewController *pageViewController;
 
 @end
 
 @implementation UIView (KMPageView)
-
-- (KMPageViewController*)pageViewController
-{
-    for (UIView* next = self; next; next = next.superview)
-    {
-        UIResponder* nextResponder = [next nextResponder];
-        
-        if ([nextResponder isKindOfClass:[KMPageViewController class]])
-        {
-            return (KMPageViewController*)nextResponder;
-        }
-    }
-
-    return nil;
-}
 
 - (UIViewController*)superViewController
 {
@@ -59,6 +44,9 @@
 
 @property (nonatomic, readonly) NSInteger count;
 @property (nonatomic, readonly) NSArray *viewControllers;
+
+@property (nonatomic, weak) KMPageViewController *pageViewController;
+
 @end
 
 @implementation KMPageView
@@ -109,12 +97,12 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     return self;
 }
 
-#pragma mark - view lifeCycle
+#pragma mark - layout
 
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-
+    
     CGSize size = CGSizeMake(CGRectGetWidth(self.bounds) * self.count, CGRectGetHeight(self.bounds));
     
     if (CGSizeEqualToSize(size, self.contentSize) == NO)
@@ -127,11 +115,11 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
 - (void)reloadData
 {
+    //REMOVE
     for (UIView *view in self.subviews)
     {
-        
         [view removeFromSuperview];
-        [self.pageViewController removeChildScrollView:(UIScrollView*)view];
+        [self.pageViewController removeContentViewController:view.superViewController];
         
         [view.superViewController willMoveToParentViewController:nil];
         [view.superViewController removeFromParentViewController];
@@ -140,7 +128,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     [self reloadPageAtIndex:_currentIndex];
 }
 
-- (void)reloadPageAtIndex:(NSUInteger) index
+- (void)reloadPageAtIndex:(NSUInteger)index
 {
     if ([self.dataSource respondsToSelector:@selector(pageView:viewControllerForPageAtIndex:)] == NO || index == NSNotFound)
     {
@@ -154,17 +142,17 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         if (viewController)
         {
             if (i <= (int)index+1 && i >= (int)index-1)
-            {                
+            {
                 viewController.view.frame = CGRectMake(CGRectGetWidth(self.bounds) * i,
                                                        0,
                                                        CGRectGetWidth(self.bounds),
                                                        CGRectGetHeight(self.bounds));
                 
+                //INSERT
                 if (viewController.parentViewController == nil)
                 {
                     [self addSubview:viewController.view];
-                    NSLog(@"_______");
-                    [self.pageViewController addChildScrollView:(UIScrollView*)viewController.view];
+                    [self.pageViewController addContentViewController:viewController];
                     [self.pageViewController addChildViewController:viewController];
                     [viewController didMoveToParentViewController:self.pageViewController];
                 }
@@ -172,8 +160,6 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         }
     }
 }
-
-#pragma mark - scroll
 
 #pragma mark - KVO
 
@@ -261,6 +247,24 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         return [self.dataSource countInPagerView:self];
     }
     return 0;
+}
+
+- (KMPageViewController*)pageViewController
+{
+    if (!_pageViewController)
+    {
+        for (UIView* next = self; next; next = next.superview)
+        {
+            UIResponder* nextResponder = [next nextResponder];
+            
+            if ([nextResponder isKindOfClass:[KMPageViewController class]])
+            {
+                _pageViewController = (KMPageViewController*)nextResponder;
+            }
+        }
+    }
+    
+    return _pageViewController;
 }
 
 @end
