@@ -77,7 +77,7 @@ CGRectReplaceY(CGRect rect, CGFloat y)
 
 @end
 
-static void * const KMScrollViewKVOContext = (void*)&KMScrollViewKVOContext;
+static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControllerKVOContext;
 @interface KMPageViewController ()
 
 @property (nonatomic, strong) UIView *contentHeaderView;
@@ -86,6 +86,19 @@ static void * const KMScrollViewKVOContext = (void*)&KMScrollViewKVOContext;
 @end
 
 @implementation KMPageViewController
+
+#pragma mark - memory
+
+- (void)dealloc
+{
+    //Observer
+    @try {
+        [self.contentHeaderView removeObserver:self
+                                    forKeyPath:@"frame"
+                                       context:KMPageViewControllerKVOContext];
+    }
+    @catch (NSException *exception) {}
+}
 
 #pragma mark - view lifecycle
 
@@ -104,17 +117,27 @@ static void * const KMScrollViewKVOContext = (void*)&KMScrollViewKVOContext;
     [self.contentHeaderView addObserver:self
                              forKeyPath:@"frame"
                                 options:NSKeyValueObservingOptionNew
-                                context:KMScrollViewKVOContext];
-    
+                                context:KMPageViewControllerKVOContext];
 }
 
 - (void)viewWillLayoutSubviews
 {
     [super viewWillLayoutSubviews];
+
+    [self layoutContentHeaderView];
     
     self.pageView.frame = self.view.bounds;
     
-    [self layoutContentHeaderView];
+    //
+    for (UIViewController *viewController in self.childViewControllers)
+    {
+        UIScrollView *scrollView  = viewController.view.contentScrollView;
+        
+        if ([scrollView isKindOfClass:[UIScrollView class]])
+        {
+            [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:NO];
+        }
+    }
 }
 
 #pragma  mark -
@@ -128,24 +151,21 @@ static void * const KMScrollViewKVOContext = (void*)&KMScrollViewKVOContext;
     self.navigationBar.frame = CGRectMake(0,
                                           0,
                                           CGRectGetWidth(bounds),
-                                          defaultBarHeight+self.topLayoutGuide.length);
+                                          defaultBarHeight + self.topLayoutGuide.length);
     
     self.headerView.frame = CGRectMake(0,
                                        CGRectGetMaxY(self.navigationBar.frame),
                                        CGRectGetWidth(bounds),
                                        CGRectGetHeight(self.headerView.frame));
-    
+
     self.contentHeaderView.frame = CGRectMake(0,
-                                              0,
+                                              CGRectGetMinY(self.contentHeaderView.frame),
                                               CGRectGetWidth(bounds),
                                               CGRectGetHeight(self.navigationBar.frame) + CGRectGetHeight(self.headerView.frame));
-    
-    [self layoutContentInsetAllChildScrollViews];
 }
 
 - (void)layoutContentInsetForScrollView:(UIScrollView*)scrollView atContentOffsetY:(CGFloat)offsetY
 {
-//    self.pageView.frame = CGRectMake(0, offsetY, CGRectGetWidth(self.view.bounds), CGRectGetHeight(self.view.bounds)-offsetY);
     if ([scrollView isKindOfClass:[UIScrollView class]])
     {
         UIEdgeInsets inset = scrollView.contentInset;
@@ -153,15 +173,8 @@ static void * const KMScrollViewKVOContext = (void*)&KMScrollViewKVOContext;
         
         if (!UIEdgeInsetsEqualToEdgeInsets(scrollView.contentInset, inset))
         {
-            BOOL isZero = (scrollView.contentInset.top == 0);
-            
             scrollView.contentInset = inset;
             scrollView.scrollIndicatorInsets = inset;
-            
-            if (isZero)
-            {
-                [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:NO];
-            }
         }
     }
 }
@@ -174,6 +187,23 @@ static void * const KMScrollViewKVOContext = (void*)&KMScrollViewKVOContext;
     {
         [self layoutContentInsetForScrollView:viewController.view.contentScrollView
                              atContentOffsetY:pageY];
+    }
+}
+
+- (void)layoutNavigationBarItemsAlphaValue
+{
+    CGFloat minimumLocation = self.topLayoutGuide.length - CGRectGetHeight(self.navigationBar.frame);
+    CGFloat alpha = -(CGRectGetMinY(self.contentHeaderView.frame) - minimumLocation) / minimumLocation;
+
+    for (UIView *view in self.navigationBar.subviews)
+    {
+        bool isBackgroundView = (view == self.navigationBar.subviews.firstObject);
+        bool isViewHidden = view.hidden || view.alpha < FLT_EPSILON;
+        
+        if (!isBackgroundView && !isViewHidden)
+        {
+            view.alpha = MAX(alpha, FLT_EPSILON);
+        }
     }
 }
 
@@ -206,23 +236,6 @@ static void * const KMScrollViewKVOContext = (void*)&KMScrollViewKVOContext;
     }
 }
 
-
-#pragma mark - navigationBar
-
-- (void)setNavigationBarItemsAlpha:(CGFloat)barItemsAlpha
-{
-    for (UIView *view in self.navigationBar.subviews)
-    {
-        bool isBackgroundView = (view == self.navigationBar.subviews.firstObject);
-        bool isViewHidden = view.hidden || view.alpha < FLT_EPSILON;
-        
-        if (!isBackgroundView && !isViewHidden)
-        {
-            view.alpha = MAX(barItemsAlpha, FLT_EPSILON);
-        }
-    }
-}
-
 #pragma  mark - content view controller
 
 - (void)addContentViewController:(UIViewController *)viewController
@@ -237,7 +250,7 @@ static void * const KMScrollViewKVOContext = (void*)&KMScrollViewKVOContext;
         [scrollView addObserver:self
                      forKeyPath:@"contentOffset"
                         options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew
-                        context:KMScrollViewKVOContext];
+                        context:KMPageViewControllerKVOContext];
     }
 }
 
@@ -251,7 +264,7 @@ static void * const KMScrollViewKVOContext = (void*)&KMScrollViewKVOContext;
         @try {
             [scrollView removeObserver:self
                             forKeyPath:@"contentOffset"
-                               context:KMScrollViewKVOContext];
+                               context:KMPageViewControllerKVOContext];
         }
         @catch (NSException *exception) {}
     }
@@ -261,21 +274,20 @@ static void * const KMScrollViewKVOContext = (void*)&KMScrollViewKVOContext;
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if (context == KMScrollViewKVOContext)
+    if (context == KMPageViewControllerKVOContext)
     {
-        if ([keyPath isEqualToString:@"contentOffset"])
+        if ([keyPath isEqualToString:@"contentOffset"] && [object isKindOfClass:[UIScrollView class]])
         {
             UIScrollView *scrollView = object;
-            
-            CGPoint new = [[change objectForKey:NSKeyValueChangeNewKey] CGPointValue];
-            CGPoint old = [[change objectForKey:NSKeyValueChangeOldKey] CGPointValue];
+            CGPoint new = [change[NSKeyValueChangeNewKey] CGPointValue];
+            CGPoint old = [change[NSKeyValueChangeOldKey] CGPointValue];
             
             if (scrollView.superViewController.view.frame.origin.x == self.pageView.contentOffset.x &&
                 new.y != old.y &&
                 scrollView.contentOffset.y > -CGRectGetHeight(self.contentHeaderView.frame) &&
                 scrollView.contentOffset.y+scrollView.frame.size.height < scrollView.contentSize.height)
             {
-                CGFloat y = CGRectGetMinY(self.contentHeaderView.frame)-(new.y - old.y);
+                CGFloat y = CGRectGetMinY(self.contentHeaderView.frame) - (new.y - old.y);
                 CGRect rect = CGRectReplaceY(self.contentHeaderView.frame,
                                              MAX(-44, MIN(0,y)));
                 
@@ -285,16 +297,11 @@ static void * const KMScrollViewKVOContext = (void*)&KMScrollViewKVOContext;
                 }
                 [self didScrollTimerIsActive:YES];
             }
-            
         }
-        else if([keyPath isEqualToString:@"frame"])
+        else if([keyPath isEqualToString:@"frame"] && [object isKindOfClass:[self.contentHeaderView class]])
         {
             [self layoutContentInsetAllChildScrollViews];
-            
-            CGFloat minimumLocation = self.topLayoutGuide.length - CGRectGetHeight(self.navigationBar.frame);
-            CGFloat alpha = -(CGRectGetMinY(self.contentHeaderView.frame) - minimumLocation) / minimumLocation;
-            
-            [self setNavigationBarItemsAlpha:alpha];
+            [self layoutNavigationBarItemsAlphaValue];
         }
     }
     else
