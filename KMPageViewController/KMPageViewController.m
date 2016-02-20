@@ -109,6 +109,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     self.pageView = [[KMPageView alloc] init];
+    self.pageView.frame = self.view.frame;
     [self.view addSubview:self.pageView];
     
     self.contentHeaderView = [[UIView alloc] init];
@@ -120,13 +121,20 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                                 context:KMPageViewControllerKVOContext];
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    self.pageView.frame = self.view.bounds;
+}
+
 - (void)viewWillLayoutSubviews
 {
     [super viewWillLayoutSubviews];
-
-    [self layoutContentHeaderView];
     
     self.pageView.frame = self.view.bounds;
+    
+    [self layoutContentHeaderView];
     
     //
     for (UIViewController *viewController in self.childViewControllers)
@@ -157,7 +165,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                                        CGRectGetMaxY(self.navigationBar.frame),
                                        CGRectGetWidth(bounds),
                                        CGRectGetHeight(self.headerView.frame));
-
+    
     self.contentHeaderView.frame = CGRectMake(0,
                                               CGRectGetMinY(self.contentHeaderView.frame),
                                               CGRectGetWidth(bounds),
@@ -173,8 +181,15 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         
         if (!UIEdgeInsetsEqualToEdgeInsets(scrollView.contentInset, inset))
         {
+            //            BOOL isTop = NO;
+            
             scrollView.contentInset = inset;
             scrollView.scrollIndicatorInsets = inset;
+            
+            //            if (isTop)
+            //            {
+            //                [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:NO];
+            //            }
         }
     }
 }
@@ -194,7 +209,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 {
     CGFloat minimumLocation = self.topLayoutGuide.length - CGRectGetHeight(self.navigationBar.frame);
     CGFloat alpha = -(CGRectGetMinY(self.contentHeaderView.frame) - minimumLocation) / minimumLocation;
-
+    
     for (UIView *view in self.navigationBar.subviews)
     {
         bool isBackgroundView = (view == self.navigationBar.subviews.firstObject);

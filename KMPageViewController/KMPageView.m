@@ -109,6 +109,8 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     {
         self.contentSize = size;
     }
+    
+    [self reloadPageAtIndex:_currentIndex];
 }
 
 #pragma mark - reload
@@ -135,28 +137,27 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         return;
     }
     
-    for (int i = 0; i < self.count; i++)
+    UIViewController *viewController = [self.dataSource pageView:self viewControllerForPageAtIndex:index];
+    
+    if (viewController)
     {
-        UIViewController *viewController = [self.dataSource pageView:self viewControllerForPageAtIndex:i];
+        CGRect rect  = CGRectMake(CGRectGetWidth(self.bounds) * index,
+                                  0,
+                                  CGRectGetWidth(self.bounds),
+                                  CGRectGetHeight(self.bounds));
         
-        if (viewController)
+        //INSERT
+        if (viewController.parentViewController == nil)
         {
-            if (i <= (int)index+1 && i >= (int)index-1)
-            {
-                viewController.view.frame = CGRectMake(CGRectGetWidth(self.bounds) * i,
-                                                       0,
-                                                       CGRectGetWidth(self.bounds),
-                                                       CGRectGetHeight(self.bounds));
-                
-                //INSERT
-                if (viewController.parentViewController == nil)
-                {
-                    [self addSubview:viewController.view];
-                    [self.pageViewController addContentViewController:viewController];
-                    [self.pageViewController addChildViewController:viewController];
-                    [viewController didMoveToParentViewController:self.pageViewController];
-                }
-            }
+            [self addSubview:viewController.view];
+            [self.pageViewController addContentViewController:viewController];
+            [self.pageViewController addChildViewController:viewController];
+            [viewController didMoveToParentViewController:self.pageViewController];
+        }
+        
+        if (!CGRectEqualToRect(viewController.view.frame, rect))
+        {
+            viewController.view.frame = rect;
         }
     }
 }
@@ -171,20 +172,29 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     {
         if ([keyPath isEqualToString:@"contentOffset"])
         {
-            CGPoint new = [[change objectForKey:NSKeyValueChangeNewKey] CGPointValue];
-            CGPoint old = [[change objectForKey:NSKeyValueChangeOldKey] CGPointValue];
+            CGPoint new = [change[NSKeyValueChangeNewKey] CGPointValue];
+            CGPoint old = [change[NSKeyValueChangeOldKey] CGPointValue];
             
             if (new.x != old.x)
             {
-                [self setCurrentIndex:lround(self.contentOffset.x / self.frame.size.width)
+                NSInteger index = lround(self.contentOffset.x / self.frame.size.width);
+                
+                [self setCurrentIndex:index
                              animated:NO
                              isScroll:NO];
+                
+                [self reloadPageAtIndex:index-1];
+                [self reloadPageAtIndex:index+1];
             }
         }
         else if ([keyPath isEqualToString:@"frame"])
         {
-            [self reloadPageAtIndex:_currentIndex];
-            [self setContentOffset:CGPointMake(CGRectGetWidth(self.bounds)*_currentIndex, 0) animated:NO];
+            CGRect rect = [change[NSKeyValueChangeNewKey] CGRectValue];
+            if (!CGRectEqualToRect(rect, self.frame))
+            {
+                [self reloadPageAtIndex:_currentIndex];
+                [self setContentOffset:CGPointMake(CGRectGetWidth(self.bounds)*_currentIndex, 0) animated:NO];
+            }
         }
     }
     else
@@ -205,7 +215,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         
         if (isScroll)
         {
-            [self setContentOffset:CGPointMake(CGRectGetWidth(self.bounds)*currentIndex, 0) animated:animated];
+            [self setContentOffset:CGPointMake(CGRectGetWidth(self.bounds)*currentIndex, 0) animated:YES];
         }
         
         if ([self.delegate respondsToSelector:@selector(pageViewCurrentIndexDidChange:)])
