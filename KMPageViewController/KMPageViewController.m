@@ -135,17 +135,6 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     self.pageView.frame = self.view.bounds;
     
     [self layoutContentHeaderView];
-    
-    //
-    for (UIViewController *viewController in self.childViewControllers)
-    {
-        UIScrollView *scrollView  = viewController.view.contentScrollView;
-        
-        if ([scrollView isKindOfClass:[UIScrollView class]])
-        {
-            [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:NO];
-        }
-    }
 }
 
 #pragma  mark -
@@ -181,15 +170,8 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         
         if (!UIEdgeInsetsEqualToEdgeInsets(scrollView.contentInset, inset))
         {
-            //            BOOL isTop = NO;
-            
             scrollView.contentInset = inset;
             scrollView.scrollIndicatorInsets = inset;
-            
-            //            if (isTop)
-            //            {
-            //                [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:NO];
-            //            }
         }
     }
 }
@@ -266,6 +248,16 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                      forKeyPath:@"contentOffset"
                         options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew
                         context:KMPageViewControllerKVOContext];
+        
+        [scrollView addObserver:self
+                     forKeyPath:@"contentInset"
+                        options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew
+                        context:KMPageViewControllerKVOContext];
+        
+        //
+        [self layoutContentInsetForScrollView:scrollView
+                             atContentOffsetY:CGRectGetMaxY(self.contentHeaderView.frame)];
+        [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:NO];
     }
 }
 
@@ -279,6 +271,12 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         @try {
             [scrollView removeObserver:self
                             forKeyPath:@"contentOffset"
+                               context:KMPageViewControllerKVOContext];
+        }
+        @catch (NSException *exception) {}
+        @try {
+            [scrollView removeObserver:self
+                            forKeyPath:@"contentInset"
                                context:KMPageViewControllerKVOContext];
         }
         @catch (NSException *exception) {}
@@ -296,12 +294,13 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
             UIScrollView *scrollView = object;
             CGPoint new = [change[NSKeyValueChangeNewKey] CGPointValue];
             CGPoint old = [change[NSKeyValueChangeOldKey] CGPointValue];
-            
+
             if (scrollView.superViewController.view.frame.origin.x == self.pageView.contentOffset.x &&
                 new.y != old.y &&
                 scrollView.contentOffset.y > -CGRectGetHeight(self.contentHeaderView.frame) &&
                 scrollView.contentOffset.y+scrollView.frame.size.height < scrollView.contentSize.height)
             {
+                
                 CGFloat y = CGRectGetMinY(self.contentHeaderView.frame) - (new.y - old.y);
                 CGRect rect = CGRectReplaceY(self.contentHeaderView.frame,
                                              MAX(-44, MIN(0,y)));
@@ -311,6 +310,18 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                     self.contentHeaderView.frame = rect;
                 }
                 [self didScrollTimerIsActive:YES];
+            }
+        }
+        else if ([keyPath isEqualToString:@"contentInset"] && [object isKindOfClass:[UIScrollView class]])
+        {
+            UIScrollView *scrollView = object;
+            
+            UIEdgeInsets new = [change[NSKeyValueChangeNewKey] UIEdgeInsetsValue];
+            UIEdgeInsets old = [change[NSKeyValueChangeOldKey] UIEdgeInsetsValue];
+            
+            if (-old.top == scrollView.contentOffset.y)
+            {
+                [scrollView setContentOffset:CGPointMake(0, -new.top) animated:NO];
             }
         }
         else if([keyPath isEqualToString:@"frame"] && [object isKindOfClass:[self.contentHeaderView class]])
@@ -378,6 +389,8 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         _headerView = headerView;
         
         [self.contentHeaderView addSubview:_headerView];
+        
+        [self layoutContentHeaderView];
     }
 }
 
@@ -391,6 +404,8 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         _navigationBar = navigationBar;
         
         [self.contentHeaderView addSubview:_navigationBar];
+        
+        [self layoutContentHeaderView];
     }
 }
 
