@@ -300,10 +300,11 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                 scrollView.contentOffset.y > -CGRectGetHeight(self.contentHeaderView.frame) &&
                 scrollView.contentOffset.y+scrollView.frame.size.height < scrollView.contentSize.height)
             {
-                
+                CGFloat minY = CGRectGetHeight(self.navigationBar.frame)-self.topLayoutGuide.length;
                 CGFloat y = CGRectGetMinY(self.contentHeaderView.frame) - (new.y - old.y);
+
                 CGRect rect = CGRectReplaceY(self.contentHeaderView.frame,
-                                             MAX(-44, MIN(0,y)));
+                                             MAX(-minY, MIN(0,y)));
                 
                 if (CGRectEqualToRect(rect, self.contentHeaderView.frame) == NO)
                 {
