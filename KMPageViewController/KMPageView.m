@@ -41,9 +41,13 @@
 @end
 
 @interface KMPageView ()
+{
+    BOOL changingOrientationState;
+    NSInteger tempIndex;
+}
 
 @property (nonatomic, readonly) NSInteger count;
-@property (nonatomic, readonly) NSArray *viewControllers;
+@property (nonatomic, strong) NSMutableDictionary *viewInfos;
 
 @property (nonatomic, weak) KMPageViewController *pageViewController;
 
@@ -71,7 +75,10 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     if (self)
     {
         _scrollPagingEnabled = NO;
-        _currentIndex = NSNotFound;
+        _currentIndex = 0;
+        changingOrientationState = NO;
+        
+        self.viewInfos = [NSMutableDictionary dictionary];
         
         self.scrollsToTop = YES;
         self.pagingEnabled = YES;
@@ -93,8 +100,33 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
                   options:NSKeyValueObservingOptionNew
                   context:KMPagerViewKVOContext];
         
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(orientationWillChange:)
+                                                     name:UIApplicationWillChangeStatusBarOrientationNotification
+                                                   object:nil];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(orientationDidChange:)
+                                                     name:UIApplicationDidChangeStatusBarOrientationNotification
+                                                   object:nil];
     }
     return self;
+}
+
+#pragma mark - NSNotification
+
+- (void)orientationWillChange:(NSNotification *)notification
+{
+    changingOrientationState = YES;
+}
+
+- (void)orientationDidChange:(NSNotification *)notification
+{
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC));
+    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+        changingOrientationState = NO;
+    });
 }
 
 #pragma mark - layout
@@ -102,15 +134,35 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-    
+
     CGSize size = CGSizeMake(CGRectGetWidth(self.bounds) * self.count, CGRectGetHeight(self.bounds));
     
     if (CGSizeEqualToSize(size, self.contentSize) == NO)
     {
         self.contentSize = size;
+        [self setContentOffset:CGPointMake(CGRectGetWidth(self.bounds)*_currentIndex, 0) animated:NO];
     }
     
-    [self reloadPageAtIndex:_currentIndex];
+    for (NSNumber *key in [self.viewInfos allKeys])
+    {
+        UIViewController *viewController = self.viewInfos[key];
+        NSInteger index = [key integerValue];
+        
+        [self layoutWithViewController:viewController forIndex:index];
+    }
+}
+
+- (void)layoutWithViewController:(UIViewController*)viewController forIndex:(NSInteger)index
+{
+    CGRect rect  = CGRectMake(CGRectGetWidth(self.bounds) * index,
+                              0,
+                              CGRectGetWidth(self.bounds),
+                              CGRectGetHeight(self.bounds));
+    
+    if (!CGRectEqualToRect(viewController.view.frame, rect))
+    {
+        viewController.view.frame = rect;
+    }
 }
 
 #pragma mark - reload
@@ -118,15 +170,16 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 - (void)reloadData
 {
     //REMOVE
-    for (UIView *view in self.subviews)
+    for (UIViewController *viewController in self.pageViewController.childViewControllers)
     {
-        [view removeFromSuperview];
-        [self.pageViewController removeContentViewController:view.superViewController];
+        [self.pageViewController removeContentViewController:viewController];
         
-        [view.superViewController willMoveToParentViewController:nil];
-        [view.superViewController removeFromParentViewController];
+        [viewController.view removeFromSuperview];
+        [viewController willMoveToParentViewController:nil];
+        [viewController removeFromParentViewController];
     }
     
+    [self.viewInfos removeAllObjects];
     [self reloadPageAtIndex:_currentIndex];
 }
 
@@ -139,26 +192,16 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     
     UIViewController *viewController = [self.dataSource pageView:self viewControllerForPageAtIndex:index];
     
-    if (viewController)
+    if (viewController && viewController.parentViewController == nil)
     {
-        CGRect rect  = CGRectMake(CGRectGetWidth(self.bounds) * index,
-                                  0,
-                                  CGRectGetWidth(self.bounds),
-                                  CGRectGetHeight(self.bounds));
-        
         //INSERT
-        if (viewController.parentViewController == nil)
-        {
-            [self addSubview:viewController.view];
-            [self.pageViewController addContentViewController:viewController];
-            [self.pageViewController addChildViewController:viewController];
-            [viewController didMoveToParentViewController:self.pageViewController];
-        }
+        [self addSubview:viewController.view];
         
-        if (!CGRectEqualToRect(viewController.view.frame, rect))
-        {
-            viewController.view.frame = rect;
-        }
+        [self.pageViewController addContentViewController:viewController];
+        [self.pageViewController addChildViewController:viewController];
+        [viewController didMoveToParentViewController:self.pageViewController];
+        
+        [self.viewInfos setObject:viewController forKey:@(index)];
     }
 }
 
@@ -177,14 +220,23 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
             
             if (new.x != old.x)
             {
+                
                 NSInteger index = lround(self.contentOffset.x / self.frame.size.width);
                 
-                [self setCurrentIndex:index
-                             animated:NO
-                             isScroll:NO];
+                [self reloadPageAtIndex:index];
                 
                 [self reloadPageAtIndex:index-1];
                 [self reloadPageAtIndex:index+1];
+                
+                if (_currentIndex != index && changingOrientationState == NO)
+                {
+                    _currentIndex = index;
+                    
+                    if ([self.delegate respondsToSelector:@selector(pageViewCurrentIndexDidChange:)])
+                    {
+                        [self.delegate pageViewCurrentIndexDidChange:self];
+                    }
+                }
             }
         }
         else if ([keyPath isEqualToString:@"frame"])
@@ -205,29 +257,9 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
 #pragma mark - SETTERS
 
-- (void)setCurrentIndex:(NSUInteger)currentIndex animated:(BOOL)animated isScroll:(BOOL)isScroll
-{
-    if (_currentIndex != currentIndex)
-    {
-        _currentIndex = currentIndex;
-        
-        [self reloadPageAtIndex:currentIndex];
-        
-        if (isScroll)
-        {
-            [self setContentOffset:CGPointMake(CGRectGetWidth(self.bounds)*currentIndex, 0) animated:YES];
-        }
-        
-        if ([self.delegate respondsToSelector:@selector(pageViewCurrentIndexDidChange:)])
-        {
-            [self.delegate pageViewCurrentIndexDidChange:self];
-        }
-    }
-}
-
 - (void)setCurrentIndex:(NSUInteger)currentIndex animated:(BOOL)animated
 {
-    [self setCurrentIndex:currentIndex animated:animated isScroll:YES];
+    [self setContentOffset:CGPointMake(CGRectGetWidth(self.bounds)*currentIndex, 0) animated:animated];
 }
 
 - (void)setCurrentIndex:(NSUInteger)currentIndex
