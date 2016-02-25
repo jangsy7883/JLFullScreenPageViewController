@@ -49,10 +49,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UIViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Table1"];
-    viewController.title = @"detail";
-    
-    [self.navigationController pushViewController:viewController animated:self];
+//    UIViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Table1"];
+//    viewController.title = @"detail";
+//    
+//    [self.navigationController pushViewController:viewController animated:self];
     
 }
 

@@ -53,15 +53,19 @@
                                          0,
                                          CGRectGetWidth(self.view.bounds),
                                          40);
+    [self.segmentedBar reloadData];
+    
     self.headerView = self.segmentedBar;
     self.pageView.dataSource = self;
     self.pageView.delegate = self;
     self.pageView.scrollPagingEnabled = YES;
     
-    self.pageView.currentIndex = 0;
+    
     
     [self.pageView reloadData];
-    [self.segmentedBar reloadData];
+    
+    self.pageView.currentIndex = 1;
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -69,6 +73,7 @@
     [super viewWillAppear:animated];
     
     [self.navigationController setNavigationBarHidden:YES animated:animated];
+    
 }
 
 #pragma mark - KMPagerView datasource

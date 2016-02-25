@@ -259,6 +259,13 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
 - (void)setCurrentIndex:(NSUInteger)currentIndex animated:(BOOL)animated
 {
+    CGSize size = CGSizeMake(CGRectGetWidth(self.bounds) * self.count, CGRectGetHeight(self.bounds));
+    
+    if (CGSizeEqualToSize(size, self.contentSize) == NO)
+    {
+        self.contentSize = size;
+    }
+
     [self setContentOffset:CGPointMake(CGRectGetWidth(self.bounds)*currentIndex, 0) animated:animated];
 }
 
