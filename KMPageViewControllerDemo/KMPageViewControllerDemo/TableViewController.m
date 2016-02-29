@@ -19,7 +19,7 @@
 {
     [super viewDidLoad];
     
-    self.tableView.scrollsToTop = YES;
+    self.tableView.scrollsToTop = NO;
 }
 
 #pragma mark - Table view data source

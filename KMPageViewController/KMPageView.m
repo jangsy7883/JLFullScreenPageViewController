@@ -8,35 +8,13 @@
 
 #import "KMPageView.h"
 #import "KMPageViewController.h"
+#import "UIViewController+KMAdditions.h"
+#import "UIView+KMAdditions.h"
 
 @interface KMPageViewController ()
 
 - (void)addContentViewController:(UIViewController *)viewController;
 - (void)removeContentViewController:(UIViewController *)viewController;
-
-@end
-
-@interface UIView (KMPageView)
-
-@property (nonatomic, readonly) UIViewController *superViewController;
-
-@end
-
-@implementation UIView (KMPageView)
-
-- (UIViewController*)superViewController
-{
-    for (UIView* next = self; next; next = next.superview)
-    {
-        UIResponder* nextResponder = [next nextResponder];
-        
-        if ([nextResponder isKindOfClass:[UIViewController class]])
-        {
-            return (UIViewController*)nextResponder;
-        }
-    }
-    return nil;
-}
 
 @end
 
@@ -180,7 +158,9 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     }
     
     [self.viewInfos removeAllObjects];
+
     [self reloadPageAtIndex:_currentIndex];
+    [self reloadPageAtIndex:_currentIndex+1];
 }
 
 - (void)reloadPageAtIndex:(NSUInteger)index
@@ -231,6 +211,13 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
                 if (_currentIndex != index && changingOrientationState == NO)
                 {
                     _currentIndex = index;
+                    
+                    for (NSNumber *key in [self.viewInfos allKeys])
+                    {
+                        NSInteger index = [key integerValue];
+                        UIViewController *viewController = self.viewInfos[key];
+                        viewController.contentScrollView.scrollsToTop = (index == _currentIndex);
+                    }
                     
                     if ([self.delegate respondsToSelector:@selector(pageViewCurrentIndexDidChange:)])
                     {

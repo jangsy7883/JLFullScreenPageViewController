@@ -7,6 +7,8 @@
 //
 
 #import "KMPageViewController.h"
+#import "UIViewController+KMAdditions.h"
+#import "UIView+KMAdditions.h"
 
 CG_INLINE CGRect
 CGRectReplaceY(CGRect rect, CGFloat y)
@@ -16,48 +18,6 @@ CGRectReplaceY(CGRect rect, CGFloat y)
 }
 
 #define kDefaultNavigationBarHeight 44
-
-@interface UIView (KMPageViewController)
-
-@property (nonatomic, readonly) UIViewController *superViewController;
-@property (nonatomic, readonly) UIScrollView *contentScrollView;
-
-@end
-
-@implementation UIView (KMPageViewController)
-
-- (UIViewController*)superViewController
-{
-    for (UIView* next = self; next; next = next.superview)
-    {
-        UIResponder* nextResponder = [next nextResponder];
-        
-        if ([nextResponder isKindOfClass:[UIViewController class]])
-        {
-            return (UIViewController*)nextResponder;
-        }
-    }
-    return nil;
-}
-
-- (UIScrollView*)contentScrollView
-{
-    if ([self isKindOfClass:[UIScrollView class]])
-    {
-        return (UIScrollView*)self;
-    }
-    
-    for (UIScrollView* scrollView in self.subviews)
-    {
-        if ([scrollView isKindOfClass:[UIScrollView class]])
-        {
-            return scrollView;
-        }
-    }
-    return nil;
-}
-
-@end
 
 @implementation UIViewController (KMPageViewController)
 
@@ -184,7 +144,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     
     for (UIViewController *viewController in self.childViewControllers)
     {
-        [self layoutContentInsetForScrollView:viewController.view.contentScrollView
+        [self layoutContentInsetForScrollView:viewController.contentScrollView
                              atContentOffsetY:pageY];
     }
 }
@@ -239,7 +199,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 - (void)addContentViewController:(UIViewController *)viewController
 {
-    UIScrollView *scrollView = viewController.view.contentScrollView;
+    UIScrollView *scrollView = viewController.contentScrollView;
     
     if ([scrollView isKindOfClass:[UIScrollView class]])
     {
@@ -265,7 +225,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 - (void)removeContentViewController:(UIViewController *)viewController
 {
-    UIScrollView *scrollView = viewController.view.contentScrollView;
+    UIScrollView *scrollView = viewController.contentScrollView;
     
     if ([scrollView isKindOfClass:[UIScrollView class]])
     {

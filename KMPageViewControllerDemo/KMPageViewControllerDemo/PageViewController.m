@@ -82,6 +82,7 @@
             if (self.table1 == nil)
             {
                 self.table1 = [self.storyboard instantiateViewControllerWithIdentifier:@"Table1"];
+                self.table1.tableView.scrollsToTop = YES;
                 self.table1.title = @"Table1";
             }
             return self.table1;
