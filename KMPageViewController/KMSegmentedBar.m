@@ -2,8 +2,8 @@
 //  KMSegmented.m
 //  KMSegmentedPager
 //
-//  Created by IM049 on 2015. 9. 6..
-//  Copyright (c) 2015년 Jangsy7883. All rights reserved.
+//  Created by Jangsy7883 on 2015. 9. 6..
+//  Copyright © 2015년 Dalkomm. All rights reserved.
 //
 
 #import "KMSegmentedBar.h"

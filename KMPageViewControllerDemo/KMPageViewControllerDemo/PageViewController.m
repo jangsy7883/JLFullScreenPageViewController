@@ -2,7 +2,7 @@
 //  PageViewController.m
 //  KMSegmentedPagerDemo
 //
-//  Created by IM049 on 2015. 10. 17..
+//  Created by Jangsy7883 on 2015. 10. 17..
 //  Copyright © 2015년 Dalkomm. All rights reserved.
 //
 
@@ -59,21 +59,13 @@
     self.pageView.dataSource = self;
     self.pageView.delegate = self;
     self.pageView.scrollPagingEnabled = YES;
-    
-    
-    
     [self.pageView reloadData];
-    
-    self.pageView.currentIndex = 1;
-
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
-    
     [self.navigationController setNavigationBarHidden:YES animated:animated];
-    
 }
 
 #pragma mark - KMPagerView datasource
@@ -146,7 +138,5 @@
              @"first",@"second",@"third"
              ];
 }
-
-
 
 @end

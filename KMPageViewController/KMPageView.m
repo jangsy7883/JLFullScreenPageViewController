@@ -2,8 +2,8 @@
 //  KMPagerView.m
 //  KMSegmentedPager
 //
-//  Created by IM049 on 2015. 9. 4..
-//  Copyright (c) 2015년 Jangsy7883. All rights reserved.
+//  Created by Jangsy7883 on 2015. 9. 4..
+//  Copyright © 2015년 Dalkomm. All rights reserved.
 //
 
 #import "KMPageView.h"
@@ -80,7 +80,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         
         self.viewInfos = [NSMutableDictionary dictionary];
         
-        self.scrollsToTop = YES;
+        self.scrollsToTop = NO;
         self.pagingEnabled = YES;
         self.directionalLockEnabled = YES;
         self.alwaysBounceVertical = NO;

@@ -2,8 +2,8 @@
 //  KMPagerController.m
 //  KMPageController
 //
-//  Created by IM049 on 2015. 9. 4..
-//  Copyright (c) 2015년 Jangsy7883. All rights reserved.
+//  Created by Jangsy7883 on 2015. 9. 4..
+//  Copyright © 2015년 Dalkomm. All rights reserved.
 //
 
 #import "KMPageViewController.h"
@@ -78,6 +78,7 @@ CGRectReplaceY(CGRect rect, CGFloat y)
 @end
 
 static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControllerKVOContext;
+
 @interface KMPageViewController ()
 
 @property (nonatomic, strong) UIView *contentHeaderView;
@@ -135,6 +136,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     self.pageView.frame = self.view.bounds;
     
     [self layoutContentHeaderView];
+    [self layoutNavigationBarItemsAlphaValue];
 }
 
 #pragma  mark -

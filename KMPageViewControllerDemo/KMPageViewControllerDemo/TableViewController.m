@@ -2,7 +2,7 @@
 //  TableViewController.m
 //  KMSegmentedPagerDemo
 //
-//  Created by IM049 on 2015. 10. 17..
+//  Created by Jangsy7883 on 2015. 10. 17..
 //  Copyright © 2015년 Dalkomm. All rights reserved.
 //
 
@@ -19,7 +19,7 @@
 {
     [super viewDidLoad];
     
-    self.tableView.scrollsToTop = NO;
+    self.tableView.scrollsToTop = YES;
 }
 
 #pragma mark - Table view data source
