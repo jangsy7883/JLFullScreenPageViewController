@@ -83,6 +83,7 @@
             {
                 self.table1 = [self.storyboard instantiateViewControllerWithIdentifier:@"Table1"];
                 self.table1.tableView.scrollsToTop = YES;
+                self.table1.tableView.tag = 0;
                 self.table1.title = @"Table1";
             }
             return self.table1;
@@ -92,6 +93,7 @@
             {
                 self.table2 = [self.storyboard instantiateViewControllerWithIdentifier:@"Table2"];
                 self.table2.title = @"Table2";
+                                self.table2.tableView.tag = 1;
             }
             return self.table2;
             break;
@@ -100,6 +102,7 @@
             {
                 self.table3 = [self.storyboard instantiateViewControllerWithIdentifier:@"Table3"];
                 self.table3.title = @"Table3";
+                                self.table3.tableView.tag = 2;
             }
             return self.table3;
             break;

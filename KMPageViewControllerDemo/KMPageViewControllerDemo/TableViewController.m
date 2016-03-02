@@ -18,7 +18,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    self.tableView.bounces = YES;
     self.tableView.scrollsToTop = NO;
 }
 

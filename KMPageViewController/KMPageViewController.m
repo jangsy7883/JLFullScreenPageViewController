@@ -257,21 +257,34 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
             CGPoint new = [change[NSKeyValueChangeNewKey] CGPointValue];
             CGPoint old = [change[NSKeyValueChangeOldKey] CGPointValue];
 
-            if (scrollView.superViewController.view.frame.origin.x == self.pageView.contentOffset.x &&
-                new.y != old.y &&
-                scrollView.contentOffset.y > -CGRectGetHeight(self.contentHeaderView.frame) &&
-                scrollView.contentOffset.y+scrollView.frame.size.height < scrollView.contentSize.height)
+            if (scrollView.superViewController.view.frame.origin.x == self.pageView.contentOffset.x
+                && new.y != old.y
+                && scrollView.contentOffset.y+scrollView.frame.size.height < scrollView.contentSize.height)
             {
-                CGFloat minY = CGRectGetHeight(self.navigationBar.frame)-self.topLayoutGuide.length;
-                CGFloat y = CGRectGetMinY(self.contentHeaderView.frame) - (new.y - old.y);
-
-                CGRect rect = CGRectReplaceY(self.contentHeaderView.frame,
-                                             MAX(-minY, MIN(0,y)));
+                CGRect rect = self.contentHeaderView.frame;
+                
+                if (scrollView.contentOffset.y > -CGRectGetHeight(self.contentHeaderView.frame))
+                {
+                    
+                    CGFloat minY = CGRectGetHeight(self.navigationBar.frame)-self.topLayoutGuide.length;
+                    CGFloat y = CGRectGetMinY(self.contentHeaderView.frame) - (new.y - old.y);
+                    
+                    rect = CGRectReplaceY(self.contentHeaderView.frame,
+                                          ceil(MAX(-minY, MIN(0,y))));
+                }
+                else
+                {
+                    rect = CGRectReplaceY(self.contentHeaderView.frame,
+                                          0);
+                }
+                
                 
                 if (CGRectEqualToRect(rect, self.contentHeaderView.frame) == NO)
                 {
                     self.contentHeaderView.frame = rect;
                 }
+
+                
                 [self didScrollTimerIsActive:YES];
             }
         }
