@@ -58,6 +58,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         
         self.viewInfos = [NSMutableDictionary dictionary];
         
+        
         self.scrollsToTop = NO;
         self.pagingEnabled = YES;
         self.directionalLockEnabled = YES;
@@ -200,11 +201,14 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
             
             if (new.x != old.x)
             {
-                
+                if ([self.delegate respondsToSelector:@selector(pageViewDidScroll:)])
+                {
+                    [self.delegate pageViewDidScroll:self];
+                }
+
                 NSInteger index = lround(self.contentOffset.x / self.frame.size.width);
                 
                 [self reloadPageAtIndex:index];
-                
                 [self reloadPageAtIndex:index-1];
                 [self reloadPageAtIndex:index+1];
                 
@@ -278,9 +282,9 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
 - (NSInteger)count
 {
-    if ([self.dataSource respondsToSelector:@selector(countInPagerView:)])
+    if ([self.dataSource respondsToSelector:@selector(numberOfPageInPageView:)])
     {
-        return [self.dataSource countInPagerView:self];
+        return [self.dataSource numberOfPageInPageView:self];
     }
     return 0;
 }

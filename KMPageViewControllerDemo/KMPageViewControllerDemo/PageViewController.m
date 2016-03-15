@@ -70,7 +70,7 @@
 
 #pragma mark - KMPagerView datasource
 
-- (NSInteger)countInPagerView:(KMPageView *)pageView
+- (NSInteger)numberOfPageInPageView:(KMPageView *)pageView
 {
     return 3;
 }
@@ -110,17 +110,12 @@
     return nil;
 }
 
-#pragma mark - ScrollView delegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    if ([scrollView isKindOfClass:[KMPageView class]])
-    {
-        [self.segmentedBar scrollDidContentOffset:scrollView.contentOffset.x / scrollView.frame.size.width];
-    }
-}
-
 #pragma mark - KMPagerView delegate
+
+- (void)pageViewDidScroll:(KMPageView *)pageView
+{
+    [self.segmentedBar scrollDidContentOffset:pageView.contentOffset.x / pageView.frame.size.width];
+}
 
 - (void)pageViewCurrentIndexDidChange:(KMPageView *)pagerView
 {

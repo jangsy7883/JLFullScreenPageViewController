@@ -12,6 +12,8 @@
 
 @protocol KMSegmentedBarDelegate <NSObject>
 
+@optional
+
 - (void)segmentedBar:(KMSegmentedBar*)segmentedView didSelectIndex:(NSInteger)index;
 
 @end

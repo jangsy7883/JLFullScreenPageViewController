@@ -12,13 +12,15 @@
 
 @protocol KMPageViewDelegate <UIScrollViewDelegate>
 
+@optional
+- (void)pageViewDidScroll:(KMPageView *)pageView;
 - (void)pageViewCurrentIndexDidChange:(KMPageView *)pagerView;
 
 @end
 
 @protocol KMPageViewDataSource <NSObject>
 
-- (NSInteger)countInPagerView:(KMPageView*)pageView;
+- (NSInteger)numberOfPageInPageView:(KMPageView*)pageView;
 - (UIViewController*)pageView:(KMPageView*)pageView viewControllerForPageAtIndex:(NSInteger)index;
 
 @end

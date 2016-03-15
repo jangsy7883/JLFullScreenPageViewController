@@ -8,7 +8,6 @@
 
 #import "KMPageViewController.h"
 #import "UIViewController+KMAdditions.h"
-#import "UIView+KMAdditions.h"
 
 CG_INLINE CGRect
 CGRectReplaceY(CGRect rect, CGFloat y)
@@ -18,6 +17,30 @@ CGRectReplaceY(CGRect rect, CGFloat y)
 }
 
 #define kDefaultNavigationBarHeight 44
+
+@interface UIView (KMAdditions)
+
+@property (nonatomic, readonly) UIViewController *superViewController;
+
+@end
+
+@implementation UIView (KMAdditions)
+
+- (UIViewController*)superViewController
+{
+    for (UIView* next = self; next; next = next.superview)
+    {
+        UIResponder* nextResponder = [next nextResponder];
+        
+        if ([nextResponder isKindOfClass:[UIViewController class]])
+        {
+            return (UIViewController*)nextResponder;
+        }
+    }
+    return nil;
+}
+
+@end
 
 @implementation UIViewController (KMPageViewController)
 
@@ -104,13 +127,11 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 - (void)layoutContentHeaderView
 {
     CGRect bounds = self.view.bounds;
-    
-    CGFloat defaultBarHeight = (self.navigationController.navigationBar) ? CGRectGetHeight(self.navigationController.navigationBar.frame): kDefaultNavigationBarHeight;
-    
+
     self.navigationBar.frame = CGRectMake(0,
                                           0,
                                           CGRectGetWidth(bounds),
-                                          defaultBarHeight + self.topLayoutGuide.length);
+                                          CGRectGetHeight(self.navigationController.navigationBar.frame) + self.topLayoutGuide.length);
     
     self.headerView.frame = CGRectMake(0,
                                        CGRectGetMaxY(self.navigationBar.frame),
@@ -265,25 +286,20 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                 
                 if (scrollView.contentOffset.y > -CGRectGetHeight(self.contentHeaderView.frame))
                 {
-                    
-                    CGFloat minY = CGRectGetHeight(self.navigationBar.frame)-self.topLayoutGuide.length;
+                    CGFloat minY = CGRectGetHeight(self.navigationBar.frame)-(self.navigationBar? self.topLayoutGuide.length : 0);
                     CGFloat y = CGRectGetMinY(self.contentHeaderView.frame) - (new.y - old.y);
                     
-                    rect = CGRectReplaceY(self.contentHeaderView.frame,
-                                          ceil(MAX(-minY, MIN(0,y))));
+                    rect = CGRectReplaceY(self.contentHeaderView.frame, ceil(MAX(-minY, MIN(0,y))));
                 }
                 else
                 {
-                    rect = CGRectReplaceY(self.contentHeaderView.frame,
-                                          0);
-                }
-                
+                    rect = CGRectReplaceY(self.contentHeaderView.frame, 0);
+                }                
                 
                 if (CGRectEqualToRect(rect, self.contentHeaderView.frame) == NO)
                 {
                     self.contentHeaderView.frame = rect;
                 }
-
                 
                 [self didScrollTimerIsActive:YES];
             }
