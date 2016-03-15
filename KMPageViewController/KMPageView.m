@@ -9,7 +9,6 @@
 #import "KMPageView.h"
 #import "KMPageViewController.h"
 #import "UIViewController+KMAdditions.h"
-#import "UIView+KMAdditions.h"
 
 @interface KMPageViewController ()
 
