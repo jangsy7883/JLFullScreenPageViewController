@@ -40,8 +40,15 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
 - (void)dealloc
 {
-    [self removeObserver:self forKeyPath:@"contentOffset" context:KMPagerViewKVOContext];
-    [self removeObserver:self forKeyPath:@"frame" context:KMPagerViewKVOContext];
+    self.viewInfos = nil;
+    
+    @try {
+        [self removeObserver:self forKeyPath:@"contentOffset" context:KMPagerViewKVOContext];
+        [self removeObserver:self forKeyPath:@"frame" context:KMPagerViewKVOContext];
+    }
+    @catch (NSException *exception) {}
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Init
@@ -56,7 +63,6 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         changingOrientationState = NO;
         
         self.viewInfos = [NSMutableDictionary dictionary];
-        
         
         self.scrollsToTop = NO;
         self.pagingEnabled = YES;
@@ -148,19 +154,20 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 - (void)reloadData
 {
     //REMOVE
+    [self.viewInfos removeAllObjects];
+    
     for (UIViewController *viewController in self.pageViewController.childViewControllers)
     {
         [self.pageViewController removeContentViewController:viewController];
-        
-        [viewController.view removeFromSuperview];
-        [viewController willMoveToParentViewController:nil];
-        [viewController removeFromParentViewController];
     }
     
-    [self.viewInfos removeAllObjects];
-
     [self reloadPageAtIndex:_currentIndex];
     [self reloadPageAtIndex:_currentIndex+1];
+    
+    if ([self.delegate respondsToSelector:@selector(pageViewCurrentIndexDidChange:)])
+    {
+        [self.delegate pageViewCurrentIndexDidChange:self];
+    }
 }
 
 - (void)reloadPageAtIndex:(NSUInteger)index
@@ -175,11 +182,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     if (viewController && viewController.parentViewController == nil)
     {
         //INSERT
-        [self addSubview:viewController.view];
-        
         [self.pageViewController addContentViewController:viewController];
-        [self.pageViewController addChildViewController:viewController];
-        [viewController didMoveToParentViewController:self.pageViewController];
         
         [self.viewInfos setObject:viewController forKey:@(index)];
     }
@@ -273,6 +276,11 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 }
 
 #pragma mark - GETTERS
+
+- (NSArray*)visibleViewContollers
+{
+    return [self.pageViewController childViewControllers];
+}
 
 - (BOOL)scrollPagingEnabled
 {

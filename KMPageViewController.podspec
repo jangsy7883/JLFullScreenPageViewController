@@ -1,4 +1,4 @@
-@version = "0.1.13"
+@version = "0.1.14"
 Pod::Spec.new do |s|
   s.name         = "KMPageViewController"
   s.version      = @version

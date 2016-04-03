@@ -15,6 +15,10 @@
 
 @implementation TableViewController
 
+- (void)dealloc
+{
+    NSLog(@"A___");
+}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -49,6 +53,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [self.navigationController popViewControllerAnimated:YES];
 //    UIViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Table1"];
 //    viewController.title = @"detail";
 //    
