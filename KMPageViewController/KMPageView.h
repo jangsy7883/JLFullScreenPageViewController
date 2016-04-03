@@ -30,6 +30,8 @@
 @property (nonatomic, assign) NSUInteger currentIndex;
 @property (nonatomic, assign, getter = isScrollPagingEnabled) BOOL scrollPagingEnabled;
 
+@property (nonatomic, readonly) NSArray *visibleViewContollers;
+
 @property (nonatomic, weak) id<KMPageViewDelegate>delegate;
 @property (nonatomic, weak) id<KMPageViewDataSource>dataSource;
 

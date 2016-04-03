@@ -34,10 +34,11 @@
 {
     [super viewDidLoad];
     
-
     UINavigationItem *item = [[UINavigationItem alloc] init];
     item.title = @"KMPageViewController";
-    
+    item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                            target:self
+                                                                            action:@selector(pressedCancel:)];
     self.navigationBar = [[UINavigationBar alloc] init];
     self.navigationBar.items = @[item];
     
@@ -62,6 +63,10 @@
     [self.pageView reloadData];
 }
 
+- (void)pressedCancel:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -72,9 +77,9 @@
 
 - (NSInteger)numberOfPageInPageView:(KMPageView *)pageView
 {
-    return 3;
+    return 1;
 }
-
+//
 - (UIViewController*)pageView:(KMPageView*)pageView viewControllerForPageAtIndex:(NSInteger)index
 {
     switch (index) {
@@ -93,7 +98,7 @@
             {
                 self.table2 = [self.storyboard instantiateViewControllerWithIdentifier:@"Table2"];
                 self.table2.title = @"Table2";
-                                self.table2.tableView.tag = 1;
+                self.table2.tableView.tag = 1;
             }
             return self.table2;
             break;
@@ -102,7 +107,7 @@
             {
                 self.table3 = [self.storyboard instantiateViewControllerWithIdentifier:@"Table3"];
                 self.table3.title = @"Table3";
-                                self.table3.tableView.tag = 2;
+                self.table3.tableView.tag = 2;
             }
             return self.table3;
             break;
@@ -119,7 +124,7 @@
 
 - (void)pageViewCurrentIndexDidChange:(KMPageView *)pagerView
 {
-
+    
 }
 
 #pragma mark - KMSegmentedView delegate

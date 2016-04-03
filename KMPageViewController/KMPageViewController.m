@@ -75,6 +75,12 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 - (void)dealloc
 {
+
+    for (UIViewController *viewController in self.childViewControllers)
+    {
+        [self removeContentViewController:viewController];
+    }
+
     //Observer
     @try {
         [self.contentHeaderView removeObserver:self
@@ -127,22 +133,25 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 - (void)layoutContentHeaderView
 {
     CGRect bounds = self.view.bounds;
-
-    self.navigationBar.frame = CGRectMake(0,
-                                          0,
-                                          CGRectGetWidth(bounds),
-                                          CGRectGetHeight(self.navigationController.navigationBar.frame) + self.topLayoutGuide.length);
+    
+    CGRect rect = CGRectMake(0,
+                             0,
+                             CGRectGetWidth(bounds),
+                             self.topLayoutGuide.length);
+    
+    rect.size.height += (self.navigationBar ? CGRectGetHeight(self.navigationController.navigationBar.frame) : 0);
+    
+    self.navigationBar.frame = rect;
     
     self.headerView.frame = CGRectMake(0,
-                                       CGRectGetMaxY(self.navigationBar.frame),
+                                       CGRectGetMaxY(rect),
                                        CGRectGetWidth(bounds),
                                        CGRectGetHeight(self.headerView.frame));
     
     self.contentHeaderView.frame = CGRectMake(0,
                                               CGRectGetMinY(self.contentHeaderView.frame),
                                               CGRectGetWidth(bounds),
-                                              CGRectGetHeight(self.navigationBar.frame) + CGRectGetHeight(self.headerView.frame));
-}
+                                              CGRectGetHeight(rect) + CGRectGetHeight(self.headerView.frame));}
 
 - (void)layoutContentInsetForScrollView:(UIScrollView*)scrollView atContentOffsetY:(CGFloat)offsetY
 {
@@ -220,22 +229,30 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 - (void)addContentViewController:(UIViewController *)viewController
 {
+    [self.pageView addSubview:viewController.view];
+    [self addChildViewController:viewController];
+    [viewController didMoveToParentViewController:self];
+
+    //
     UIScrollView *scrollView = viewController.contentScrollView;
     
     if ([scrollView isKindOfClass:[UIScrollView class]])
     {
-        [self removeContentViewController:viewController];
-        
         //Observer
-        [scrollView addObserver:self
-                     forKeyPath:@"contentOffset"
-                        options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew
-                        context:KMPageViewControllerKVOContext];
-        
-        [scrollView addObserver:self
-                     forKeyPath:@"contentInset"
-                        options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew
-                        context:KMPageViewControllerKVOContext];
+        @try {
+            [scrollView addObserver:self
+                         forKeyPath:@"contentOffset"
+                            options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew
+                            context:KMPageViewControllerKVOContext];
+        }
+        @catch (NSException *exception) {}
+        @try {
+            [scrollView addObserver:self
+                         forKeyPath:@"contentInset"
+                            options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew
+                            context:KMPageViewControllerKVOContext];
+        }
+        @catch (NSException *exception) {}
         
         //
         [self layoutContentInsetForScrollView:scrollView
@@ -264,6 +281,12 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         }
         @catch (NSException *exception) {}
     }
+    
+    NSLog(@"BB %@",viewController);
+        [viewController.view removeFromSuperview];
+        [viewController willMoveToParentViewController:nil];
+        [viewController removeFromParentViewController];
+
 }
 
 #pragma  mark - KVO
