@@ -34,7 +34,12 @@
 {
     [super viewDidLoad];
     
-    self.navigationItem.title = @"KMPageViewController";
+    
+    UILabel *titleLabel = [[UILabel alloc] init];
+    titleLabel.text = @"KMPageView";
+    [titleLabel sizeToFit];
+    
+    self.navigationItem.titleView = titleLabel;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                            target:self
                                                                                            action:@selector(pressedCancel:)];
@@ -62,6 +67,9 @@
 {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:animated];
+    
+    [self.navigationBar setNeedsLayout];
+    [self.navigationBar layoutIfNeeded];
 }
 
 #pragma mark - event

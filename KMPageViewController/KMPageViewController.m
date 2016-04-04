@@ -151,6 +151,8 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     if (self.navigationBarHidden == NO)
     {
         self.navigationBar.frame = rect;
+        [self.navigationBar setNeedsLayout];
+        [self.navigationBar layoutIfNeeded];
     }
 
     self.headerView.frame = CGRectMake(0,
@@ -213,7 +215,6 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 {
     if (!self.navigationBarHidden)
     {
-        
         UINavigationItem *item = [[UINavigationItem alloc] init];
         self.navigationBar.items = @[item];
         
@@ -264,9 +265,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 - (void)addContentViewController:(UIViewController *)viewController
 {
-    [self.pageView addSubview:viewController.view];
-    [self addChildViewController:viewController];
-    [viewController didMoveToParentViewController:self];
+    [viewController addToParentViewController:self withView:self.pageView];
 
     //
     UIScrollView *scrollView = viewController.contentScrollView;

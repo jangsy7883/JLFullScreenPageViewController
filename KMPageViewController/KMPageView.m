@@ -282,7 +282,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     return [self.pageViewController childViewControllers];
 }
 
-- (UIViewController*)currentViewContoller
+- (UIViewController*)currentViewController
 {
     if ([self.dataSource respondsToSelector:@selector(pageView:viewControllerForPageAtIndex:)] == NO || self.currentIndex == NSNotFound)
     {

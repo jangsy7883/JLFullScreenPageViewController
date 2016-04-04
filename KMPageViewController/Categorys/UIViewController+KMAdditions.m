@@ -27,4 +27,19 @@
     return nil;
 }
 
+- (void)addToParentViewController:(UIViewController *)parentViewController withView:(UIView *)view
+{
+    if (self.parentViewController)
+    {
+        [self.view removeFromSuperview];
+        [self removeFromParentViewController];
+    }
+    
+    [parentViewController addChildViewController:self];
+    [view addSubview:self.view];
+    [self didMoveToParentViewController:parentViewController];
+}
+
+
+
 @end

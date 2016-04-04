@@ -12,4 +12,6 @@
 
 @property (nonatomic, readonly) UIScrollView *contentScrollView;
 
+- (void)addToParentViewController:(UIViewController *)parentViewController withView:(UIView *)view;
+
 @end
