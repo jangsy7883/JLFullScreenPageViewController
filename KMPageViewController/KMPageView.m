@@ -282,6 +282,16 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     return [self.pageViewController childViewControllers];
 }
 
+- (UIViewController*)currentViewContoller
+{
+    if ([self.dataSource respondsToSelector:@selector(pageView:viewControllerForPageAtIndex:)] == NO || self.currentIndex == NSNotFound)
+    {
+        return nil;
+    }
+    
+    return [self.dataSource pageView:self viewControllerForPageAtIndex:self.currentIndex];;
+}
+
 - (BOOL)scrollPagingEnabled
 {
     return self.scrollEnabled;
