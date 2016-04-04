@@ -16,8 +16,6 @@ CGRectReplaceY(CGRect rect, CGFloat y)
     return rect;
 }
 
-#define kDefaultNavigationBarHeight 44
-
 @interface UIView (KMAdditions)
 
 @property (nonatomic, readonly) UIViewController *superViewController;
@@ -64,6 +62,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 @interface KMPageViewController ()
 
+@property (nonatomic, strong) UINavigationBar *navigationBar;
 @property (nonatomic, strong) UIView *contentHeaderView;
 @property (nonatomic, strong) KMPageView *pageView;
 @property (nonatomic, strong) NSTimer *didScrollTimer;
@@ -75,19 +74,22 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 - (void)dealloc
 {
-
     for (UIViewController *viewController in self.childViewControllers)
     {
         [self removeContentViewController:viewController];
     }
 
     //Observer
-    @try {
-        [self.contentHeaderView removeObserver:self
-                                    forKeyPath:@"frame"
-                                       context:KMPageViewControllerKVOContext];
-    }
-    @catch (NSException *exception) {}
+    [self destroyObserverForObject:self.contentHeaderView forKeyPath:NSStringFromSelector(@selector(frame))];
+    
+    //
+    [self destroyObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(frame))];
+    [self destroyObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(title))];
+    [self destroyObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(titleView))];
+    [self destroyObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(leftBarButtonItem))];
+    [self destroyObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(leftBarButtonItems))];
+    [self destroyObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(rightBarButtonItem))];
+    [self destroyObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(rightBarButtonItems))];
 }
 
 #pragma mark - view lifecycle
@@ -98,37 +100,44 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
+    //PAGEVIEW
     self.pageView = [[KMPageView alloc] init];
-    self.pageView.frame = self.view.frame;
+    self.pageView.dataSource = self;
+    self.pageView.delegate = self;
     [self.view addSubview:self.pageView];
     
+    //CONTENT HEDAER VIEW
     self.contentHeaderView = [[UIView alloc] init];
+    [self setupObserverForObject:self.contentHeaderView forKeyPath:NSStringFromSelector(@selector(frame)) options:NSKeyValueObservingOptionNew];
     [self.view addSubview:self.contentHeaderView];
-    
-    [self.contentHeaderView addObserver:self
-                             forKeyPath:@"frame"
-                                options:NSKeyValueObservingOptionNew
-                                context:KMPageViewControllerKVOContext];
-}
 
-- (void)viewWillAppear:(BOOL)animated
-{
-    [super viewWillAppear:animated];
-    
-    self.pageView.frame = self.view.bounds;
+    //NAVIGATIONBAR
+    self.navigationBar = [[UINavigationBar alloc] init];
+    [self.contentHeaderView addSubview:self.navigationBar];
+
+    //NAVIGATIONBAR ITEM
+    [self setupObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(frame)) options:NSKeyValueObservingOptionNew];
+    [self setupObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(title)) options:NSKeyValueObservingOptionNew];
+    [self setupObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(titleView)) options:NSKeyValueObservingOptionNew];
+    [self setupObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(leftBarButtonItem)) options:NSKeyValueObservingOptionNew];
+    [self setupObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(leftBarButtonItems)) options:NSKeyValueObservingOptionNew];
+    [self setupObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(rightBarButtonItem)) options:NSKeyValueObservingOptionNew];
+    [self setupObserverForObject:self.navigationItem forKeyPath:NSStringFromSelector(@selector(rightBarButtonItems)) options:NSKeyValueObservingOptionNew];
 }
 
 - (void)viewWillLayoutSubviews
 {
     [super viewWillLayoutSubviews];
-    
+    NSLog(@"B");
     self.pageView.frame = self.view.bounds;
+
+    [self reloadNavigationBarItem];
     
     [self layoutContentHeaderView];
     [self layoutNavigationBarItemsAlphaValue];
 }
 
-#pragma  mark -
+#pragma  mark - layout
 
 - (void)layoutContentHeaderView
 {
@@ -137,12 +146,13 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     CGRect rect = CGRectMake(0,
                              0,
                              CGRectGetWidth(bounds),
-                             self.topLayoutGuide.length);
+                             (!self.navigationBarHidden ? CGRectGetHeight(self.navigationController.navigationBar.frame) : 0) + self.topLayoutGuide.length);
     
-    rect.size.height += (self.navigationBar ? CGRectGetHeight(self.navigationController.navigationBar.frame) : 0);
-    
-    self.navigationBar.frame = rect;
-    
+    if (self.navigationBarHidden == NO)
+    {
+        self.navigationBar.frame = rect;
+    }
+
     self.headerView.frame = CGRectMake(0,
                                        CGRectGetMaxY(rect),
                                        CGRectGetWidth(bounds),
@@ -151,7 +161,8 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     self.contentHeaderView.frame = CGRectMake(0,
                                               CGRectGetMinY(self.contentHeaderView.frame),
                                               CGRectGetWidth(bounds),
-                                              CGRectGetHeight(rect) + CGRectGetHeight(self.headerView.frame));}
+                                              CGRectGetHeight(rect) + CGRectGetHeight(self.headerView.frame));
+}
 
 - (void)layoutContentInsetForScrollView:(UIScrollView*)scrollView atContentOffsetY:(CGFloat)offsetY
 {
@@ -192,6 +203,30 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         if (!isBackgroundView && !isViewHidden)
         {
             view.alpha = MAX(alpha, FLT_EPSILON);
+        }
+    }
+}
+
+#pragma  mark - reload
+
+- (void)reloadNavigationBarItem
+{
+    if (!self.navigationBarHidden)
+    {
+        
+        UINavigationItem *item = [[UINavigationItem alloc] init];
+        self.navigationBar.items = @[item];
+        
+        self.navigationBar.topItem.leftBarButtonItems = self.navigationItem.leftBarButtonItems;
+        self.navigationBar.topItem.rightBarButtonItems = self.navigationItem.rightBarButtonItems;
+        
+        if (self.navigationItem.titleView)
+        {
+            self.navigationBar.topItem.titleView = self.navigationItem.titleView;
+        }
+        else if (self.navigationItem.title)
+        {
+            self.navigationBar.topItem.title = self.navigationItem.title;
         }
     }
 }
@@ -239,20 +274,14 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     if ([scrollView isKindOfClass:[UIScrollView class]])
     {
         //Observer
-        @try {
-            [scrollView addObserver:self
-                         forKeyPath:@"contentOffset"
-                            options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew
-                            context:KMPageViewControllerKVOContext];
-        }
-        @catch (NSException *exception) {}
-        @try {
-            [scrollView addObserver:self
-                         forKeyPath:@"contentInset"
-                            options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew
-                            context:KMPageViewControllerKVOContext];
-        }
-        @catch (NSException *exception) {}
+        [self setupObserverForObject:scrollView
+                          forKeyPath:@"contentOffset"
+                             options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew];
+        
+        [self setupObserverForObject:scrollView
+                          forKeyPath:@"contentInset"
+                             options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew];
+      
         
         //
         [self layoutContentInsetForScrollView:scrollView
@@ -268,28 +297,37 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     if ([scrollView isKindOfClass:[UIScrollView class]])
     {
         //Observer
-        @try {
-            [scrollView removeObserver:self
-                            forKeyPath:@"contentOffset"
-                               context:KMPageViewControllerKVOContext];
-        }
-        @catch (NSException *exception) {}
-        @try {
-            [scrollView removeObserver:self
-                            forKeyPath:@"contentInset"
-                               context:KMPageViewControllerKVOContext];
-        }
-        @catch (NSException *exception) {}
+        [self destroyObserverForObject:scrollView forKeyPath:@"contentOffset"];
+        [self destroyObserverForObject:scrollView forKeyPath:@"contentInset"];
     }
     
-    NSLog(@"BB %@",viewController);
-        [viewController.view removeFromSuperview];
-        [viewController willMoveToParentViewController:nil];
-        [viewController removeFromParentViewController];
-
+    [viewController.view removeFromSuperview];
+    [viewController willMoveToParentViewController:nil];
+    [viewController removeFromParentViewController];
 }
 
-#pragma  mark - KVO
+#pragma  mark - Observers
+
+- (void)setupObserverForObject:(NSObject *)object forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options
+{
+    @try {
+        [object addObserver:self
+                 forKeyPath:keyPath
+                    options:options
+                    context:KMPageViewControllerKVOContext];
+    }
+    @catch (NSException *exception) {}
+}
+
+- (void)destroyObserverForObject:(NSObject *)object forKeyPath:(NSString *)keyPath
+{
+    @try {
+        [object removeObserver:self
+                    forKeyPath:keyPath
+                       context:KMPageViewControllerKVOContext];
+    }
+    @catch (NSException *exception) {}
+}
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
@@ -330,7 +368,6 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         else if ([keyPath isEqualToString:@"contentInset"] && [object isKindOfClass:[UIScrollView class]])
         {
             UIScrollView *scrollView = object;
-            
             UIEdgeInsets new = [change[NSKeyValueChangeNewKey] UIEdgeInsetsValue];
             UIEdgeInsets old = [change[NSKeyValueChangeOldKey] UIEdgeInsetsValue];
             
@@ -344,6 +381,10 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
             [self layoutContentInsetAllChildScrollViews];
             [self layoutNavigationBarItemsAlphaValue];
         }
+        else if (object == self.navigationItem)
+        {
+            [self reloadNavigationBarItem];
+        }
     }
     else
     {
@@ -355,44 +396,82 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 - (void)navigationBarIsVisible:(BOOL)isVisible animated:(BOOL)animated
 {
-    CGRect rect = CGRectZero;
-    
-    if (isVisible)
+    if (self.navigationBarHidden == NO)
     {
-        rect = CGRectMake(0,
-                          0,
-                          CGRectGetWidth(self.view.bounds),
-                          CGRectGetHeight(self.contentHeaderView.frame));
-    }
-    else
-    {
-        rect = CGRectMake(0,
-                          -(self.navigationBar.frame.size.height - self.topLayoutGuide.length),
-                          CGRectGetWidth(self.view.bounds),
-                          CGRectGetHeight(self.contentHeaderView.frame));
-    }
-    
-    if (CGRectEqualToRect(self.contentHeaderView.frame, rect) == NO)
-    {
-        if (animated)
+        CGRect rect = CGRectZero;
+        
+        if (isVisible)
         {
-            [UIView animateWithDuration:0.15
-                                  delay:0
-                                options:UIViewAnimationOptionCurveEaseInOut
-                             animations:^{
-                                 self.contentHeaderView.frame = rect;
-                             }
-                             completion:^(BOOL finished) {
-                             }];
+            rect = CGRectMake(0,
+                              0,
+                              CGRectGetWidth(self.view.bounds),
+                              CGRectGetHeight(self.contentHeaderView.frame));
         }
         else
         {
-            self.contentHeaderView.frame = rect;
+            rect = CGRectMake(0,
+                              -(self.navigationBar.frame.size.height - self.topLayoutGuide.length),
+                              CGRectGetWidth(self.view.bounds),
+                              CGRectGetHeight(self.contentHeaderView.frame));
+        }
+        
+        if (CGRectEqualToRect(self.contentHeaderView.frame, rect) == NO)
+        {
+            if (animated)
+            {
+                [UIView animateWithDuration:0.15
+                                      delay:0
+                                    options:UIViewAnimationOptionCurveEaseInOut
+                                 animations:^{
+                                     self.contentHeaderView.frame = rect;
+                                 }
+                                 completion:^(BOOL finished) {
+                                 }];
+            }
+            else
+            {
+                self.contentHeaderView.frame = rect;
+            }
         }
     }
 }
 
+
+#pragma mark - KMPagerView datasource
+
+- (NSInteger)numberOfPageInPageView:(KMPageView *)pageView
+{
+    return 0;
+}
+
+- (UIViewController*)pageView:(KMPageView*)pageView viewControllerForPageAtIndex:(NSInteger)index
+{
+    return nil;
+}
+
+#pragma mark - KMPagerView delegate
+
+- (void)pageViewDidScroll:(KMPageView *)pageView
+{
+
+}
+
+- (void)pageViewCurrentIndexDidChange:(KMPageView *)pagerView
+{
+    
+}
+
 #pragma mark - SETTERS
+
+- (void)setNavigationBarHidden:(BOOL)navigationBarHidden
+{
+    if (_navigationBarHidden != navigationBarHidden)
+    {
+        _navigationBarHidden = navigationBarHidden;
+        
+        [self layoutContentHeaderView];
+    }
+}
 
 - (void)setHeaderView:(UIView *)headerView
 {
@@ -404,21 +483,6 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         _headerView = headerView;
         
         [self.contentHeaderView addSubview:_headerView];
-        
-        [self layoutContentHeaderView];
-    }
-}
-
-- (void)setNavigationBar:(UINavigationBar *)navigationBar
-{
-    if (_navigationBar != navigationBar)
-    {
-        [_navigationBar removeFromSuperview];
-        
-        _navigationBar = nil;
-        _navigationBar = navigationBar;
-        
-        [self.contentHeaderView addSubview:_navigationBar];
         
         [self layoutContentHeaderView];
     }

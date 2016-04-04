@@ -9,7 +9,7 @@
 #import "PageViewController.h"
 #import "TableViewController.h"
 
-@interface PageViewController ()<KMPageViewDataSource,KMPageViewDelegate,KMSegmentedBarDataSource,KMSegmentedBarDelegate>
+@interface PageViewController ()<KMSegmentedBarDataSource,KMSegmentedBarDelegate>
 
 @property (nonatomic,strong) KMSegmentedBar *segmentedBar;
 
@@ -34,13 +34,10 @@
 {
     [super viewDidLoad];
     
-    UINavigationItem *item = [[UINavigationItem alloc] init];
-    item.title = @"KMPageViewController";
-    item.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                            target:self
-                                                                            action:@selector(pressedCancel:)];
-    self.navigationBar = [[UINavigationBar alloc] init];
-    self.navigationBar.items = @[item];
+    self.navigationItem.title = @"KMPageViewController";
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                           target:self
+                                                                                           action:@selector(pressedCancel:)];
     
     self.segmentedBar = [[KMSegmentedBar alloc] init];
     self.segmentedBar.backgroundColor = [UIColor darkGrayColor];
@@ -55,31 +52,32 @@
                                          CGRectGetWidth(self.view.bounds),
                                          40);
     [self.segmentedBar reloadData];
-    
     self.headerView = self.segmentedBar;
-    self.pageView.dataSource = self;
-    self.pageView.delegate = self;
+    
     self.pageView.scrollPagingEnabled = YES;
     [self.pageView reloadData];
 }
 
-- (void)pressedCancel:(id)sender
-{
-    [self.navigationController popViewControllerAnimated:YES];
-}
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:animated];
 }
 
+#pragma mark - event
+
+- (void)pressedCancel:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 #pragma mark - KMPagerView datasource
 
 - (NSInteger)numberOfPageInPageView:(KMPageView *)pageView
 {
-    return 1;
+    return 3;
 }
-//
+
 - (UIViewController*)pageView:(KMPageView*)pageView viewControllerForPageAtIndex:(NSInteger)index
 {
     switch (index) {
