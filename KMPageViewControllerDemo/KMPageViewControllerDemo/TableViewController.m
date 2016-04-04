@@ -15,15 +15,9 @@
 
 @implementation TableViewController
 
-- (void)dealloc
-{
-    NSLog(@"A___");
-}
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.tableView.bounces = YES;
-    self.tableView.scrollsToTop = NO;
 }
 
 #pragma mark - Table view data source
@@ -53,7 +47,6 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self.navigationController popViewControllerAnimated:YES];
 //    UIViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Table1"];
 //    viewController.title = @"detail";
 //    

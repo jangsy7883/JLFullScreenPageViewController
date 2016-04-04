@@ -128,7 +128,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 - (void)viewWillLayoutSubviews
 {
     [super viewWillLayoutSubviews];
-    NSLog(@"B");
+
     self.pageView.frame = self.view.bounds;
 
     [self reloadNavigationBarItem];
