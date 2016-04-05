@@ -10,29 +10,29 @@
 
 @class KMPageView;
 
-@protocol KMPageViewDelegate <UIScrollViewDelegate>
+@protocol KMPageViewDelegate <NSObject>
 
 @optional
-- (void)pageViewDidScroll:(KMPageView *)pageView;
-- (void)pageViewCurrentIndexDidChange:(KMPageView *)pagerView;
+- (void)pageView:(KMPageView*)pageView didScrollToCurrentPosition:(CGFloat)currentPosition;
+- (void)pageView:(KMPageView*)pageView didScrollToCurrentIndex:(NSUInteger)currentIndex;
 
 @end
 
 @protocol KMPageViewDataSource <NSObject>
 
-- (NSInteger)numberOfPageInPageView:(KMPageView*)pageView;
-- (UIViewController*)pageView:(KMPageView*)pageView viewControllerForPageAtIndex:(NSInteger)index;
+- (NSArray *)viewControllersForPageView:(KMPageView *)pageView;
 
 @end
 
-@interface KMPageView : UIScrollView
+@interface KMPageView : UIView
 
 @property (nonatomic, assign) NSUInteger currentIndex;
 
 @property (nonatomic, assign, getter = isScrollPagingEnabled) BOOL scrollPagingEnabled;
 
 @property (nonatomic, readonly) UIViewController* currentViewController;
-@property (nonatomic, readonly) NSArray *visibleViewContollers;
+@property (nonatomic, readonly) NSArray *viewControllers;
+@property (nonatomic, readonly) NSInteger numberOfPage;
 
 @property (nonatomic, weak) id<KMPageViewDelegate>delegate;
 @property (nonatomic, weak) id<KMPageViewDataSource>dataSource;

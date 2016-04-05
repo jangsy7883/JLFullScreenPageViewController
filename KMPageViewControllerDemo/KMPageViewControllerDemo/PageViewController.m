@@ -38,11 +38,10 @@
     UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.text = @"KMPageView";
     [titleLabel sizeToFit];
-    
-    self.navigationItem.titleView = titleLabel;
-    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
-                                                                                           target:self
-                                                                                           action:@selector(pressedCancel:)];
+    self.navigationBar.topItem.titleView = titleLabel;
+    self.navigationBar.topItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                                                  target:self
+                                                                                                  action:@selector(pressedCancel:)];
     
     self.segmentedBar = [[KMSegmentedBar alloc] init];
     self.segmentedBar.backgroundColor = [UIColor darkGrayColor];
@@ -86,49 +85,47 @@
     return 3;
 }
 
-- (UIViewController*)pageView:(KMPageView*)pageView viewControllerForPageAtIndex:(NSInteger)index
+- (NSArray *)viewControllersForPageView:(KMPageView *)pageView
 {
-    switch (index) {
-        case 0:
-            if (self.table1 == nil)
-            {
-                self.table1 = [self.storyboard instantiateViewControllerWithIdentifier:@"Table1"];
-                self.table1.tableView.scrollsToTop = YES;
-                self.table1.tableView.tag = 0;
-                self.table1.title = @"Table1";
-            }
-            return self.table1;
-            break;
-        case 1:
-            if (self.table2 == nil)
-            {
-                self.table2 = [self.storyboard instantiateViewControllerWithIdentifier:@"Table2"];
-                self.table2.title = @"Table2";
-                self.table2.tableView.tag = 1;
-            }
-            return self.table2;
-            break;
-        case 2:
-            if (self.table3 == nil)
-            {
-                self.table3 = [self.storyboard instantiateViewControllerWithIdentifier:@"Table3"];
-                self.table3.title = @"Table3";
-                self.table3.tableView.tag = 2;
-            }
-            return self.table3;
-            break;
+    NSMutableArray *viewControllers = [NSMutableArray array];
+    
+    if (self.table1 == nil)
+    {
+        self.table1 = [self.storyboard instantiateViewControllerWithIdentifier:@"Table1"];
+        self.table1.tableView.scrollsToTop = YES;
+        self.table1.tableView.tag = 0;
+        self.table1.title = @"Table1";
     }
-    return nil;
+    
+    if (self.table2 == nil)
+    {
+        self.table2 = [self.storyboard instantiateViewControllerWithIdentifier:@"Table2"];
+        self.table2.title = @"Table2";
+        self.table2.tableView.tag = 1;
+    }
+    
+    if (self.table3 == nil)
+    {
+        self.table3 = [self.storyboard instantiateViewControllerWithIdentifier:@"Table3"];
+        self.table3.title = @"Table3";
+        self.table3.tableView.tag = 2;
+    }
+    
+    [viewControllers addObject:self.table1];
+    [viewControllers addObject:self.table2];
+    [viewControllers addObject:self.table3];
+    
+    return viewControllers;
 }
 
 #pragma mark - KMPagerView delegate
 
-- (void)pageViewDidScroll:(KMPageView *)pageView
+- (void)pageView:(KMPageView*)pageView didScrollToCurrentPosition:(CGFloat)currentPosition
 {
-    [self.segmentedBar scrollDidContentOffset:pageView.contentOffset.x / pageView.frame.size.width];
+    [self.segmentedBar scrollDidContentOffset:currentPosition];
 }
 
-- (void)pageViewCurrentIndexDidChange:(KMPageView *)pagerView
+- (void)pageView:(KMPageView*)pageView  didScrollToCurrentIndex:(NSUInteger)currentIndex
 {
     
 }

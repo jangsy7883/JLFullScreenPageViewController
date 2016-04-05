@@ -18,6 +18,7 @@
 		0FBA64C41BD23ABE00124112 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64C31BD23ABE00124112 /* TableViewController.m */; };
 		0FBA64C71BD23AC500124112 /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA64C61BD23AC500124112 /* PageViewController.m */; };
 		7E3E0F221C84401D00015DEB /* UIViewController+KMAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E3E0F201C84401D00015DEB /* UIViewController+KMAdditions.m */; };
+		7E7B1FC61CB3A2FC0032C0C6 /* KMTabBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E7B1FC51CB3A2FC0032C0C6 /* KMTabBar.m */; };
 		7EB720A61C75458900C9D103 /* KMPageViewController.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 7EB720A51C75458900C9D103 /* KMPageViewController.podspec */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +43,8 @@
 		0FBA64C61BD23AC500124112 /* PageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PageViewController.m; sourceTree = "<group>"; };
 		7E3E0F1F1C84401D00015DEB /* UIViewController+KMAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+KMAdditions.h"; sourceTree = "<group>"; };
 		7E3E0F201C84401D00015DEB /* UIViewController+KMAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+KMAdditions.m"; sourceTree = "<group>"; };
+		7E7B1FC41CB3A2FC0032C0C6 /* KMTabBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMTabBar.h; sourceTree = "<group>"; };
+		7E7B1FC51CB3A2FC0032C0C6 /* KMTabBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMTabBar.m; sourceTree = "<group>"; };
 		7EB720A51C75458900C9D103 /* KMPageViewController.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = KMPageViewController.podspec; path = ../KMPageViewController.podspec; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -110,6 +113,8 @@
 				0FBA64BB1BD23A8100124112 /* KMPageViewController.m */,
 				0FBA64BC1BD23A8100124112 /* KMSegmentedBar.h */,
 				0FBA64BD1BD23A8100124112 /* KMSegmentedBar.m */,
+				7E7B1FC41CB3A2FC0032C0C6 /* KMTabBar.h */,
+				7E7B1FC51CB3A2FC0032C0C6 /* KMTabBar.m */,
 			);
 			name = KMPageViewController;
 			path = ../KMPageViewController;
@@ -202,6 +207,7 @@
 				0FBA64C11BD23A8100124112 /* KMSegmentedBar.m in Sources */,
 				0FBA64A01BD23A7A00124112 /* main.m in Sources */,
 				0FBA64C01BD23A8100124112 /* KMPageViewController.m in Sources */,
+				7E7B1FC61CB3A2FC0032C0C6 /* KMTabBar.m in Sources */,
 				0FBA64C41BD23ABE00124112 /* TableViewController.m in Sources */,
 				7E3E0F221C84401D00015DEB /* UIViewController+KMAdditions.m in Sources */,
 			);

@@ -12,27 +12,30 @@
 
 @interface KMPageViewController ()
 
-- (void)addContentViewController:(UIViewController *)viewController;
-- (void)removeContentViewController:(UIViewController *)viewController;
+@property (nonatomic, readonly) UIView *contentHeaderView;
+
+- (void)layoutContentInsetForScrollView:(UIScrollView*)scrollView atContentOffsetY:(CGFloat)offsetY;
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView;
+- (void)scrollView:(UIScrollView*)scrollView didScrollToContentOffset:(CGPoint)toContentOffset fromContentOffset:(CGPoint)formContentOffset;
 
 @end
 
-@interface KMPageView ()
+@interface KMPageView () <UIPageViewControllerDataSource, UIPageViewControllerDelegate,UIScrollViewDelegate>
 {
     BOOL changingOrientationState;
-    NSInteger tempIndex;
 }
 
-@property (nonatomic, readonly) NSInteger count;
-@property (nonatomic, strong) NSMutableDictionary *viewInfos;
+@property (nonatomic, strong) UIPageViewController *contentViewController;
 
+@property (nonatomic, weak) UIScrollView *scrollView;
 @property (nonatomic, weak) KMPageViewController *pageViewController;
+
+@property (nonatomic, strong) NSArray *viewControllers;
 
 @end
 
 @implementation KMPageView
-
-@dynamic delegate;
 
 static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
@@ -40,13 +43,17 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
 - (void)dealloc
 {
-    self.viewInfos = nil;
-    
-    @try {
-        [self removeObserver:self forKeyPath:@"contentOffset" context:KMPagerViewKVOContext];
-        [self removeObserver:self forKeyPath:@"frame" context:KMPagerViewKVOContext];
+    for (UIViewController *viewController in self.viewControllers)
+    {
+        UIScrollView *scrollView = viewController.contentScrollView;
+        
+        if ([scrollView isKindOfClass:[UIScrollView class]])
+        {
+            [self removeObserverForObject:scrollView forKeyPath:@"contentOffset"];
+            [self removeObserverForObject:scrollView forKeyPath:@"contentInset"];
+            [self removeObserverForObject:scrollView forKeyPath:@"pan.state"];
+        }
     }
-    @catch (NSException *exception) {}
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -62,28 +69,16 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         _currentIndex = 0;
         changingOrientationState = NO;
         
-        self.viewInfos = [NSMutableDictionary dictionary];
+        //
+        self.contentViewController = [[UIPageViewController alloc]initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
+                                                                    navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
+                                                                                  options:nil];
+        self.contentViewController.dataSource = self;
+        self.contentViewController.delegate = self;
+        [self addSubview:self.contentViewController.view];
         
-        self.scrollsToTop = NO;
-        self.pagingEnabled = YES;
-        self.directionalLockEnabled = YES;
-        self.alwaysBounceVertical = NO;
-        self.alwaysBounceHorizontal = NO;
-        self.showsVerticalScrollIndicator = NO;
-        self.showsHorizontalScrollIndicator = NO;
-        self.keyboardDismissMode = UIScrollViewKeyboardDismissModeNone;
-        self.scrollEnabled = NO;
-        
-        [self addObserver:self
-               forKeyPath:@"contentOffset"
-                  options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
-                  context:KMPagerViewKVOContext];
-        
-        [self addObserver:self
-               forKeyPath:@"frame"
-                  options:NSKeyValueObservingOptionNew
-                  context:KMPagerViewKVOContext];
-        
+        //
+        self.scrollView.delegate = self;
         
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(orientationWillChange:)
@@ -118,127 +113,197 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 - (void)layoutSubviews
 {
     [super layoutSubviews];
-
-    CGSize size = CGSizeMake(CGRectGetWidth(self.bounds) * self.count, CGRectGetHeight(self.bounds));
     
-    if (CGSizeEqualToSize(size, self.contentSize) == NO)
-    {
-        self.contentSize = size;
-        [self setContentOffset:CGPointMake(CGRectGetWidth(self.bounds)*_currentIndex, 0) animated:NO];
-    }
-    
-    for (NSNumber *key in [self.viewInfos allKeys])
-    {
-        UIViewController *viewController = self.viewInfos[key];
-        NSInteger index = [key integerValue];
-        
-        [self layoutWithViewController:viewController forIndex:index];
-    }
-}
-
-- (void)layoutWithViewController:(UIViewController*)viewController forIndex:(NSInteger)index
-{
-    CGRect rect  = CGRectMake(CGRectGetWidth(self.bounds) * index,
-                              0,
-                              CGRectGetWidth(self.bounds),
-                              CGRectGetHeight(self.bounds));
-    
-    if (!CGRectEqualToRect(viewController.view.frame, rect))
-    {
-        viewController.view.frame = rect;
-    }
+    self.contentViewController.view.frame = self.bounds;
 }
 
 #pragma mark - reload
 
 - (void)reloadData
 {
-    //REMOVE
-    [self.viewInfos removeAllObjects];
-    
-    for (UIViewController *viewController in self.pageViewController.childViewControllers)
+    //REMOVE OBSRVER
+    for (UIViewController *viewController in self.viewControllers)
     {
-        [self.pageViewController removeContentViewController:viewController];
-    }
-    
-    [self reloadPageAtIndex:_currentIndex];
-    [self reloadPageAtIndex:_currentIndex+1];
-    
-    if ([self.delegate respondsToSelector:@selector(pageViewCurrentIndexDidChange:)])
-    {
-        [self.delegate pageViewCurrentIndexDidChange:self];
-    }
-}
-
-- (void)reloadPageAtIndex:(NSUInteger)index
-{
-    if ([self.dataSource respondsToSelector:@selector(pageView:viewControllerForPageAtIndex:)] == NO || index == NSNotFound)
-    {
-        return;
-    }
-    
-    UIViewController *viewController = [self.dataSource pageView:self viewControllerForPageAtIndex:index];
-    
-    if (viewController && viewController.parentViewController == nil)
-    {
-        //INSERT
-        [self.pageViewController addContentViewController:viewController];
+        UIScrollView *scrollView = viewController.contentScrollView;
         
-        [self.viewInfos setObject:viewController forKey:@(index)];
+        if ([scrollView isKindOfClass:[UIScrollView class]])
+        {
+            [self removeObserverForObject:scrollView forKeyPath:@"contentOffset"];
+            [self removeObserverForObject:scrollView forKeyPath:@"contentInset"];
+            [self removeObserverForObject:scrollView forKeyPath:@"pan.state"];
+        }
+    }
+    
+    //RELOAD VIEW CONTROLLER
+    if ([self.dataSource respondsToSelector:@selector(viewControllersForPageView:)])
+    {
+        self.viewControllers = [self.dataSource viewControllersForPageView:self];
+    }
+    
+    //ADD OBSRVERS
+    for (UIViewController *viewController in self.viewControllers)
+    {
+        UIScrollView *scrollView = viewController.contentScrollView;
+        
+        if ([scrollView isKindOfClass:[UIScrollView class]])
+        {
+            [self addObserverForObject:scrollView
+                            forKeyPath:@"contentOffset"
+                               options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew];
+            
+            [self addObserverForObject:scrollView
+                            forKeyPath:@"contentInset"
+                               options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew];
+
+            
+            [self addObserverForObject:scrollView
+                            forKeyPath:@"pan.state"
+                               options:NSKeyValueObservingOptionNew];
+
+            //
+            [self.pageViewController layoutContentInsetForScrollView:scrollView
+                                                    atContentOffsetY:CGRectGetMaxY(self.pageViewController.contentHeaderView.frame)];
+            [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:NO];
+        }
+    }
+    
+    //DISPLAY
+    UIViewController *viewController = [self viewControllerAtIndex:_currentIndex];
+    [self.contentViewController setViewControllers:@[viewController]
+                                         direction:UIPageViewControllerNavigationDirectionForward
+                                          animated:NO
+                                        completion:nil];
+}
+
+#pragma mark - scrollview delegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{
+    CGFloat width = scrollView.frame.size.width;
+    CGFloat index = (_currentIndex == NSNotFound) ? 0 : _currentIndex;
+    float position = ((width*index) + (scrollView.contentOffset.x - width))/ width;
+    
+    if ([self.delegate respondsToSelector:@selector(pageView:didScrollToCurrentPosition:)])
+    {
+        [self.delegate pageView:self didScrollToCurrentPosition:position];
     }
 }
 
-#pragma mark - KVO
+#pragma  mark - pageviewcontroller datasource
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
+{
+    NSInteger index = [self indexOfViewController:viewController];
+    
+    if (index != (self.viewControllers.count - 1) && index != NSNotFound)
+    {
+        return [self viewControllerAtIndex:index+1];
+    }
+    return nil;
+}
+
+- (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController
+{
+    NSInteger index = [self indexOfViewController:viewController];
+    
+    if (index != 0 && index != NSNotFound)
+    {
+        return [self viewControllerAtIndex:index-1];
+    }
+    return nil;
+}
+
+#pragma  mark - pageviewcontroller delegate
+
+- (void)pageViewController:(UIPageViewController *)pageViewController
+        didFinishAnimating:(BOOL)finished
+   previousViewControllers:(NSArray<UIViewController *> *)previousViewControllers
+       transitionCompleted:(BOOL)completed
+{
+    if (completed)
+    {
+        _currentIndex = [self indexOfViewController:self.contentViewController.viewControllers.firstObject];
+        
+        if (_currentIndex != NSNotFound)
+        {
+            if ([self.delegate respondsToSelector:@selector(pageView:didScrollToCurrentIndex:)])
+            {
+                [self.delegate pageView:self didScrollToCurrentIndex:self.currentIndex];
+            }
+        }
+    }
+}
+
+#pragma  mark - KOV
+
+- (void)addObserverForObject:(NSObject *)object forKeyPath:(NSString *)keyPath options:(NSKeyValueObservingOptions)options
+{
+    @try {
+        [object addObserver:self
+                 forKeyPath:keyPath
+                    options:options
+                    context:KMPagerViewKVOContext];
+    }
+    @catch (NSException *exception) {}
+}
+
+- (void)removeObserverForObject:(NSObject *)object forKeyPath:(NSString *)keyPath
+{
+    @try {
+        [object removeObserver:self
+                    forKeyPath:keyPath
+                       context:KMPagerViewKVOContext];
+    }
+    @catch (NSException *exception) {}
+}
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    if (_currentIndex == NSNotFound) return;
-    
     if (context == KMPagerViewKVOContext)
     {
-        if ([keyPath isEqualToString:@"contentOffset"])
+        if ([object isKindOfClass:[UIScrollView class]])
         {
-            CGPoint new = [change[NSKeyValueChangeNewKey] CGPointValue];
-            CGPoint old = [change[NSKeyValueChangeOldKey] CGPointValue];
+            UIScrollView *scrollView = (UIScrollView*)object;
             
-            if (new.x != old.x)
+            NSUInteger index = [self indexOfViewController:scrollView.superViewController];
+            
+            if (index != NSNotFound && index == _currentIndex)
             {
-                if ([self.delegate respondsToSelector:@selector(pageViewDidScroll:)])
+                if ([keyPath isEqualToString:@"contentOffset"])
                 {
-                    [self.delegate pageViewDidScroll:self];
-                }
+                    CGPoint new = [change[NSKeyValueChangeNewKey] CGPointValue];
+                    CGPoint old = [change[NSKeyValueChangeOldKey] CGPointValue];
 
-                NSInteger index = lround(self.contentOffset.x / self.frame.size.width);
-                
-                [self reloadPageAtIndex:index];
-                [self reloadPageAtIndex:index-1];
-                [self reloadPageAtIndex:index+1];
-                
-                if (_currentIndex != index && changingOrientationState == NO)
-                {
-                    _currentIndex = index;
                     
-                    for (NSNumber *key in [self.viewInfos allKeys])
+//                    NSLog(@"tracking : %@",scrollView.tracking ? @"YES":@"NO");
+//                    NSLog(@"dragging : %@",scrollView.dragging ? @"YES":@"NO");
+//                    NSLog(@"decelerating : %@",scrollView.decelerating ? @"YES":@"NO");
+
+                    if (new.y != old.y
+                        && scrollView.contentOffset.y+scrollView.frame.size.height < scrollView.contentSize.height)
                     {
-                        NSInteger index = [key integerValue];
-                        UIViewController *viewController = self.viewInfos[key];
-                        viewController.contentScrollView.scrollsToTop = (index == _currentIndex);
-                    }
-                    
-                    if ([self.delegate respondsToSelector:@selector(pageViewCurrentIndexDidChange:)])
-                    {
-                        [self.delegate pageViewCurrentIndexDidChange:self];
+                        [self.pageViewController scrollView:scrollView didScrollToContentOffset:new fromContentOffset:old];
                     }
                 }
-            }
-        }
-        else if ([keyPath isEqualToString:@"frame"])
-        {
-            CGRect rect = [change[NSKeyValueChangeNewKey] CGRectValue];
-            if (!CGRectEqualToRect(rect, self.frame))
-            {
-                [self reloadPageAtIndex:_currentIndex];
-                [self setContentOffset:CGPointMake(CGRectGetWidth(self.bounds)*_currentIndex, 0) animated:NO];
+                else if ([keyPath isEqualToString:@"contentInset"])
+                {
+                    UIEdgeInsets new = [change[NSKeyValueChangeNewKey] UIEdgeInsetsValue];
+                    UIEdgeInsets old = [change[NSKeyValueChangeOldKey] UIEdgeInsetsValue];
+                    
+                    if (-old.top == scrollView.contentOffset.y)
+                    {
+                        [scrollView setContentOffset:CGPointMake(0, -new.top) animated:NO];
+                    }
+                }
+                else if ([keyPath isEqualToString:@"pan.state"])
+                {
+                    UIGestureRecognizerState state = [change[NSKeyValueChangeNewKey] integerValue];
+
+                    if (state == UIGestureRecognizerStateEnded || state == UIGestureRecognizerStateCancelled)
+                    {
+                        [self.pageViewController scrollViewDidEndDragging:scrollView];
+                    }
+                }
             }
         }
     }
@@ -248,18 +313,46 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     }
 }
 
+
+
+#pragma mark -
+
+- (UIViewController *)viewControllerAtIndex:(NSInteger)index
+{
+    if (index < self.viewControllers.count)
+    {
+        return self.viewControllers[index];
+    }
+    return nil;
+}
+
+- (NSInteger)indexOfViewController:(UIViewController *)viewController
+{
+    return [self.viewControllers indexOfObject:viewController];
+}
+
 #pragma mark - SETTERS
 
 - (void)setCurrentIndex:(NSUInteger)currentIndex animated:(BOOL)animated
 {
-    CGSize size = CGSizeMake(CGRectGetWidth(self.bounds) * self.count, CGRectGetHeight(self.bounds));
-    
-    if (CGSizeEqualToSize(size, self.contentSize) == NO)
+    if (_currentIndex != currentIndex)
     {
-        self.contentSize = size;
+        BOOL isForwards = currentIndex > self.currentIndex;
+        NSArray *viewControllers = self.contentViewController.viewControllers;
+        UIViewController *viewController = [self viewControllerAtIndex:currentIndex];
+        
+        typeof(self) __weak weakSelf = self;
+        [self.contentViewController setViewControllers:@[viewController]
+                                             direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
+                                              animated:YES
+                                            completion:^(BOOL finished) {
+                                                typeof(weakSelf) __strong strongSelf = weakSelf;
+                                                [strongSelf pageViewController:strongSelf.contentViewController
+                                                            didFinishAnimating:YES
+                                                       previousViewControllers:viewControllers
+                                                           transitionCompleted:YES];
+                                            }];
     }
-
-    [self setContentOffset:CGPointMake(CGRectGetWidth(self.bounds)*currentIndex, 0) animated:animated];
 }
 
 - (void)setCurrentIndex:(NSUInteger)currentIndex
@@ -269,41 +362,26 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
 - (void)setScrollPagingEnabled:(BOOL)scrollPagingEnabled
 {
-    if (self.scrollEnabled != scrollPagingEnabled)
+    if (self.scrollView.scrollEnabled != scrollPagingEnabled)
     {
-        self.scrollEnabled = scrollPagingEnabled;
+        self.scrollView.scrollEnabled = scrollPagingEnabled;
     }
 }
-
 #pragma mark - GETTERS
-
-- (NSArray*)visibleViewContollers
-{
-    return [self.pageViewController childViewControllers];
-}
 
 - (UIViewController*)currentViewController
 {
-    if ([self.dataSource respondsToSelector:@selector(pageView:viewControllerForPageAtIndex:)] == NO || self.currentIndex == NSNotFound)
-    {
-        return nil;
-    }
-    
-    return [self.dataSource pageView:self viewControllerForPageAtIndex:self.currentIndex];;
+    return [self viewControllerAtIndex:self.currentIndex];
 }
 
 - (BOOL)scrollPagingEnabled
 {
-    return self.scrollEnabled;
+    return self.scrollView.scrollEnabled;
 }
 
-- (NSInteger)count
+- (NSInteger)numberOfPage
 {
-    if ([self.dataSource respondsToSelector:@selector(numberOfPageInPageView:)])
-    {
-        return [self.dataSource numberOfPageInPageView:self];
-    }
-    return 0;
+    return self.viewControllers.count;
 }
 
 - (KMPageViewController*)pageViewController
@@ -323,5 +401,21 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     
     return _pageViewController;
 }
+
+- (UIScrollView *)scrollView
+{
+    if (!_scrollView)
+    {
+        for (UIView *subview in self.contentViewController.view.subviews)
+        {
+            if ([subview isKindOfClass:[UIScrollView class]]) {
+                _scrollView = (UIScrollView *)subview;
+                break;
+            }
+        }
+    }
+    return _scrollView;
+}
+
 
 @end

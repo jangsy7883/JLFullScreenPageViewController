@@ -10,14 +10,20 @@
 #import "KMPageView.h"
 #import "KMSegmentedBar.h"
 
+typedef NS_ENUM(NSInteger, KMFullScreenMode)
+{
+    KMFullScreenModeAutomatic = 0,
+    KMFullScreenModeScrolling,
+};
+
 @interface KMPageViewController : UIViewController<KMPageViewDataSource,KMPageViewDelegate>
 
 @property (nonatomic, strong, readonly) UINavigationBar *navigationBar;
 @property (nonatomic, strong, readonly) KMPageView *pageView;
 @property (nonatomic, strong) UIView *headerView;
 
-@property (nonatomic, assign,getter = isNavigationBarHidden) BOOL navigationBarHidden;
-@property (nonatomic, assign,getter = isSutoScrollingNavigationBar) BOOL autoScrollingNavigationBar;
+@property (nonatomic, assign) KMFullScreenMode fullScreenMode;
+@property (nonatomic, assign, getter = isNavigationBarHidden) BOOL navigationBarHidden;
 
 @end
 

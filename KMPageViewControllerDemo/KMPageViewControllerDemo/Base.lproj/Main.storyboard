@@ -14,7 +14,7 @@
                         <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -23,7 +23,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="541" y="598"/>
+            <point key="canvasLocation" x="182" y="603"/>
         </scene>
         <!--Table View Controller-->
         <scene sceneID="cvb-uc-R8u">
@@ -60,7 +60,7 @@
                 <navigationController id="wkN-Oe-nza" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Item" id="mkw-cg-lCN"/>
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="wQC-UM-2fE">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" translucent="NO" id="wQC-UM-2fE">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
@@ -70,7 +70,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Vgm-4b-4vq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-182" y="598"/>
+            <point key="canvasLocation" x="-213" y="603"/>
         </scene>
         <!--Item 1-->
         <scene sceneID="0E2-Yd-6Ox">
@@ -95,7 +95,7 @@
         <scene sceneID="otV-9r-5wS">
             <objects>
                 <tabBarController id="6gq-FJ-F5v" sceneMemberID="viewController">
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="CpA-RK-Ykg">
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="CpA-RK-Ykg" customClass="KMTabBar">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -107,7 +107,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3TD-JG-EAL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-847" y="350"/>
+            <point key="canvasLocation" x="-799" y="332"/>
         </scene>
         <!--Table View Controller-->
         <scene sceneID="nYK-Bz-qfc">
