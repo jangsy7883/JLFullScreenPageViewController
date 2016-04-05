@@ -95,7 +95,7 @@
         <scene sceneID="otV-9r-5wS">
             <objects>
                 <tabBarController id="6gq-FJ-F5v" sceneMemberID="viewController">
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="CpA-RK-Ykg" customClass="KMTabBar">
+                    <tabBar key="tabBar" contentMode="scaleToFill" id="CpA-RK-Ykg">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="49"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
