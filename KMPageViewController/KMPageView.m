@@ -75,8 +75,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
                                                                                   options:nil];
         self.contentViewController.dataSource = self;
         self.contentViewController.delegate = self;
-        [self addSubview:self.contentViewController.view];
-        
+
         //
         self.scrollView.delegate = self;
         
@@ -114,6 +113,13 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 {
     [super layoutSubviews];
     
+    if (self.contentViewController.view.superview == nil)
+    {
+        [self.pageViewController addChildViewController:self.contentViewController];
+        [self addSubview:self.contentViewController.view];
+        [self.contentViewController didMoveToParentViewController:self.pageViewController];
+    }
+
     self.contentViewController.view.frame = self.bounds;
 }
 

@@ -69,6 +69,8 @@
     
     [self.navigationBar setNeedsLayout];
     [self.navigationBar layoutIfNeeded];
+    
+    NSLog(@"A : %@",self.navigationController);
 }
 
 #pragma mark - event

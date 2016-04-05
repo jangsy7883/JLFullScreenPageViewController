@@ -47,6 +47,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"%@",self.navigationController);
 //    UIViewController *viewController = [self.storyboard instantiateViewControllerWithIdentifier:@"Table1"];
 //    viewController.title = @"detail";
 //    

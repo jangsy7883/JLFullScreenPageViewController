@@ -315,17 +315,6 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                                          }
                                      }
                                  }];
-
-//                [UIView animateWithDuration:0.25
-//                                      delay:0
-//                                    options:UIViewAnimationOptionCurveEaseInOut
-//                                 animations:^{
-//                                     self.contentHeaderView.frame = navigationBarRect;
-//                                     self.tabBarController.tabBar.frame = tabBarRect;
-//                                 }
-//                                 completion:^(BOOL finished) {
-//                                     _animating = NO;
-//                                 }];
             }
             else
             {
