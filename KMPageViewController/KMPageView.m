@@ -185,10 +185,59 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
+    NSUInteger nextIndex = NSNotFound;
+    CGFloat offsetX = scrollView.contentOffset.x;
     CGFloat width = scrollView.frame.size.width;
     CGFloat index = (_currentIndex == NSNotFound) ? 0 : _currentIndex;
-    float position = ((width*index) + (scrollView.contentOffset.x - width))/ width;
+    CGFloat position = 0;
+    CGFloat percent = fabs(offsetX - width)/width;
     
+    //
+    if (offsetX < width)
+    {
+        for (UIViewController *viewController in  self.contentViewController.childViewControllers)
+        {
+            NSUInteger aIndex = [self indexOfViewController:viewController];
+
+            if (aIndex < index)
+            {
+                nextIndex = aIndex;
+                break;
+            }
+        }
+    }
+    else if (offsetX > width)
+    {
+        for (UIViewController *viewController in  self.contentViewController.childViewControllers)
+        {
+            NSUInteger aIndex = [self indexOfViewController:viewController];
+
+            if (aIndex > index)
+            {
+                nextIndex = aIndex;
+                break;
+            }
+        }
+    }
+    else
+    {
+        nextIndex = index;
+    }
+    
+    //
+    if (index < nextIndex)
+    {
+        position = ((nextIndex - index) * percent) + index;
+    }
+    else if (index > nextIndex)
+    {
+        position = ((index - nextIndex) * (1-percent)) + nextIndex;
+    }
+    else
+    {
+        position = index;
+    }
+
     if ([self.delegate respondsToSelector:@selector(pageView:didScrollToCurrentPosition:)])
     {
         [self.delegate pageView:self didScrollToCurrentPosition:position];

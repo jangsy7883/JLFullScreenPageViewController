@@ -16,6 +16,24 @@ CGRectReplaceY(CGRect rect, CGFloat y)
     return rect;
 }
 
+@implementation UIViewController (KMPageViewController)
+
+- (KMPageViewController*)pageViewController
+{
+    for (UIView* next = self.view; next; next = next.superview)
+    {
+        UIResponder* nextResponder = [next nextResponder];
+        
+        if ([nextResponder isKindOfClass:[KMPageViewController class]])
+        {
+            return (KMPageViewController*)nextResponder;
+        }
+    }
+    return nil;
+}
+
+@end
+
 static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControllerKVOContext;
 
 @interface KMPageViewController ()
@@ -152,7 +170,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
             view.alpha = MAX(alpha, FLT_EPSILON);
         }
     }
-}
+} 
 
 #pragma mark - scrollview
 
