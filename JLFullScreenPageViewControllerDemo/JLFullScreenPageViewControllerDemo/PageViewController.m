@@ -9,7 +9,7 @@
 #import "PageViewController.h"
 #import "TableViewController.h"
 
-@interface PageViewController ()<KMSegmentedBarDataSource,JLSegmentedBarDelegate>
+@interface PageViewController ()<JLSegmentedBarDataSource,JLSegmentedBarDelegate>
 
 @property (nonatomic,strong) JLSegmentedBar *segmentedBar;
 

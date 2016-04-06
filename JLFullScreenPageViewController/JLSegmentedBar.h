@@ -18,7 +18,7 @@
 
 @end
 
-@protocol KMSegmentedBarDataSource <NSObject>
+@protocol JLSegmentedBarDataSource <NSObject>
 
 - (NSArray*)titlesInSegmentedBar:(JLSegmentedBar*)segmentedView;
 
@@ -47,7 +47,7 @@ typedef NS_ENUM(NSInteger, JLSegmentedBarStyle)
 @property (nonatomic, strong) UIColor *highlightedTitleColor;
 @property (nonatomic, strong) UIImage *shadowImage;
 
-@property (nonatomic, weak) id<KMSegmentedBarDataSource> dataSource;
+@property (nonatomic, weak) id<JLSegmentedBarDataSource> dataSource;
 @property (nonatomic, weak) id<JLSegmentedBarDelegate> delegate;
 
 @property (nonatomic, assign) NSInteger selectedIndex;
