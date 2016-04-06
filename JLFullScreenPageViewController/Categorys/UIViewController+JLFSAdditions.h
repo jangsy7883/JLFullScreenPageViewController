@@ -1,5 +1,5 @@
 //
-//  UIViewController+JLAdditions.h.h
+//  UIViewController+JLFSAdditions.h
 //  JLFullScreenPageViewController
 //
 //  Created by Jangsy7883 on 2016. 2. 29..
@@ -8,13 +8,13 @@
 
 #import <UIKit/UIKit.h>
 
-@interface UIViewController (JLAdditions)
+@interface UIViewController (JLFSAdditions)
 
 @property (nonatomic, readonly) UIScrollView *contentScrollView;
 
 @end
 
-@interface UIView (JLAdditions)
+@interface UIView (JLFSAdditions)
 
 @property (nonatomic, readonly) UIViewController *superViewController;
 

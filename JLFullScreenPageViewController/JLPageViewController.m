@@ -8,7 +8,7 @@
 
 #import "JLPageViewController.h"
 #import "JLFullScreenPageViewController.h"
-#import "UIViewController+JLAdditions.h"
+#import "UIViewController+JLFSAdditions.h"
 
 @interface JLFullScreenPageViewController ()
 

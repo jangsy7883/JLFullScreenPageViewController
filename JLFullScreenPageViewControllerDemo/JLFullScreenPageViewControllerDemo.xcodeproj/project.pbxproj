@@ -15,7 +15,7 @@
 		7E5B48EF1CB4DD1D006E9C28 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E5B48ED1CB4DD1D006E9C28 /* LaunchScreen.storyboard */; };
 		7E5B48F01CB4DD1D006E9C28 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E5B48EE1CB4DD1D006E9C28 /* Main.storyboard */; };
 		7E5B48F51CB4DD36006E9C28 /* JLFullScreenPageViewController.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 7E5B48F41CB4DD36006E9C28 /* JLFullScreenPageViewController.podspec */; };
-		7E5B49001CB4DD3E006E9C28 /* UIViewController+JLAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48F91CB4DD3E006E9C28 /* UIViewController+JLAdditions.m */; };
+		7E5B49001CB4DD3E006E9C28 /* UIViewController+JLFSAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48F91CB4DD3E006E9C28 /* UIViewController+JLFSAdditions.m */; };
 		7E5B49011CB4DD3E006E9C28 /* JLPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48FB1CB4DD3E006E9C28 /* JLPageViewController.m */; };
 		7E5B49021CB4DD3E006E9C28 /* JLFullScreenPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48FD1CB4DD3E006E9C28 /* JLFullScreenPageViewController.m */; };
 		7E5B49031CB4DD3E006E9C28 /* JLSegmentedBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48FF1CB4DD3E006E9C28 /* JLSegmentedBar.m */; };
@@ -35,8 +35,8 @@
 		7E5B48ED1CB4DD1D006E9C28 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = JLFullScreenPageViewControllerDemo/LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
 		7E5B48EE1CB4DD1D006E9C28 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = JLFullScreenPageViewControllerDemo/Main.storyboard; sourceTree = SOURCE_ROOT; };
 		7E5B48F41CB4DD36006E9C28 /* JLFullScreenPageViewController.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = JLFullScreenPageViewController.podspec; path = ../JLFullScreenPageViewController.podspec; sourceTree = "<group>"; };
-		7E5B48F81CB4DD3E006E9C28 /* UIViewController+JLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+JLAdditions.h"; sourceTree = "<group>"; };
-		7E5B48F91CB4DD3E006E9C28 /* UIViewController+JLAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+JLAdditions.m"; sourceTree = "<group>"; };
+		7E5B48F81CB4DD3E006E9C28 /* UIViewController+JLFSAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+JLFSAdditions.h"; sourceTree = "<group>"; };
+		7E5B48F91CB4DD3E006E9C28 /* UIViewController+JLFSAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+JLFSAdditions.m"; sourceTree = "<group>"; };
 		7E5B48FA1CB4DD3E006E9C28 /* JLPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JLPageViewController.h; sourceTree = "<group>"; };
 		7E5B48FB1CB4DD3E006E9C28 /* JLPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JLPageViewController.m; sourceTree = "<group>"; };
 		7E5B48FC1CB4DD3E006E9C28 /* JLFullScreenPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JLFullScreenPageViewController.h; sourceTree = "<group>"; };
@@ -118,8 +118,8 @@
 		7E5B48F71CB4DD3E006E9C28 /* Categorys */ = {
 			isa = PBXGroup;
 			children = (
-				7E5B48F81CB4DD3E006E9C28 /* UIViewController+JLAdditions.h */,
-				7E5B48F91CB4DD3E006E9C28 /* UIViewController+JLAdditions.m */,
+				7E5B48F81CB4DD3E006E9C28 /* UIViewController+JLFSAdditions.h */,
+				7E5B48F91CB4DD3E006E9C28 /* UIViewController+JLFSAdditions.m */,
 			);
 			path = Categorys;
 			sourceTree = "<group>";
@@ -196,7 +196,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7E5B49001CB4DD3E006E9C28 /* UIViewController+JLAdditions.m in Sources */,
+				7E5B49001CB4DD3E006E9C28 /* UIViewController+JLFSAdditions.m in Sources */,
 				7E5B48EA1CB4DD05006E9C28 /* AppDelegate.m in Sources */,
 				0FBA64A01BD23A7A00124112 /* main.m in Sources */,
 				7E5B49021CB4DD3E006E9C28 /* JLFullScreenPageViewController.m in Sources */,

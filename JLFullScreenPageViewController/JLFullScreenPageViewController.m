@@ -7,7 +7,7 @@
 //
 
 #import "JLFullScreenPageViewController.h"
-#import "UIViewController+JLAdditions.h"
+#import "UIViewController+JLFSAdditions.h"
 
 CG_INLINE CGRect
 CGRectReplaceY(CGRect rect, CGFloat y)

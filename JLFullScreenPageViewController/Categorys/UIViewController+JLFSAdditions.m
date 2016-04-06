@@ -1,14 +1,14 @@
 //
-//  UIViewController+KMAdditions.m
+//  UIViewController+JLFSAdditions.m
 //  JLFullScreenPageViewController
 //
 //  Created by Jangsy7883 on 2016. 2. 29..
 //  Copyright © 2016년 Dalkomm. All rights reserved.
 //
 
-#import "UIViewController+JLAdditions.h"
+#import "UIViewController+JLFSAdditions.h"
 
-@implementation UIViewController (JLAdditions)
+@implementation UIViewController (JLFSAdditions)
 
 - (UIScrollView*)contentScrollView
 {
@@ -30,7 +30,7 @@
 @end
 
 
-@implementation UIView (JLAdditions)
+@implementation UIView (JLFSAdditions)
 
 - (UIViewController*)superViewController
 {
