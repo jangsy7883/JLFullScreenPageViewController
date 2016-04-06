@@ -1,0 +1,347 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0FBA64A01BD23A7A00124112 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FBA649F1BD23A7A00124112 /* main.m */; };
+		7E5B48E61CB4DD00006E9C28 /* PageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48E31CB4DD00006E9C28 /* PageViewController.m */; };
+		7E5B48E71CB4DD00006E9C28 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48E51CB4DD00006E9C28 /* TableViewController.m */; };
+		7E5B48EA1CB4DD05006E9C28 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48E91CB4DD05006E9C28 /* AppDelegate.m */; };
+		7E5B48EC1CB4DD10006E9C28 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E5B48EB1CB4DD10006E9C28 /* Assets.xcassets */; };
+		7E5B48EF1CB4DD1D006E9C28 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E5B48ED1CB4DD1D006E9C28 /* LaunchScreen.storyboard */; };
+		7E5B48F01CB4DD1D006E9C28 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E5B48EE1CB4DD1D006E9C28 /* Main.storyboard */; };
+		7E5B48F51CB4DD36006E9C28 /* JLFullScreenPageViewController.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 7E5B48F41CB4DD36006E9C28 /* JLFullScreenPageViewController.podspec */; };
+		7E5B49001CB4DD3E006E9C28 /* UIViewController+JLAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48F91CB4DD3E006E9C28 /* UIViewController+JLAdditions.m */; };
+		7E5B49011CB4DD3E006E9C28 /* JLPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48FB1CB4DD3E006E9C28 /* JLPageViewController.m */; };
+		7E5B49021CB4DD3E006E9C28 /* JLFullScreenPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48FD1CB4DD3E006E9C28 /* JLFullScreenPageViewController.m */; };
+		7E5B49031CB4DD3E006E9C28 /* JLSegmentedBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48FF1CB4DD3E006E9C28 /* JLSegmentedBar.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0FBA649B1BD23A7A00124112 /* JLFullScreenPageViewControllerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JLFullScreenPageViewControllerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0FBA649F1BD23A7A00124112 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		0FBA64AF1BD23A7A00124112 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7E5B48E21CB4DD00006E9C28 /* PageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PageViewController.h; path = JLFullScreenPageViewControllerDemo/PageViewController.h; sourceTree = SOURCE_ROOT; };
+		7E5B48E31CB4DD00006E9C28 /* PageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PageViewController.m; path = JLFullScreenPageViewControllerDemo/PageViewController.m; sourceTree = SOURCE_ROOT; };
+		7E5B48E41CB4DD00006E9C28 /* TableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TableViewController.h; path = JLFullScreenPageViewControllerDemo/TableViewController.h; sourceTree = SOURCE_ROOT; };
+		7E5B48E51CB4DD00006E9C28 /* TableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TableViewController.m; path = JLFullScreenPageViewControllerDemo/TableViewController.m; sourceTree = SOURCE_ROOT; };
+		7E5B48E81CB4DD05006E9C28 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = JLFullScreenPageViewControllerDemo/AppDelegate.h; sourceTree = SOURCE_ROOT; };
+		7E5B48E91CB4DD05006E9C28 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = JLFullScreenPageViewControllerDemo/AppDelegate.m; sourceTree = SOURCE_ROOT; };
+		7E5B48EB1CB4DD10006E9C28 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = JLFullScreenPageViewControllerDemo/Assets.xcassets; sourceTree = SOURCE_ROOT; };
+		7E5B48ED1CB4DD1D006E9C28 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = JLFullScreenPageViewControllerDemo/LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
+		7E5B48EE1CB4DD1D006E9C28 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = JLFullScreenPageViewControllerDemo/Main.storyboard; sourceTree = SOURCE_ROOT; };
+		7E5B48F41CB4DD36006E9C28 /* JLFullScreenPageViewController.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = JLFullScreenPageViewController.podspec; path = ../JLFullScreenPageViewController.podspec; sourceTree = "<group>"; };
+		7E5B48F81CB4DD3E006E9C28 /* UIViewController+JLAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+JLAdditions.h"; sourceTree = "<group>"; };
+		7E5B48F91CB4DD3E006E9C28 /* UIViewController+JLAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+JLAdditions.m"; sourceTree = "<group>"; };
+		7E5B48FA1CB4DD3E006E9C28 /* JLPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JLPageViewController.h; sourceTree = "<group>"; };
+		7E5B48FB1CB4DD3E006E9C28 /* JLPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JLPageViewController.m; sourceTree = "<group>"; };
+		7E5B48FC1CB4DD3E006E9C28 /* JLFullScreenPageViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JLFullScreenPageViewController.h; sourceTree = "<group>"; };
+		7E5B48FD1CB4DD3E006E9C28 /* JLFullScreenPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JLFullScreenPageViewController.m; sourceTree = "<group>"; };
+		7E5B48FE1CB4DD3E006E9C28 /* JLSegmentedBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JLSegmentedBar.h; sourceTree = "<group>"; };
+		7E5B48FF1CB4DD3E006E9C28 /* JLSegmentedBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JLSegmentedBar.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0FBA64981BD23A7A00124112 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0FBA64921BD23A7A00124112 = {
+			isa = PBXGroup;
+			children = (
+				7E5B48F41CB4DD36006E9C28 /* JLFullScreenPageViewController.podspec */,
+				7E5B48F61CB4DD3E006E9C28 /* JLFullScreenPageViewController */,
+				0FBA649D1BD23A7A00124112 /* JLFullScreenPageViewControllerDemo */,
+				0FBA649C1BD23A7A00124112 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0FBA649C1BD23A7A00124112 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0FBA649B1BD23A7A00124112 /* JLFullScreenPageViewControllerDemo.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0FBA649D1BD23A7A00124112 /* JLFullScreenPageViewControllerDemo */ = {
+			isa = PBXGroup;
+			children = (
+				7E5B48E81CB4DD05006E9C28 /* AppDelegate.h */,
+				7E5B48E91CB4DD05006E9C28 /* AppDelegate.m */,
+				7E5B48E21CB4DD00006E9C28 /* PageViewController.h */,
+				7E5B48E31CB4DD00006E9C28 /* PageViewController.m */,
+				7E5B48E41CB4DD00006E9C28 /* TableViewController.h */,
+				7E5B48E51CB4DD00006E9C28 /* TableViewController.m */,
+				7E5B48EB1CB4DD10006E9C28 /* Assets.xcassets */,
+				7E5B48ED1CB4DD1D006E9C28 /* LaunchScreen.storyboard */,
+				7E5B48EE1CB4DD1D006E9C28 /* Main.storyboard */,
+				0FBA64AF1BD23A7A00124112 /* Info.plist */,
+				0FBA649E1BD23A7A00124112 /* Supporting Files */,
+			);
+			path = JLFullScreenPageViewControllerDemo;
+			sourceTree = "<group>";
+		};
+		0FBA649E1BD23A7A00124112 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				0FBA649F1BD23A7A00124112 /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		7E5B48F61CB4DD3E006E9C28 /* JLFullScreenPageViewController */ = {
+			isa = PBXGroup;
+			children = (
+				7E5B48F71CB4DD3E006E9C28 /* Categorys */,
+				7E5B48FA1CB4DD3E006E9C28 /* JLPageViewController.h */,
+				7E5B48FB1CB4DD3E006E9C28 /* JLPageViewController.m */,
+				7E5B48FC1CB4DD3E006E9C28 /* JLFullScreenPageViewController.h */,
+				7E5B48FD1CB4DD3E006E9C28 /* JLFullScreenPageViewController.m */,
+				7E5B48FE1CB4DD3E006E9C28 /* JLSegmentedBar.h */,
+				7E5B48FF1CB4DD3E006E9C28 /* JLSegmentedBar.m */,
+			);
+			name = JLFullScreenPageViewController;
+			path = ../JLFullScreenPageViewController;
+			sourceTree = "<group>";
+		};
+		7E5B48F71CB4DD3E006E9C28 /* Categorys */ = {
+			isa = PBXGroup;
+			children = (
+				7E5B48F81CB4DD3E006E9C28 /* UIViewController+JLAdditions.h */,
+				7E5B48F91CB4DD3E006E9C28 /* UIViewController+JLAdditions.m */,
+			);
+			path = Categorys;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0FBA649A1BD23A7A00124112 /* JLFullScreenPageViewControllerDemo */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0FBA64B21BD23A7A00124112 /* Build configuration list for PBXNativeTarget "JLFullScreenPageViewControllerDemo" */;
+			buildPhases = (
+				0FBA64971BD23A7A00124112 /* Sources */,
+				0FBA64981BD23A7A00124112 /* Frameworks */,
+				0FBA64991BD23A7A00124112 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = JLFullScreenPageViewControllerDemo;
+			productName = JLFullScreenPageViewControllerDemo;
+			productReference = 0FBA649B1BD23A7A00124112 /* JLFullScreenPageViewControllerDemo.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0FBA64931BD23A7A00124112 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0700;
+				ORGANIZATIONNAME = Dalkomm;
+				TargetAttributes = {
+					0FBA649A1BD23A7A00124112 = {
+						CreatedOnToolsVersion = 7.0.1;
+						DevelopmentTeam = 6V6UAGM9A4;
+					};
+				};
+			};
+			buildConfigurationList = 0FBA64961BD23A7A00124112 /* Build configuration list for PBXProject "JLFullScreenPageViewControllerDemo" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 0FBA64921BD23A7A00124112;
+			productRefGroup = 0FBA649C1BD23A7A00124112 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0FBA649A1BD23A7A00124112 /* JLFullScreenPageViewControllerDemo */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0FBA64991BD23A7A00124112 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E5B48EF1CB4DD1D006E9C28 /* LaunchScreen.storyboard in Resources */,
+				7E5B48EC1CB4DD10006E9C28 /* Assets.xcassets in Resources */,
+				7E5B48F01CB4DD1D006E9C28 /* Main.storyboard in Resources */,
+				7E5B48F51CB4DD36006E9C28 /* JLFullScreenPageViewController.podspec in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0FBA64971BD23A7A00124112 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E5B49001CB4DD3E006E9C28 /* UIViewController+JLAdditions.m in Sources */,
+				7E5B48EA1CB4DD05006E9C28 /* AppDelegate.m in Sources */,
+				0FBA64A01BD23A7A00124112 /* main.m in Sources */,
+				7E5B49021CB4DD3E006E9C28 /* JLFullScreenPageViewController.m in Sources */,
+				7E5B49031CB4DD3E006E9C28 /* JLSegmentedBar.m in Sources */,
+				7E5B48E71CB4DD00006E9C28 /* TableViewController.m in Sources */,
+				7E5B48E61CB4DD00006E9C28 /* PageViewController.m in Sources */,
+				7E5B49011CB4DD3E006E9C28 /* JLPageViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0FBA64B01BD23A7A00124112 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		0FBA64B11BD23A7A00124112 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		0FBA64B31BD23A7A00124112 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = JLFullScreenPageViewControllerDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = dalkomm.JLFullScreenPageViewControllerDemo;
+				PRODUCT_NAME = JLFullScreenPageViewControllerDemo;
+				PROVISIONING_PROFILE = "";
+			};
+			name = Debug;
+		};
+		0FBA64B41BD23A7A00124112 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = JLFullScreenPageViewControllerDemo/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = dalkomm.JLFullScreenPageViewControllerDemo;
+				PRODUCT_NAME = JLFullScreenPageViewControllerDemo;
+				PROVISIONING_PROFILE = "";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0FBA64961BD23A7A00124112 /* Build configuration list for PBXProject "JLFullScreenPageViewControllerDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0FBA64B01BD23A7A00124112 /* Debug */,
+				0FBA64B11BD23A7A00124112 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0FBA64B21BD23A7A00124112 /* Build configuration list for PBXNativeTarget "JLFullScreenPageViewControllerDemo" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0FBA64B31BD23A7A00124112 /* Debug */,
+				0FBA64B41BD23A7A00124112 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0FBA64931BD23A7A00124112 /* Project object */;
+}

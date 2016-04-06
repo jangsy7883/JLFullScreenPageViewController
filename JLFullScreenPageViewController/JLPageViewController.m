@@ -1,41 +1,38 @@
 //
 //  KMPagerView.m
-//  KMSegmentedPager
+//  JLFullScreenPageViewController
 //
 //  Created by Jangsy7883 on 2015. 9. 4..
 //  Copyright © 2015년 Dalkomm. All rights reserved.
 //
 
-#import "KMPageView.h"
-#import "KMPageViewController.h"
-#import "UIViewController+KMAdditions.h"
+#import "JLPageViewController.h"
+#import "JLFullScreenPageViewController.h"
+#import "UIViewController+JLAdditions.h"
 
-@interface KMPageViewController ()
+@interface JLFullScreenPageViewController ()
 
 @property (nonatomic, readonly) UIView *contentHeaderView;
 
-- (void)layoutContentInsetForScrollView:(UIScrollView*)scrollView atContentOffsetY:(CGFloat)offsetY;
+- (void)layoutContentInsetForScrollView:(UIScrollView*)scrollView atContentInsetTop:(CGFloat)insetTop;
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView;
 - (void)scrollView:(UIScrollView*)scrollView didScrollToContentOffset:(CGPoint)toContentOffset fromContentOffset:(CGPoint)formContentOffset;
 
 @end
 
-@interface KMPageView () <UIPageViewControllerDataSource, UIPageViewControllerDelegate,UIScrollViewDelegate>
-{
-    BOOL changingOrientationState;
-}
+@interface JLPageViewController () <UIPageViewControllerDataSource, UIPageViewControllerDelegate,UIScrollViewDelegate>
 
-@property (nonatomic, strong) UIPageViewController *contentViewController;
+@property (nonatomic, strong) UIPageViewController *pageViewController;
 
 @property (nonatomic, weak) UIScrollView *scrollView;
-@property (nonatomic, weak) KMPageViewController *pageViewController;
+@property (nonatomic, weak) JLFullScreenPageViewController *fullScreenPageViewController;
 
 @property (nonatomic, strong) NSArray *viewControllers;
 
 @end
 
-@implementation KMPageView
+@implementation JLPageViewController
 
 static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
@@ -54,8 +51,6 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
             [self removeObserverForObject:scrollView forKeyPath:@"pan.state"];
         }
     }
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Init
@@ -67,60 +62,34 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     {
         _scrollPagingEnabled = NO;
         _currentIndex = 0;
-        changingOrientationState = NO;
-        
-        //
-        self.contentViewController = [[UIPageViewController alloc]initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
-                                                                    navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
-                                                                                  options:nil];
-        self.contentViewController.dataSource = self;
-        self.contentViewController.delegate = self;
-
-        //
-        self.scrollView.delegate = self;
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(orientationWillChange:)
-                                                     name:UIApplicationWillChangeStatusBarOrientationNotification
-                                                   object:nil];
-        
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(orientationDidChange:)
-                                                     name:UIApplicationDidChangeStatusBarOrientationNotification
-                                                   object:nil];
     }
     return self;
 }
 
-#pragma mark - NSNotification
+#pragma mark - view lifecycle
 
-- (void)orientationWillChange:(NSNotification *)notification
+- (void)viewDidLoad
 {
-    changingOrientationState = YES;
-}
-
-- (void)orientationDidChange:(NSNotification *)notification
-{
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        changingOrientationState = NO;
-    });
-}
-
-#pragma mark - layout
-
-- (void)layoutSubviews
-{
-    [super layoutSubviews];
+    [super viewDidLoad];
     
-    if (self.contentViewController.view.superview == nil)
-    {
-        [self.pageViewController addChildViewController:self.contentViewController];
-        [self addSubview:self.contentViewController.view];
-        [self.contentViewController didMoveToParentViewController:self.pageViewController];
-    }
+    self.pageViewController = [[UIPageViewController alloc]initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
+                                                                navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
+                                                                              options:nil];
+    self.pageViewController.dataSource = self;
+    self.pageViewController.delegate = self;
+    [self.fullScreenPageViewController addChildViewController:self.pageViewController];
+    [self.view addSubview:self.pageViewController.view];
+    [self.pageViewController didMoveToParentViewController:self.fullScreenPageViewController];
 
-    self.contentViewController.view.frame = self.bounds;
+    //
+    self.scrollView.delegate = self;
+}
+
+- (void)viewWillLayoutSubviews
+{
+    [super viewWillLayoutSubviews];
+
+    self.pageViewController.view.frame = self.view.bounds;
 }
 
 #pragma mark - reload
@@ -141,9 +110,9 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     }
     
     //RELOAD VIEW CONTROLLER
-    if ([self.dataSource respondsToSelector:@selector(viewControllersForPageView:)])
+    if ([self.dataSource respondsToSelector:@selector(viewControllersForPageViewController:)])
     {
-        self.viewControllers = [self.dataSource viewControllersForPageView:self];
+        self.viewControllers = [self.dataSource viewControllersForPageViewController:self];
     }
     
     //ADD OBSRVERS
@@ -167,15 +136,15 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
                                options:NSKeyValueObservingOptionNew];
 
             //
-            [self.pageViewController layoutContentInsetForScrollView:scrollView
-                                                    atContentOffsetY:CGRectGetMaxY(self.pageViewController.contentHeaderView.frame)];
+            [self.fullScreenPageViewController layoutContentInsetForScrollView:scrollView
+                                                             atContentInsetTop:CGRectGetMaxY(self.fullScreenPageViewController.contentHeaderView.frame)];
             [scrollView setContentOffset:CGPointMake(0, -scrollView.contentInset.top) animated:NO];
         }
     }
     
     //DISPLAY
     UIViewController *viewController = [self viewControllerAtIndex:_currentIndex];
-    [self.contentViewController setViewControllers:@[viewController]
+    [self.pageViewController setViewControllers:@[viewController]
                                          direction:UIPageViewControllerNavigationDirectionForward
                                           animated:NO
                                         completion:nil];
@@ -195,7 +164,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     //
     if (offsetX < width)
     {
-        for (UIViewController *viewController in  self.contentViewController.childViewControllers)
+        for (UIViewController *viewController in  self.pageViewController.childViewControllers)
         {
             NSUInteger aIndex = [self indexOfViewController:viewController];
 
@@ -208,7 +177,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     }
     else if (offsetX > width)
     {
-        for (UIViewController *viewController in  self.contentViewController.childViewControllers)
+        for (UIViewController *viewController in  self.pageViewController.childViewControllers)
         {
             NSUInteger aIndex = [self indexOfViewController:viewController];
 
@@ -238,9 +207,9 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         position = index;
     }
 
-    if ([self.delegate respondsToSelector:@selector(pageView:didScrollToCurrentPosition:)])
+    if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentPosition:)])
     {
-        [self.delegate pageView:self didScrollToCurrentPosition:position];
+        [self.delegate pageViewController:self didScrollToCurrentPosition:position];
     }
 }
 
@@ -277,13 +246,13 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 {
     if (completed)
     {
-        _currentIndex = [self indexOfViewController:self.contentViewController.viewControllers.firstObject];
+        _currentIndex = [self indexOfViewController:self.pageViewController.viewControllers.firstObject];
         
         if (_currentIndex != NSNotFound)
         {
-            if ([self.delegate respondsToSelector:@selector(pageView:didScrollToCurrentIndex:)])
+            if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentIndex:)])
             {
-                [self.delegate pageView:self didScrollToCurrentIndex:self.currentIndex];
+                [self.delegate pageViewController:self didScrollToCurrentIndex:self.currentIndex];
             }
         }
     }
@@ -337,7 +306,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
                     if (new.y != old.y
                         && scrollView.contentOffset.y+scrollView.frame.size.height < scrollView.contentSize.height)
                     {
-                        [self.pageViewController scrollView:scrollView didScrollToContentOffset:new fromContentOffset:old];
+                        [self.fullScreenPageViewController scrollView:scrollView didScrollToContentOffset:new fromContentOffset:old];
                     }
                 }
                 else if ([keyPath isEqualToString:@"contentInset"])
@@ -356,7 +325,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
                     if (state == UIGestureRecognizerStateEnded || state == UIGestureRecognizerStateCancelled)
                     {
-                        [self.pageViewController scrollViewDidEndDragging:scrollView];
+                        [self.fullScreenPageViewController scrollViewDidEndDragging:scrollView];
                     }
                 }
             }
@@ -393,16 +362,16 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     if (_currentIndex != currentIndex)
     {
         BOOL isForwards = currentIndex > self.currentIndex;
-        NSArray *viewControllers = self.contentViewController.viewControllers;
+        NSArray *viewControllers = self.pageViewController.viewControllers;
         UIViewController *viewController = [self viewControllerAtIndex:currentIndex];
         
         typeof(self) __weak weakSelf = self;
-        [self.contentViewController setViewControllers:@[viewController]
+        [self.pageViewController setViewControllers:@[viewController]
                                              direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
                                               animated:YES
                                             completion:^(BOOL finished) {
                                                 typeof(weakSelf) __strong strongSelf = weakSelf;
-                                                [strongSelf pageViewController:strongSelf.contentViewController
+                                                [strongSelf pageViewController:strongSelf.pageViewController
                                                             didFinishAnimating:YES
                                                        previousViewControllers:viewControllers
                                                            transitionCompleted:YES];
@@ -439,29 +408,29 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     return self.viewControllers.count;
 }
 
-- (KMPageViewController*)pageViewController
+- (JLFullScreenPageViewController*)fullScreenPageViewController
 {
-    if (!_pageViewController)
+    if (!_fullScreenPageViewController)
     {
-        for (UIView* next = self; next; next = next.superview)
+        for (UIView* next = self.view; next; next = next.superview)
         {
             UIResponder* nextResponder = [next nextResponder];
             
-            if ([nextResponder isKindOfClass:[KMPageViewController class]])
+            if ([nextResponder isKindOfClass:[JLFullScreenPageViewController class]])
             {
-                _pageViewController = (KMPageViewController*)nextResponder;
+                _fullScreenPageViewController = (JLFullScreenPageViewController*)nextResponder;
             }
         }
     }
     
-    return _pageViewController;
+    return _fullScreenPageViewController;
 }
 
 - (UIScrollView *)scrollView
 {
     if (!_scrollView)
     {
-        for (UIView *subview in self.contentViewController.view.subviews)
+        for (UIView *subview in self.pageViewController.view.subviews)
         {
             if ([subview isKindOfClass:[UIScrollView class]]) {
                 _scrollView = (UIScrollView *)subview;

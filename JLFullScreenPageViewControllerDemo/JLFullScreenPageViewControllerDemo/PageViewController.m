@@ -1,6 +1,6 @@
 //
 //  PageViewController.m
-//  KMSegmentedPagerDemo
+//  JLFullScreenPageViewControllerDemo
 //
 //  Created by Jangsy7883 on 2015. 10. 17..
 //  Copyright © 2015년 Dalkomm. All rights reserved.
@@ -9,9 +9,9 @@
 #import "PageViewController.h"
 #import "TableViewController.h"
 
-@interface PageViewController ()<KMSegmentedBarDataSource,KMSegmentedBarDelegate>
+@interface PageViewController ()<KMSegmentedBarDataSource,JLSegmentedBarDelegate>
 
-@property (nonatomic,strong) KMSegmentedBar *segmentedBar;
+@property (nonatomic,strong) JLSegmentedBar *segmentedBar;
 
 @property (nonatomic,strong) TableViewController *table1;
 @property (nonatomic,strong) TableViewController *table2;
@@ -34,7 +34,6 @@
 {
     [super viewDidLoad];
     
-    
     UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.text = @"KMPageView";
     [titleLabel sizeToFit];
@@ -43,9 +42,9 @@
                                                                                                   target:self
                                                                                                   action:@selector(pressedCancel:)];
     
-    self.segmentedBar = [[KMSegmentedBar alloc] init];
+    self.segmentedBar = [[JLSegmentedBar alloc] init];
     self.segmentedBar.backgroundColor = [UIColor darkGrayColor];
-    self.segmentedBar.barStyle = KMSegmentedBarStyleEqualSegment;
+    self.segmentedBar.barStyle = JLSegmentedBarStyleEqualSegment;
     self.segmentedBar.titleColor = [UIColor blackColor];
     self.segmentedBar.highlightedTitleColor = [UIColor whiteColor];
     self.segmentedBar.separatorColor = [UIColor whiteColor];
@@ -58,19 +57,14 @@
     [self.segmentedBar reloadData];
     self.headerView = self.segmentedBar;
     
-    self.pageView.scrollPagingEnabled = YES;
-    [self.pageView reloadData];
+    self.pageViewController.scrollPagingEnabled = YES;
+    [self.pageViewController reloadData];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
     [self.navigationController setNavigationBarHidden:YES animated:animated];
-    
-    [self.navigationBar setNeedsLayout];
-    [self.navigationBar layoutIfNeeded];
-    
-    NSLog(@"A : %@",self.navigationController);
 }
 
 #pragma mark - event
@@ -82,12 +76,7 @@
 
 #pragma mark - KMPagerView datasource
 
-- (NSInteger)numberOfPageInPageView:(KMPageView *)pageView
-{
-    return 3;
-}
-
-- (NSArray *)viewControllersForPageView:(KMPageView *)pageView
+- (NSArray *)viewControllersForPageViewController:(JLPageViewController *)viewController
 {
     NSMutableArray *viewControllers = [NSMutableArray array];
     
@@ -122,26 +111,26 @@
 
 #pragma mark - KMPagerView delegate
 
-- (void)pageView:(KMPageView*)pageView didScrollToCurrentPosition:(CGFloat)currentPosition
+- (void)pageViewController:(JLPageViewController*)viewController didScrollToCurrentPosition:(CGFloat)currentPosition
 {
     [self.segmentedBar scrollDidContentOffset:currentPosition];
 }
 
-- (void)pageView:(KMPageView*)pageView  didScrollToCurrentIndex:(NSUInteger)currentIndex
+-  (void)pageViewController:(JLPageViewController*)viewController didScrollToCurrentIndex:(NSUInteger)currentIndex
 {
     
 }
 
 #pragma mark - KMSegmentedView delegate
 
-- (void)segmentedBar:(KMSegmentedBar *)segmentedBar didSelectIndex:(NSInteger)index
+- (void)segmentedBar:(JLSegmentedBar *)segmentedBar didSelectIndex:(NSInteger)index
 {
-    [self.pageView setCurrentIndex:index animated:YES];
+    [self.pageViewController setCurrentIndex:index animated:YES];
 }
 
 #pragma mark - KMSegmentedView dataSource
 
-- (NSArray*)titlesInSegmentedBar:(KMSegmentedBar *)segmentedBar
+- (NSArray*)titlesInSegmentedBar:(JLSegmentedBar *)segmentedBar
 {
     return @[
              @"first",@"second",@"third"

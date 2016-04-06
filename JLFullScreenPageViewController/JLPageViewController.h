@@ -1,6 +1,6 @@
 //
 //  KMPagerView.h
-//  KMSegmentedPager
+//  JLFullScreenPageViewController
 //
 //  Created by Jangsy7883 on 2015. 9. 4..
 //  Copyright © 2015년 Dalkomm. All rights reserved.
@@ -8,23 +8,24 @@
 
 #import <UIKit/UIKit.h>
 
-@class KMPageView;
+@class JLPageViewController;
 
 @protocol KMPageViewDelegate <NSObject>
 
 @optional
-- (void)pageView:(KMPageView*)pageView didScrollToCurrentPosition:(CGFloat)currentPosition;
-- (void)pageView:(KMPageView*)pageView didScrollToCurrentIndex:(NSUInteger)currentIndex;
+
+- (void)pageViewController:(JLPageViewController*)viewController didScrollToCurrentPosition:(CGFloat)currentPosition;
+- (void)pageViewController:(JLPageViewController*)viewController didScrollToCurrentIndex:(NSUInteger)currentIndex;
 
 @end
 
 @protocol KMPageViewDataSource <NSObject>
 
-- (NSArray *)viewControllersForPageView:(KMPageView *)pageView;
+- (NSArray *)viewControllersForPageViewController:(JLPageViewController *)viewController;
 
 @end
 
-@interface KMPageView : UIView
+@interface JLPageViewController : UIViewController
 
 @property (nonatomic, assign) NSUInteger currentIndex;
 

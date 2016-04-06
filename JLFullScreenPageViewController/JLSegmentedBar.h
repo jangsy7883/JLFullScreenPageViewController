@@ -1,6 +1,6 @@
 //
-//  KMSegmentedBar.h
-//  KMPageController
+//  JLSegmentedBar.h
+//  JLFullScreenPageViewController
 //
 //  Created by Jangsy7883 on 2015. 9. 6..
 //  Copyright © 2015년 Dalkomm. All rights reserved.
@@ -8,32 +8,32 @@
 
 #import <UIKit/UIKit.h>
 
-@class KMSegmentedBar;
+@class JLSegmentedBar;
 
-@protocol KMSegmentedBarDelegate <NSObject>
+@protocol JLSegmentedBarDelegate <NSObject>
 
 @optional
 
-- (void)segmentedBar:(KMSegmentedBar*)segmentedView didSelectIndex:(NSInteger)index;
+- (void)segmentedBar:(JLSegmentedBar*)segmentedView didSelectIndex:(NSInteger)index;
 
 @end
 
 @protocol KMSegmentedBarDataSource <NSObject>
 
-- (NSArray*)titlesInSegmentedBar:(KMSegmentedBar*)segmentedView;
+- (NSArray*)titlesInSegmentedBar:(JLSegmentedBar*)segmentedView;
 
 @end
 
-typedef NS_ENUM(NSInteger, KMSegmentedBarStyle)
+typedef NS_ENUM(NSInteger, JLSegmentedBarStyle)
 {
-    KMSegmentedBarStyleRightFit = 0,
-    KMSegmentedBarStyleEqualSegment,
-    KMSegmentedBarStyleEqualMargin,
+    JLSegmentedBarStyleRightFit = 0,
+    JLSegmentedBarStyleEqualSegment,
+    JLSegmentedBarStyleEqualMargin,
 };
 
-@interface KMSegmentedBar : UIView
+@interface JLSegmentedBar : UIView
 
-@property (nonatomic, assign) KMSegmentedBarStyle barStyle;
+@property (nonatomic, assign) JLSegmentedBarStyle barStyle;
 
 //Separator
 @property (nonatomic, assign) CGFloat separatorHeight;
@@ -48,7 +48,7 @@ typedef NS_ENUM(NSInteger, KMSegmentedBarStyle)
 @property (nonatomic, strong) UIImage *shadowImage;
 
 @property (nonatomic, weak) id<KMSegmentedBarDataSource> dataSource;
-@property (nonatomic, weak) id<KMSegmentedBarDelegate> delegate;
+@property (nonatomic, weak) id<JLSegmentedBarDelegate> delegate;
 
 @property (nonatomic, assign) NSInteger selectedIndex;
 

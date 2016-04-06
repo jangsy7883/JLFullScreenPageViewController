@@ -1,13 +1,13 @@
 //
 //  KMPagerController.m
-//  KMPageController
+//  JLFullScreenPageViewController
 //
 //  Created by Jangsy7883 on 2015. 9. 4..
 //  Copyright © 2015년 Dalkomm. All rights reserved.
 //
 
-#import "KMPageViewController.h"
-#import "UIViewController+KMAdditions.h"
+#import "JLFullScreenPageViewController.h"
+#import "UIViewController+JLAdditions.h"
 
 CG_INLINE CGRect
 CGRectReplaceY(CGRect rect, CGFloat y)
@@ -18,15 +18,15 @@ CGRectReplaceY(CGRect rect, CGFloat y)
 
 @implementation UIViewController (KMPageViewController)
 
-- (KMPageViewController*)pageViewController
+- (JLFullScreenPageViewController*)fullScreenPageViewController
 {
     for (UIView* next = self.view; next; next = next.superview)
     {
         UIResponder* nextResponder = [next nextResponder];
         
-        if ([nextResponder isKindOfClass:[KMPageViewController class]])
+        if ([nextResponder isKindOfClass:[JLFullScreenPageViewController class]])
         {
-            return (KMPageViewController*)nextResponder;
+            return (JLFullScreenPageViewController*)nextResponder;
         }
     }
     return nil;
@@ -36,7 +36,7 @@ CGRectReplaceY(CGRect rect, CGFloat y)
 
 static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControllerKVOContext;
 
-@interface KMPageViewController ()
+@interface JLFullScreenPageViewController ()
 
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL tracking;
@@ -44,18 +44,18 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 @property (nonatomic, strong) UINavigationBar *navigationBar;
 @property (nonatomic, strong) UIView *contentHeaderView;
-@property (nonatomic, strong) KMPageView *pageView;
+@property (nonatomic, strong) JLPageViewController *pageViewController;
 
 @end
 
-@implementation KMPageViewController
+@implementation JLFullScreenPageViewController
 
 #pragma mark - memory
 
 - (void)dealloc
 {
     //Observer
-    [self.contentHeaderView removeObserver:self.contentHeaderView
+    [self.contentHeaderView removeObserver:self
                                 forKeyPath:NSStringFromSelector(@selector(frame))
                                    context:KMPageViewControllerKVOContext];
 }
@@ -66,15 +66,17 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 {
     [super viewDidLoad];
     
-    _fullScreenMode = KMFullScreenModeAutomatic;
+    _fullScreenStyle = JLFullScreenStyleScrolling;
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     //PAGEVIEW
-    self.pageView = [[KMPageView alloc] init];
-    self.pageView.dataSource = self;
-    self.pageView.delegate = self;
-    [self.view addSubview:self.pageView];
+    self.pageViewController = [[JLPageViewController alloc] init];
+    self.pageViewController.dataSource = self;
+    self.pageViewController.delegate = self;
+    [self addChildViewController:self.pageViewController];
+    [self.view addSubview:self.pageViewController.view];
+    [self.pageViewController didMoveToParentViewController:self];
     
     //CONTENT HEDAER VIEW
     self.contentHeaderView = [[UIView alloc] init];
@@ -84,6 +86,8 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                                 context:KMPageViewControllerKVOContext];
     [self.view addSubview:self.contentHeaderView];
 
+    //
+    
     //NAVIGATIONBAR
     self.navigationBar = [[UINavigationBar alloc] init];
     self.navigationBar.items = @[[UINavigationItem new]];
@@ -94,7 +98,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 {
     [super viewWillLayoutSubviews];
 
-    self.pageView.frame = self.view.bounds;
+    self.pageViewController.view.frame = self.view.bounds;
 
     [self layoutContentHeaderView];
     [self layoutNavigationBarItemsAlphaValue];
@@ -129,29 +133,26 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                                               CGRectGetHeight(rect) + CGRectGetHeight(self.headerView.frame));
 }
 
-- (void)layoutContentInsetForScrollView:(UIScrollView*)scrollView atContentOffsetY:(CGFloat)offsetY
+- (void)layoutContentInsetForScrollView:(UIScrollView*)scrollView atContentInsetTop:(CGFloat)insetTop
 {
     if ([scrollView isKindOfClass:[UIScrollView class]])
     {
-        UIEdgeInsets inset = scrollView.contentInset;
-        inset.top = offsetY;
-        
-        if (!UIEdgeInsetsEqualToEdgeInsets(scrollView.contentInset, inset))
-        {
-            scrollView.contentInset = inset;
-            scrollView.scrollIndicatorInsets = inset;
-        }
+        UIEdgeInsets contentInset = scrollView.contentInset;
+        contentInset.top = insetTop;
+        scrollView.contentInset = contentInset;
+   
+        scrollView.scrollIndicatorInsets = contentInset;
     }
 }
 
 - (void)layoutContentInsetAllChildScrollViews
 {
-    CGFloat pageY = CGRectGetMaxY(self.contentHeaderView.frame);
+    CGFloat maxY = CGRectGetMaxY(self.contentHeaderView.frame);
 
-    for (UIViewController *viewController in self.pageView.viewControllers)
+    for (UIViewController *viewController in self.pageViewController.viewControllers)
     {
         [self layoutContentInsetForScrollView:viewController.contentScrollView
-                             atContentOffsetY:pageY];
+                            atContentInsetTop:maxY];
     }
 }
 
@@ -194,7 +195,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 {
     if (toContentOffset.y+scrollView.frame.size.height < scrollView.contentSize.height)
     {
-        if (_fullScreenMode == KMFullScreenModeAutomatic)
+        if (_fullScreenStyle == JLFullScreenStyleAutomatic)
         {
             if (scrollView.tracking)
             {
@@ -223,7 +224,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                 }
             }
         }
-        else if (_fullScreenMode == KMFullScreenModeScrolling)
+        else if (_fullScreenStyle == JLFullScreenStyleScrolling)
         {
             if (scrollView.tracking)
             {
@@ -353,19 +354,19 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 #pragma mark - KMPagerView datasource
 
-- (NSArray *)viewControllersForPageView:(KMPageView *)pageView
+- (NSArray *)viewControllersForPageViewController:(JLPageViewController *)pageView
 {
     return nil;
 }
 
 #pragma mark - KMPagerView delegate
 
-- (void)pageView:(KMPageView*)pageView didScrollToCurrentOffset:(CGPoint)contentOffset
+- (void)pageViewController:(JLPageViewController*)pageView didScrollToCurrentOffset:(CGPoint)contentOffset
 {
     
 }
 
-- (void)pageView:(KMPageView*)pageView didScrollToCurrentIndex:(NSUInteger)currentIndex
+- (void)pageViewController:(JLPageViewController*)pageView didScrollToCurrentIndex:(NSUInteger)currentIndex
 {
     
 }

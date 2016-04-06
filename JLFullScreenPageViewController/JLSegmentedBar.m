@@ -1,14 +1,14 @@
 //
-//  KMSegmentedBar.m
-//  KMPageController
+//  JLSegmentedBar.m
+//  JLFullScreenPageViewController
 //
 //  Created by Jangsy7883 on 2015. 9. 6..
 //  Copyright © 2015년 Dalkomm. All rights reserved.
 //
 
-#import "KMSegmentedBar.h"
+#import "JLSegmentedBar.h"
 
-@interface KMSegmentedBar ()
+@interface JLSegmentedBar ()
 
 @property (nonatomic, strong) UIView *lineView;
 @property (nonatomic, strong) UIView *contentView;
@@ -21,14 +21,14 @@
 
 @end
 
-@implementation KMSegmentedBar
+@implementation JLSegmentedBar
 
 #pragma mark - init
 
 - (void)commonInit
 {
     self.backgroundColor = [UIColor whiteColor];
-    _barStyle = KMSegmentedBarStyleEqualMargin;
+    _barStyle = JLSegmentedBarStyleEqualMargin;
     _contentOffset = 0;
     _separatorHeight = 3;
     
@@ -91,14 +91,14 @@
         
         switch (_barStyle)
         {
-            case KMSegmentedBarStyleRightFit:
+            case JLSegmentedBarStyleRightFit:
                 rect.origin = CGPointMake(MAX(0, self.contentInsets.left - (_itemMergin/2)), self.contentInsets.top);
                 break;
-            case KMSegmentedBarStyleEqualSegment:
+            case JLSegmentedBarStyleEqualSegment:
                 rect.origin = CGPointMake(self.contentInsets.left, self.contentInsets.top);
                 rect.size.width = (CGRectGetWidth(view.bounds) - (self.contentInsets.left + self.contentInsets.right)) / count;
                 break;
-            case KMSegmentedBarStyleEqualMargin:
+            case JLSegmentedBarStyleEqualMargin:
                 rect.origin = CGPointMake(MAX(0, self.contentInsets.left - (_itemMergin/2)), self.contentInsets.top);
                 margin = [self equalMarginWithAllButtonSize:[self contentSizeForAllButtons] withButtonCount:count];
                 break;
@@ -112,10 +112,10 @@
             {
                 //WIDTH
                 switch (_barStyle) {
-                    case KMSegmentedBarStyleRightFit:
+                    case JLSegmentedBarStyleRightFit:
                         rect.size.width = [self contentSizeForButton:(UIButton*)subview].width + _itemMergin;
                         break;
-                    case KMSegmentedBarStyleEqualMargin:
+                    case JLSegmentedBarStyleEqualMargin:
                         rect.size.width = [self contentSizeForButton:(UIButton*)subview].width + _itemMergin;
                         break;
                     default:
@@ -127,7 +127,7 @@
                 
                 //NEXT X
                 switch (_barStyle) {
-                    case KMSegmentedBarStyleEqualMargin:
+                    case JLSegmentedBarStyleEqualMargin:
                         rect.origin.x = CGRectGetMaxX(rect) + margin;
                         break;
                     default:
