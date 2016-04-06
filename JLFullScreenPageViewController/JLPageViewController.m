@@ -77,9 +77,9 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
                                                                               options:nil];
     self.pageViewController.dataSource = self;
     self.pageViewController.delegate = self;
-    [self.fullScreenPageViewController addChildViewController:self.pageViewController];
+    [self addChildViewController:self.pageViewController];
     [self.view addSubview:self.pageViewController.view];
-    [self.pageViewController didMoveToParentViewController:self.fullScreenPageViewController];
+    [self.pageViewController didMoveToParentViewController:self];
 
     //
     self.scrollView.delegate = self;
