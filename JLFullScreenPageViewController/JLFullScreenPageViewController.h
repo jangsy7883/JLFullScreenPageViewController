@@ -16,7 +16,7 @@ typedef NS_ENUM(NSInteger, JLFullScreenStyle)
     JLFullScreenStyleScrolling,
 };
 
-@interface JLFullScreenPageViewController : UIViewController<KMPageViewDataSource,KMPageViewDelegate>
+@interface JLFullScreenPageViewController : UIViewController<JLPageViewControllerDataSource,JLPageViewControllerDelegate>
 
 @property (nonatomic, strong, readonly) UINavigationBar *navigationBar;
 @property (nonatomic, strong, readonly) JLPageViewController *pageViewController;

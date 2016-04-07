@@ -19,6 +19,7 @@
 		7E5B49011CB4DD3E006E9C28 /* JLPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48FB1CB4DD3E006E9C28 /* JLPageViewController.m */; };
 		7E5B49021CB4DD3E006E9C28 /* JLFullScreenPageViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48FD1CB4DD3E006E9C28 /* JLFullScreenPageViewController.m */; };
 		7E5B49031CB4DD3E006E9C28 /* JLSegmentedBar.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E5B48FF1CB4DD3E006E9C28 /* JLSegmentedBar.m */; };
+		8B0BDFAD1CB54D1B00DB4B04 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8B0BDFAC1CB54D1B00DB4B04 /* DetailViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +44,8 @@
 		7E5B48FD1CB4DD3E006E9C28 /* JLFullScreenPageViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JLFullScreenPageViewController.m; sourceTree = "<group>"; };
 		7E5B48FE1CB4DD3E006E9C28 /* JLSegmentedBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JLSegmentedBar.h; sourceTree = "<group>"; };
 		7E5B48FF1CB4DD3E006E9C28 /* JLSegmentedBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JLSegmentedBar.m; sourceTree = "<group>"; };
+		8B0BDFAB1CB54D1B00DB4B04 /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
+		8B0BDFAC1CB54D1B00DB4B04 /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -88,6 +91,8 @@
 				7E5B48EE1CB4DD1D006E9C28 /* Main.storyboard */,
 				0FBA64AF1BD23A7A00124112 /* Info.plist */,
 				0FBA649E1BD23A7A00124112 /* Supporting Files */,
+				8B0BDFAB1CB54D1B00DB4B04 /* DetailViewController.h */,
+				8B0BDFAC1CB54D1B00DB4B04 /* DetailViewController.m */,
 			);
 			path = JLFullScreenPageViewControllerDemo;
 			sourceTree = "<group>";
@@ -198,6 +203,7 @@
 			files = (
 				7E5B49001CB4DD3E006E9C28 /* UIViewController+JLFSAdditions.m in Sources */,
 				7E5B48EA1CB4DD05006E9C28 /* AppDelegate.m in Sources */,
+				8B0BDFAD1CB54D1B00DB4B04 /* DetailViewController.m in Sources */,
 				0FBA64A01BD23A7A00124112 /* main.m in Sources */,
 				7E5B49021CB4DD3E006E9C28 /* JLFullScreenPageViewController.m in Sources */,
 				7E5B49031CB4DD3E006E9C28 /* JLSegmentedBar.m in Sources */,

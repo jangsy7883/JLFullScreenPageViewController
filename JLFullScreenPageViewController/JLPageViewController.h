@@ -10,7 +10,7 @@
 
 @class JLPageViewController;
 
-@protocol KMPageViewDelegate <NSObject>
+@protocol JLPageViewControllerDelegate <NSObject>
 
 @optional
 
@@ -19,7 +19,7 @@
 
 @end
 
-@protocol KMPageViewDataSource <NSObject>
+@protocol JLPageViewControllerDataSource <NSObject>
 
 - (NSArray *)viewControllersForPageViewController:(JLPageViewController *)viewController;
 
@@ -35,8 +35,8 @@
 @property (nonatomic, readonly) NSArray *viewControllers;
 @property (nonatomic, readonly) NSInteger numberOfPage;
 
-@property (nonatomic, weak) id<KMPageViewDelegate>delegate;
-@property (nonatomic, weak) id<KMPageViewDataSource>dataSource;
+@property (nonatomic, weak) id<JLPageViewControllerDelegate>delegate;
+@property (nonatomic, weak) id<JLPageViewControllerDataSource>dataSource;
 
 - (void)reloadData;
 
