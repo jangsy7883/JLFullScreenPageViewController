@@ -42,7 +42,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 {
     for (UIViewController *viewController in self.viewControllers)
     {
-        UIScrollView *scrollView = viewController.contentScrollView;
+        UIScrollView *scrollView = viewController.jl_scrollView;
         
         if ([scrollView isKindOfClass:[UIScrollView class]])
         {
@@ -100,7 +100,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     //REMOVE OBSRVER
     for (UIViewController *viewController in self.viewControllers)
     {
-        UIScrollView *scrollView = viewController.contentScrollView;
+        UIScrollView *scrollView = viewController.jl_scrollView;
         
         if ([scrollView isKindOfClass:[UIScrollView class]])
         {
@@ -119,7 +119,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     //ADD OBSRVERS
     for (UIViewController *viewController in self.viewControllers)
     {
-        UIScrollView *scrollView = viewController.contentScrollView;
+        UIScrollView *scrollView = viewController.jl_scrollView;
         
         if ([scrollView isKindOfClass:[UIScrollView class]])
         {
@@ -254,7 +254,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         for (UIViewController *viewController in self.childViewControllers)
         {
             NSUInteger index =  [self indexOfViewController:viewController];
-            UIScrollView *scrollView = viewController.contentScrollView;
+            UIScrollView *scrollView = viewController.jl_scrollView;
             
             if (scrollView)
             {
@@ -302,7 +302,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         {
             UIScrollView *scrollView = (UIScrollView*)object;
             
-            NSUInteger index = [self indexOfViewController:scrollView.superViewController];
+            NSUInteger index = [self indexOfViewController:scrollView.jl_superViewController];
             
             if (index != NSNotFound && index == _currentIndex)
             {

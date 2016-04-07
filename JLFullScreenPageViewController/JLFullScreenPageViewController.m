@@ -151,7 +151,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
     for (UIViewController *viewController in self.pageViewController.viewControllers)
     {
-        [self layoutContentInsetForScrollView:viewController.contentScrollView
+        [self layoutContentInsetForScrollView:viewController.jl_scrollView
                             atContentInsetTop:maxY];
     }
 }

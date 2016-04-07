@@ -10,13 +10,13 @@
 
 @interface UIViewController (JLFSAdditions)
 
-@property (nonatomic, readonly) UIScrollView *contentScrollView;
+@property (nonatomic, readonly) UIScrollView *jl_scrollView;
 
 @end
 
 @interface UIView (JLFSAdditions)
 
-@property (nonatomic, readonly) UIViewController *superViewController;
+@property (nonatomic, readonly) UIViewController *jl_superViewController;
 
 @end
 

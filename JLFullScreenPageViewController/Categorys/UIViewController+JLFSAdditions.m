@@ -10,7 +10,7 @@
 
 @implementation UIViewController (JLFSAdditions)
 
-- (UIScrollView*)contentScrollView
+- (UIScrollView*)jl_scrollView
 {
     if ([self.view isKindOfClass:[UIScrollView class]])
     {
@@ -32,7 +32,7 @@
 
 @implementation UIView (JLFSAdditions)
 
-- (UIViewController*)superViewController
+- (UIViewController*)jl_superViewController
 {
     for (UIView* next = self; next; next = next.superview)
     {
