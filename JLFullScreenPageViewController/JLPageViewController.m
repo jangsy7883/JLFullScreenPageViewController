@@ -82,6 +82,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     [self.pageViewController didMoveToParentViewController:self];
 
     //
+    self.scrollView.scrollsToTop = NO;
     self.scrollView.delegate = self;
 }
 
@@ -250,6 +251,16 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     {
         _currentIndex = [self indexOfViewController:self.pageViewController.viewControllers.firstObject];
         
+        for (UIViewController *viewController in self.childViewControllers)
+        {
+            NSUInteger index =  [self indexOfViewController:viewController];
+            UIScrollView *scrollView = viewController.contentScrollView;
+            
+            if (scrollView)
+            {
+                scrollView.scrollsToTop = (_currentIndex == index);
+            }
+        }
         if (_currentIndex != NSNotFound)
         {
             if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentIndex:)])
