@@ -207,15 +207,12 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         {
             position = index;
         }
-        
-        NSLog(@"%lu / %lu / %f",(unsigned long)index,(unsigned long)nextIndex,position);
-        
+
         if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentPosition:)] )
         {
             [self.delegate pageViewController:self didScrollToCurrentPosition:position];
         }        
     }
-    //
 }
 
 #pragma  mark - pageviewcontroller datasource
