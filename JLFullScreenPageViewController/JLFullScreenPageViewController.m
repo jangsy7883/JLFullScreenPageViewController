@@ -46,6 +46,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 @property (nonatomic, strong) UIView *contentHeaderView;
 @property (nonatomic, strong) JLPageViewController *pageViewController;
 
+@property (nonatomic, readonly, getter=isTabBarHidden) BOOL tabBarHidden;
 @end
 
 @implementation JLFullScreenPageViewController
@@ -85,8 +86,6 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                                 options:NSKeyValueObservingOptionNew
                                 context:KMPageViewControllerKVOContext];
     [self.view addSubview:self.contentHeaderView];
-
-    //
     
     //NAVIGATIONBAR
     self.navigationBar = [[UINavigationBar alloc] init];
@@ -97,11 +96,18 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 - (void)viewWillLayoutSubviews
 {
     [super viewWillLayoutSubviews];
-
+    
     self.pageViewController.view.frame = self.view.bounds;
-
+    
     [self layoutContentHeaderView];
     [self layoutNavigationBarItemsAlphaValue];
+    
+    if (self.tabBarController && self.tabBarHidden)
+    {
+        CGRect tabBarRect = self.tabBarController.tabBar.frame;
+        tabBarRect.origin.y = CGRectGetHeight(self.tabBarController.view.bounds);
+        self.tabBarController.tabBar.frame = tabBarRect;
+    }
 }
 
 #pragma  mark - layout
@@ -121,7 +127,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         [self.navigationBar setNeedsLayout];
         [self.navigationBar layoutIfNeeded];
     }
-
+    
     self.headerView.frame = CGRectMake(0,
                                        CGRectGetMaxY(rect),
                                        CGRectGetWidth(bounds),
@@ -140,7 +146,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         UIEdgeInsets contentInset = scrollView.contentInset;
         contentInset.top = insetTop;
         scrollView.contentInset = contentInset;
-   
+        
         scrollView.scrollIndicatorInsets = contentInset;
     }
 }
@@ -148,7 +154,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 - (void)layoutContentInsetAllChildScrollViews
 {
     CGFloat maxY = CGRectGetMaxY(self.contentHeaderView.frame);
-
+    
     for (UIViewController *viewController in self.pageViewController.viewControllers)
     {
         [self layoutContentInsetForScrollView:viewController.jl_scrollView
@@ -171,7 +177,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
             view.alpha = MAX(alpha, FLT_EPSILON);
         }
     }
-} 
+}
 
 #pragma mark - scrollview
 
@@ -181,7 +187,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     
     dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-
+        
         if (CGRectGetMinY(self.contentHeaderView.frame) != -CGRectGetHeight(self.navigationController.navigationBar.frame) && CGRectGetMinY(self.contentHeaderView.frame) != 0)
         {
             [self setFullScreen:CGRectGetMinY(self.contentHeaderView.frame) < -22
@@ -228,36 +234,46 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         {
             if (scrollView.tracking)
             {
-                CGRect rect = self.contentHeaderView.frame;
+                CGRect headerRect = self.contentHeaderView.frame;
                 CGRect tabBarRect = self.tabBarController.tabBar.frame;
+                CGRect tabBarControllerRect = self.tabBarController.view.frame;
                 
-                if (toContentOffset.y > -CGRectGetHeight(self.contentHeaderView.frame))
+                if (toContentOffset.y > -CGRectGetHeight(headerRect))
                 {
-                    CGFloat minY = CGRectGetHeight(self.navigationBar.frame)-(self.navigationBar? self.topLayoutGuide.length : 0);
-                    CGFloat y = CGRectGetMinY(self.contentHeaderView.frame) - (toContentOffset.y - formContentOffset.y);
+                    CGFloat minY = CGRectGetHeight(self.navigationBar.frame) - (self.navigationBar? self.topLayoutGuide.length : 0);
+                    CGFloat y = CGRectGetMinY(headerRect) - (toContentOffset.y - formContentOffset.y);
                     
-                    rect = CGRectReplaceY(self.contentHeaderView.frame, ceil(MAX(-minY, MIN(0,y))));
+                    headerRect = CGRectReplaceY(headerRect, ceil(MAX(-minY, MIN(0,y))));
                     
                     
-                    minY = CGRectGetHeight(self.tabBarController.view.bounds) - CGRectGetHeight(self.tabBarController.tabBar.bounds);
-                    y = CGRectGetMinY(self.tabBarController.tabBar.frame) + (toContentOffset.y - formContentOffset.y);
+                    minY = CGRectGetHeight(tabBarControllerRect) - CGRectGetHeight(tabBarRect);
+                    y = CGRectGetMinY(tabBarRect) + (toContentOffset.y - formContentOffset.y);
                     
-                    tabBarRect = CGRectReplaceY(self.tabBarController.tabBar.frame,MAX(minY, MIN(y, CGRectGetMaxY(self.tabBarController.view.bounds))));
+                    tabBarRect = CGRectReplaceY(tabBarRect,MAX(minY, MIN(y, CGRectGetMaxY(tabBarControllerRect))));
                 }
                 else
                 {
-                    rect = CGRectReplaceY(self.contentHeaderView.frame, 0);
-                    tabBarRect = CGRectReplaceY(self.tabBarController.tabBar.frame,CGRectGetHeight(self.tabBarController.view.bounds) - CGRectGetHeight(self.tabBarController.tabBar.bounds));
+                    headerRect = CGRectReplaceY(headerRect, 0);
+                    tabBarRect = CGRectReplaceY(tabBarRect, CGRectGetHeight(tabBarControllerRect) - CGRectGetHeight(tabBarRect));
                 }
                 
-                if (CGRectEqualToRect(rect, self.contentHeaderView.frame) == NO)
+                // SET HEDAER FRAME
+                if (CGRectEqualToRect(headerRect, self.contentHeaderView.frame) == NO)
                 {
-                    self.contentHeaderView.frame = rect;
+                    self.contentHeaderView.frame = headerRect;
                 }
                 
+                // SET TABBAR FRAME
                 if (self.tabBarController && CGRectEqualToRect(tabBarRect, self.tabBarController.tabBar.frame) == NO)
                 {
                     self.tabBarController.tabBar.frame = tabBarRect;
+                    
+                    BOOL isHidden = CGRectGetMinY(tabBarRect) == CGRectGetHeight(tabBarControllerRect);
+                    
+                    if (self.tabBarHidden != isHidden)
+                    {
+                        self.tabBarHidden = isHidden;
+                    }
                 }
             }
         }
@@ -310,7 +326,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         
         if (CGRectEqualToRect(self.contentHeaderView.frame, navigationBarRect) == NO && _animating == NO)
         {
-             _animating = YES;
+            _animating = YES;
             
             if (animated)
             {
@@ -396,6 +412,23 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         
         [self layoutContentHeaderView];
     }
+}
+
+- (void)setTabBarHidden:(BOOL)isHidden
+{
+    for (UIView *subview in self.tabBarController.tabBar.subviews)
+    {
+        subview.hidden = isHidden;
+    }
+}
+
+#pragma mark - GETTERS
+
+- (BOOL)isTabBarHidden
+{
+    UIView *view = self.tabBarController.tabBar.subviews.firstObject;
+    
+    return view.hidden;
 }
 
 @end
