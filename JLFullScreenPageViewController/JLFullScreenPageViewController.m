@@ -68,6 +68,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     [super viewDidLoad];
     
     _fullScreenStyle = JLFullScreenStyleAutomatic;
+    _navigationBarHidden = NO;
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
@@ -255,7 +256,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                 }
                 
                 // SET HEDAER FRAME
-                if (CGRectEqualToRect(headerRect, self.contentHeaderView.frame) == NO && _navigationBarHidden == YES)
+                if (CGRectEqualToRect(headerRect, self.contentHeaderView.frame) == NO && _navigationBarHidden == NO)
                 {
                     self.contentHeaderView.frame = headerRect;
                 }
