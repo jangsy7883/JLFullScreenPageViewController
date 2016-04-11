@@ -15,7 +15,7 @@
 @optional
 
 - (void)pageViewController:(JLPageViewController*)viewController didScrollToCurrentPosition:(CGFloat)currentPosition;
-- (void)pageViewController:(JLPageViewController*)viewController didScrollToCurrentIndex:(NSUInteger)currentIndex;
+- (void)pageViewController:(JLPageViewController*)viewController didChangeToCurrentIndex:(NSUInteger)currentIndex fromIndex:(NSUInteger)fromIndex;
 
 @end
 

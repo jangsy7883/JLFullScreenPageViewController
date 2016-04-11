@@ -123,7 +123,7 @@
     [self.segmentedBar scrollDidContentOffset:currentPosition];
 }
 
--  (void)pageViewController:(JLPageViewController*)viewController didScrollToCurrentIndex:(NSUInteger)currentIndex
+- (void)pageViewController:(JLPageViewController*)viewController didChangeToCurrentIndex:(NSUInteger)currentIndex fromIndex:(NSUInteger)fromIndex
 {
     
 }

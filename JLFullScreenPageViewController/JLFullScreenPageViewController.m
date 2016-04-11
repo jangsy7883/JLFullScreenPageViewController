@@ -385,7 +385,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     
 }
 
-- (void)pageViewController:(JLPageViewController*)pageView didScrollToCurrentIndex:(NSUInteger)currentIndex
+- (void)pageViewController:(JLPageViewController*)viewController didChangeToCurrentIndex:(NSUInteger)currentIndex fromIndex:(NSUInteger)fromIndex
 {
     
 }

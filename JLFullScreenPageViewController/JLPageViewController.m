@@ -148,6 +148,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     {
         _currentIndex = [self.dataSource defaultPageIndexForPageViewController:self];
     }
+    
     UIViewController *viewController = [self viewControllerAtIndex:_currentIndex];
     [self.pageViewController setViewControllers:@[viewController]
                                       direction:UIPageViewControllerNavigationDirectionForward
@@ -158,9 +159,9 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     {
         [self.delegate pageViewController:self didScrollToCurrentPosition:_currentIndex];
     }
-    if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentIndex:)] )
+    if ([self.delegate respondsToSelector:@selector(pageViewController:didChangeToCurrentIndex:fromIndex:)])
     {
-        [self.delegate pageViewController:self didScrollToCurrentIndex:_currentIndex];
+        [self.delegate pageViewController:self didChangeToCurrentIndex:_currentIndex fromIndex:NSNotFound];
     }
 }
 
@@ -262,6 +263,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 {
     if (completed)
     {
+        NSUInteger fromIndex = _currentIndex;
         _currentIndex = [self indexOfViewController:self.pageViewController.viewControllers.firstObject];
         
         for (UIViewController *viewController in self.childViewControllers)
@@ -276,9 +278,9 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         }
         if (_currentIndex != NSNotFound)
         {
-            if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentIndex:)])
+            if ([self.delegate respondsToSelector:@selector(pageViewController:didChangeToCurrentIndex:fromIndex:)])
             {
-                [self.delegate pageViewController:self didScrollToCurrentIndex:self.currentIndex];
+                [self.delegate pageViewController:self didChangeToCurrentIndex:self.currentIndex fromIndex:fromIndex];
             }
         }
     }
