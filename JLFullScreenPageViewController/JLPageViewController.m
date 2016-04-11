@@ -158,6 +158,10 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     {
         [self.delegate pageViewController:self didScrollToCurrentPosition:_currentIndex];
     }
+    if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentIndex:)] )
+    {
+        [self.delegate pageViewController:self didScrollToCurrentIndex:_currentIndex];
+    }
 }
 
 #pragma mark - scrollview delegate
