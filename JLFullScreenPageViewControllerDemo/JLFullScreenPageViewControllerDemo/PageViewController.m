@@ -34,6 +34,8 @@
 {
     [super viewDidLoad];
     
+    self.fullScreenStyle = JLFullScreenStyleScrolling;
+    
     UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.text = @"KMPageView";
     [titleLabel sizeToFit];
@@ -109,6 +111,11 @@
     return viewControllers;
 }
 
+- (NSInteger)defaultPageIndexForPageViewController:(JLPageViewController *)pageViewController
+{
+    return 1;
+    
+}
 #pragma mark - KMPagerView delegate
 
 - (void)pageViewController:(JLPageViewController*)viewController didScrollToCurrentPosition:(CGFloat)currentPosition

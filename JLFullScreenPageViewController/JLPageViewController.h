@@ -22,6 +22,7 @@
 @protocol JLPageViewControllerDataSource <NSObject>
 
 - (NSArray *)viewControllersForPageViewController:(JLPageViewController *)viewController;
+- (NSInteger)defaultPageIndexForPageViewController:(JLPageViewController *)pageViewController;
 
 @end
 

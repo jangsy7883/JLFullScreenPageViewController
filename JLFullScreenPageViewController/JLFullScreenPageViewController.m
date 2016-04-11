@@ -67,7 +67,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 {
     [super viewDidLoad];
     
-    _fullScreenStyle = JLFullScreenStyleScrolling;
+    _fullScreenStyle = JLFullScreenStyleAutomatic;
     
     self.automaticallyAdjustsScrollViewInsets = NO;
     
@@ -185,15 +185,12 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 {
     _tracking = NO;
     
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.5 * NSEC_PER_SEC));
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.0 * NSEC_PER_SEC));
     dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
         
-        if (CGRectGetMinY(self.contentHeaderView.frame) != -CGRectGetHeight(self.navigationController.navigationBar.frame) && CGRectGetMinY(self.contentHeaderView.frame) != 0)
-        {
-            [self setFullScreen:CGRectGetMinY(self.contentHeaderView.frame) < -22
-                       animated:YES
-                     completion:nil];
-        }
+        [self setFullScreen:CGRectGetMinY(self.contentHeaderView.frame) < -22
+                   animated:YES
+                 completion:nil];
     });
 }
 
@@ -240,7 +237,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                 
                 if (toContentOffset.y > -CGRectGetHeight(headerRect))
                 {
-                    CGFloat minY = CGRectGetHeight(self.navigationBar.frame) - (self.navigationBar? self.topLayoutGuide.length : 0);
+                    CGFloat minY = CGRectGetHeight(self.navigationBar.frame) - (!self.navigationBarHidden? self.topLayoutGuide.length : 0);
                     CGFloat y = CGRectGetMinY(headerRect) - (toContentOffset.y - formContentOffset.y);
                     
                     headerRect = CGRectReplaceY(headerRect, ceil(MAX(-minY, MIN(0,y))));
@@ -258,7 +255,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                 }
                 
                 // SET HEDAER FRAME
-                if (CGRectEqualToRect(headerRect, self.contentHeaderView.frame) == NO)
+                if (CGRectEqualToRect(headerRect, self.contentHeaderView.frame) == NO && _navigationBarHidden == YES)
                 {
                     self.contentHeaderView.frame = headerRect;
                 }
@@ -373,6 +370,11 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 - (NSArray *)viewControllersForPageViewController:(JLPageViewController *)pageView
 {
     return nil;
+}
+
+- (NSInteger)defaultPageIndexForPageViewController:(JLPageViewController *)pageViewController
+{
+    return 0;
 }
 
 #pragma mark - KMPagerView delegate

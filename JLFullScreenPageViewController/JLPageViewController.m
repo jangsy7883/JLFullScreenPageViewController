@@ -73,14 +73,14 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     [super viewDidLoad];
     
     self.pageViewController = [[UIPageViewController alloc]initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll
-                                                                navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
-                                                                              options:nil];
+                                                             navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal
+                                                                           options:nil];
     self.pageViewController.dataSource = self;
     self.pageViewController.delegate = self;
     [self addChildViewController:self.pageViewController];
     [self.view addSubview:self.pageViewController.view];
     [self.pageViewController didMoveToParentViewController:self];
-
+    
     //
     self.scrollView.scrollsToTop = NO;
     self.scrollView.delegate = self;
@@ -89,7 +89,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 - (void)viewWillLayoutSubviews
 {
     [super viewWillLayoutSubviews];
-
+    
     self.pageViewController.view.frame = self.view.bounds;
 }
 
@@ -130,12 +130,12 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
             [self addObserverForObject:scrollView
                             forKeyPath:@"contentInset"
                                options:NSKeyValueObservingOptionOld|NSKeyValueObservingOptionNew];
-
+            
             
             [self addObserverForObject:scrollView
                             forKeyPath:@"pan.state"
                                options:NSKeyValueObservingOptionNew];
-
+            
             //
             [self.fullScreenPageViewController layoutContentInsetForScrollView:scrollView
                                                              atContentInsetTop:CGRectGetMaxY(self.fullScreenPageViewController.contentHeaderView.frame)];
@@ -144,75 +144,84 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     }
     
     //DISPLAY
+    if ([self.dataSource respondsToSelector:@selector(defaultPageIndexForPageViewController:)])
+    {
+        _currentIndex = [self.dataSource defaultPageIndexForPageViewController:self];
+    }
     UIViewController *viewController = [self viewControllerAtIndex:_currentIndex];
     [self.pageViewController setViewControllers:@[viewController]
-                                         direction:UIPageViewControllerNavigationDirectionForward
-                                          animated:NO
-                                        completion:nil];
+                                      direction:UIPageViewControllerNavigationDirectionForward
+                                       animated:NO
+                                     completion:nil];
+    
+    if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentPosition:)] )
+    {
+        [self.delegate pageViewController:self didScrollToCurrentPosition:_currentIndex];
+    }
 }
 
 #pragma mark - scrollview delegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
 {
-    NSUInteger nextIndex = NSNotFound;
-    NSUInteger index = (_currentIndex == NSNotFound) ? 0 : _currentIndex;
-    CGFloat offsetX = scrollView.contentOffset.x;
-    CGFloat width = scrollView.frame.size.width;
-    CGFloat position = 0;
-    CGFloat percent = fabs(offsetX - width)/width;
-    
-    //
-    if (offsetX < width)
+    if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentPosition:)] )
     {
-        for (UIViewController *viewController in  self.pageViewController.childViewControllers)
+        NSUInteger nextIndex = NSNotFound;
+        NSUInteger index = (_currentIndex == NSNotFound) ? 0 : _currentIndex;
+        CGFloat offsetX = scrollView.contentOffset.x;
+        CGFloat width = scrollView.frame.size.width;
+        CGFloat position = 0;
+        CGFloat percent = fabs(offsetX - width)/width;
+        
+        //
+        if (offsetX < width)
         {
-            NSUInteger aIndex = [self indexOfViewController:viewController];
-
-            if (aIndex < index)
+            for (UIViewController *viewController in  self.pageViewController.childViewControllers)
             {
-                nextIndex = aIndex;
-                break;
+                NSUInteger aIndex = [self indexOfViewController:viewController];
+                
+                if (aIndex < index)
+                {
+                    nextIndex = aIndex;
+                    break;
+                }
             }
         }
-    }
-    else if (offsetX > width)
-    {
-        for (UIViewController *viewController in  self.pageViewController.childViewControllers)
+        else if (offsetX > width)
         {
-            NSUInteger aIndex = [self indexOfViewController:viewController];
-
-            if (aIndex > index)
+            for (UIViewController *viewController in  self.pageViewController.childViewControllers)
             {
-                nextIndex = aIndex;
-                break;
+                NSUInteger aIndex = [self indexOfViewController:viewController];
+                
+                if (aIndex > index)
+                {
+                    nextIndex = aIndex;
+                    break;
+                }
             }
-        }
-    }
-    else
-    {
-        nextIndex = index;
-    }
-    
-    if (nextIndex != NSNotFound)
-    {
-        if (index < nextIndex)
-        {
-            position = ((nextIndex - index) * percent) + index;
-        }
-        else if (index > nextIndex)
-        {
-            position = ((index - nextIndex) * (1-percent)) + nextIndex;
         }
         else
         {
-            position = index;
+            nextIndex = index;
         }
-
-        if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentPosition:)] )
+        
+        if (nextIndex != NSNotFound)
         {
+            if (index < nextIndex)
+            {
+                position = ((nextIndex - index) * percent) + index;
+            }
+            else if (index > nextIndex)
+            {
+                position = ((index - nextIndex) * (1-percent)) + nextIndex;
+            }
+            else
+            {
+                position = index;
+            }
+            
             [self.delegate pageViewController:self didScrollToCurrentPosition:position];
-        }        
+        }
     }
 }
 
@@ -310,12 +319,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
                 {
                     CGPoint new = [change[NSKeyValueChangeNewKey] CGPointValue];
                     CGPoint old = [change[NSKeyValueChangeOldKey] CGPointValue];
-
                     
-//                    NSLog(@"tracking : %@",scrollView.tracking ? @"YES":@"NO");
-//                    NSLog(@"dragging : %@",scrollView.dragging ? @"YES":@"NO");
-//                    NSLog(@"decelerating : %@",scrollView.decelerating ? @"YES":@"NO");
-
                     if (new.y != old.y
                         && scrollView.contentOffset.y+scrollView.frame.size.height < scrollView.contentSize.height)
                     {
@@ -335,7 +339,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
                 else if ([keyPath isEqualToString:@"pan.state"])
                 {
                     UIGestureRecognizerState state = [change[NSKeyValueChangeNewKey] integerValue];
-
+                    
                     if (state == UIGestureRecognizerStateEnded || state == UIGestureRecognizerStateCancelled)
                     {
                         [self.fullScreenPageViewController scrollViewDidEndDragging:scrollView];
@@ -349,8 +353,6 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
-
-
 
 #pragma mark -
 
@@ -380,15 +382,15 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         
         typeof(self) __weak weakSelf = self;
         [self.pageViewController setViewControllers:@[viewController]
-                                             direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
-                                              animated:YES
-                                            completion:^(BOOL finished) {
-                                                typeof(weakSelf) __strong strongSelf = weakSelf;
-                                                [strongSelf pageViewController:strongSelf.pageViewController
-                                                            didFinishAnimating:YES
-                                                       previousViewControllers:viewControllers
-                                                           transitionCompleted:YES];
-                                            }];
+                                          direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
+                                           animated:YES
+                                         completion:^(BOOL finished) {
+                                             typeof(weakSelf) __strong strongSelf = weakSelf;
+                                             [strongSelf pageViewController:strongSelf.pageViewController
+                                                         didFinishAnimating:YES
+                                                    previousViewControllers:viewControllers
+                                                        transitionCompleted:YES];
+                                         }];
     }
 }
 
