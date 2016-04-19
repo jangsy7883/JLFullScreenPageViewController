@@ -23,6 +23,8 @@ typedef NS_ENUM(NSInteger, JLFullScreenStyle)
 @property (nonatomic, strong) UIView *headerView;
 
 @property (nonatomic, assign) JLFullScreenStyle fullScreenStyle;
+
+@property (nonatomic, readonly, getter = isFullScreen) BOOL fullScreen;
 @property (nonatomic, assign, getter = isNavigationBarHidden) BOOL navigationBarHidden;
 
 @end

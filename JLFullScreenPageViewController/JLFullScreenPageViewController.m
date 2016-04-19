@@ -38,6 +38,8 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 @interface JLFullScreenPageViewController ()
 
+@property (nonatomic, getter = isFullScreen) BOOL fullScreen;
+
 @property (nonatomic, assign) BOOL animating;
 @property (nonatomic, assign) BOOL tracking;
 @property (nonatomic, assign) CGFloat trackingBeginPoint;
@@ -180,6 +182,31 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     }
 }
 
+#pragma mark - Screen State
+
+- (void)didChangeFullScreenState:(BOOL)isFullScreen
+{
+    
+}
+
+- (void)reloadScreenState
+{
+    CGRect rect = CGRectMake(0,
+                             -(self.navigationBar.frame.size.height - self.topLayoutGuide.length),
+                             CGRectGetWidth(self.view.bounds),
+                             CGRectGetHeight(self.contentHeaderView.frame));
+    
+    
+    BOOL isFullScreen = CGRectEqualToRect(self.contentHeaderView.frame, rect);
+    
+    if (_fullScreen != isFullScreen)
+    {
+        _fullScreen = isFullScreen;
+        
+        [self didChangeFullScreenState:isFullScreen];
+    }
+}
+
 #pragma mark - scrollview
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView
@@ -273,6 +300,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                         self.tabBarHidden = isHidden;
                     }
                 }
+                [self reloadScreenState];
             }
         }
     }
@@ -346,6 +374,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                                          {
                                              completion();
                                          }
+                                         [self reloadScreenState];
                                      }
                                  }];
             }
@@ -360,6 +389,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                 {
                     completion();
                 }
+                [self reloadScreenState];
             }
         }
     }
@@ -424,6 +454,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         subview.hidden = isHidden;
     }
 }
+
 
 #pragma mark - GETTERS
 

@@ -114,16 +114,21 @@
 - (NSInteger)defaultPageIndexForPageViewController:(JLPageViewController *)pageViewController
 {
     return 1;
-    
 }
+
+- (void)didChangeFullScreenState:(BOOL)isFullScreen
+{
+    NSLog(@"%@",isFullScreen? @"YES":@"NO");
+}
+
 #pragma mark - KMPagerView delegate
 
-- (void)pageViewController:(JLPageViewController*)viewController didScrollToCurrentPosition:(CGFloat)currentPosition
+- (void)pageViewController:(JLPageViewController*)pageViewController didScrollToCurrentPosition:(CGFloat)currentPosition
 {
     [self.segmentedBar scrollDidContentOffset:currentPosition];
 }
 
-- (void)pageViewController:(JLPageViewController*)viewController didChangeToCurrentIndex:(NSUInteger)currentIndex fromIndex:(NSUInteger)fromIndex
+- (void)pageViewController:(JLPageViewController*)pageViewController didChangeToCurrentIndex:(NSUInteger)currentIndex fromIndex:(NSUInteger)fromIndex
 {
     
 }
