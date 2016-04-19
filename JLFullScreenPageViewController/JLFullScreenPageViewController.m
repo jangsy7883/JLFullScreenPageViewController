@@ -190,6 +190,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 #pragma mark - Screen State
 
 - (void)fullSceenViewControllerWillChangeFullsceenState:(BOOL)isFullScreen
+                                               duration:(CGFloat)Duration
                                  usingSpringWithDamping:(CGFloat)dampingRatio
                                   initialSpringVelocity:(CGFloat)velocity
                                                 options:(UIViewAnimationOptions)options
@@ -373,6 +374,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
             if (animated)
             {
                 [self fullSceenViewControllerWillChangeFullsceenState:isFullScreen
+                                                             duration:0.25
                                                usingSpringWithDamping:1
                                                 initialSpringVelocity:15
                                                               options:UIViewAnimationOptionCurveEaseInOut];

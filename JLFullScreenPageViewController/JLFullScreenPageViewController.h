@@ -30,6 +30,7 @@ typedef NS_ENUM(NSInteger, JLFullScreenStyle)
 - (void)updateNeedSubviews;
 
 - (void)fullSceenViewControllerWillChangeFullsceenState:(BOOL)isFullScreen
+                                               duration:(CGFloat)Duration
                                  usingSpringWithDamping:(CGFloat)dampingRatio
                                   initialSpringVelocity:(CGFloat)velocity
                                                 options:(UIViewAnimationOptions)options;
