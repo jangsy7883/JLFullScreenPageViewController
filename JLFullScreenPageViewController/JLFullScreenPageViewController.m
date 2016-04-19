@@ -189,7 +189,15 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 #pragma mark - Screen State
 
-- (void)didChangeFullScreenState:(BOOL)isFullScreen
+- (void)fullSceenViewControllerWillChangeFullsceenState:(BOOL)isFullScreen
+                                 usingSpringWithDamping:(CGFloat)dampingRatio
+                                  initialSpringVelocity:(CGFloat)velocity
+                                                options:(UIViewAnimationOptions)options
+{
+    
+}
+
+- (void)fullSceenViewControllerDidChangeFullsceenState:(BOOL)isFullScreen
 {
     
 }
@@ -208,7 +216,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     {
         _fullScreen = isFullScreen;
         
-        [self didChangeFullScreenState:isFullScreen];
+        [self fullSceenViewControllerDidChangeFullsceenState:isFullScreen];
     }
 }
 
@@ -356,18 +364,26 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                                            CGRectGetHeight(self.contentHeaderView.frame));
         }
         
+        
+        
         if (CGRectEqualToRect(self.contentHeaderView.frame, navigationBarRect) == NO && _animating == NO)
         {
             _animating = YES;
             
             if (animated)
             {
+                [self fullSceenViewControllerWillChangeFullsceenState:isFullScreen
+                                               usingSpringWithDamping:1
+                                                initialSpringVelocity:15
+                                                              options:UIViewAnimationOptionCurveEaseInOut];
+                
                 [UIView animateWithDuration:0.25
                                       delay:0
                      usingSpringWithDamping:1
                       initialSpringVelocity:15
                                     options:UIViewAnimationOptionCurveEaseInOut
                                  animations:^{
+                                     
                                      self.contentHeaderView.frame = navigationBarRect;
                                      self.tabBarController.tabBar.frame = tabBarRect;
                                  }
@@ -380,6 +396,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                                          {
                                              completion();
                                          }
+                                         
                                          [self updateNeedSubviews];
                                      }
                                  }];
@@ -400,7 +417,6 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
         }
     }
 }
-
 
 #pragma mark - KMPagerView datasource
 

@@ -29,6 +29,13 @@ typedef NS_ENUM(NSInteger, JLFullScreenStyle)
 
 - (void)updateNeedSubviews;
 
+- (void)fullSceenViewControllerWillChangeFullsceenState:(BOOL)isFullScreen
+                                 usingSpringWithDamping:(CGFloat)dampingRatio
+                                  initialSpringVelocity:(CGFloat)velocity
+                                                options:(UIViewAnimationOptions)options;
+
+- (void)fullSceenViewControllerDidChangeFullsceenState:(BOOL)isFullScreen;
+
 @end
 
 @interface UIViewController (JLFullScreenPageViewController)
