@@ -27,6 +27,8 @@ typedef NS_ENUM(NSInteger, JLFullScreenStyle)
 @property (nonatomic, readonly, getter = isFullScreen) BOOL fullScreen;
 @property (nonatomic, assign, getter = isNavigationBarHidden) BOOL navigationBarHidden;
 
+- (void)updateNeedSubviews;
+
 @end
 
 @interface UIViewController (JLFullScreenPageViewController)

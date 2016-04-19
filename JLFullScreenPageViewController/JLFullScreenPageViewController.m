@@ -115,6 +115,11 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 #pragma  mark - layout
 
+- (void)updateNeedSubviews
+{
+    [self reloadScreenState];
+}
+
 - (void)layoutContentHeaderView
 {
     CGRect bounds = self.view.bounds;
@@ -300,7 +305,8 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                         self.tabBarHidden = isHidden;
                     }
                 }
-                [self reloadScreenState];
+                
+                [self updateNeedSubviews];
             }
         }
     }
@@ -374,7 +380,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                                          {
                                              completion();
                                          }
-                                         [self reloadScreenState];
+                                         [self updateNeedSubviews];
                                      }
                                  }];
             }
@@ -389,7 +395,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                 {
                     completion();
                 }
-                [self reloadScreenState];
+                [self updateNeedSubviews];
             }
         }
     }
