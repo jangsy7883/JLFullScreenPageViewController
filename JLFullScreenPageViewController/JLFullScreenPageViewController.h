@@ -25,12 +25,14 @@ typedef NS_ENUM(NSInteger, JLFullScreenStyle)
 @property (nonatomic, assign) JLFullScreenStyle fullScreenStyle;
 
 @property (nonatomic, readonly, getter = isFullScreen) BOOL fullScreen;
-@property (nonatomic, assign, getter = isNavigationBarHidden) BOOL navigationBarHidden;
+
+@property (nonatomic, assign, getter = isEnableNavigationBar) BOOL enableNavigationBar;
+@property (nonatomic, assign, getter = isEnableTabBar) BOOL enableTabBar;
 
 - (void)updateNeedSubviews;
 
 - (void)fullSceenViewControllerWillChangeFullsceenState:(BOOL)isFullScreen
-                                               duration:(CGFloat)Duration
+                                               duration:(CGFloat)duration
                                  usingSpringWithDamping:(CGFloat)dampingRatio
                                   initialSpringVelocity:(CGFloat)velocity
                                                 options:(UIViewAnimationOptions)options;

@@ -43,6 +43,7 @@
     self.navigationBar.topItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                                   target:self
                                                                                                   action:@selector(pressedCancel:)];
+    self.navigationBar.hidden = YES;
     
     self.segmentedBar = [[JLSegmentedBar alloc] init];
     self.segmentedBar.backgroundColor = [UIColor darkGrayColor];
@@ -114,11 +115,6 @@
 - (NSInteger)defaultPageIndexForPageViewController:(JLPageViewController *)pageViewController
 {
     return 1;
-}
-
-- (void)didChangeFullScreenState:(BOOL)isFullScreen
-{
-    NSLog(@"%@",isFullScreen? @"YES":@"NO");
 }
 
 #pragma mark - KMPagerView delegate
