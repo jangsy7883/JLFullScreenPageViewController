@@ -389,7 +389,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         typeof(self) __weak weakSelf = self;
         [self.pageViewController setViewControllers:@[viewController]
                                           direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
-                                           animated:YES
+                                           animated:animated
                                          completion:^(BOOL finished) {
                                              typeof(weakSelf) __strong strongSelf = weakSelf;
                                              [strongSelf pageViewController:strongSelf.pageViewController

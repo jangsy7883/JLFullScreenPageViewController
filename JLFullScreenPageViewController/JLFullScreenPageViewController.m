@@ -88,7 +88,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     
     //CONTENT HEDAER VIEW
     self.contentHeaderView = [[UIView alloc] init];
-    self.contentHeaderView.backgroundColor = self.view.backgroundColor;
+    self.contentHeaderView.backgroundColor = [UIColor clearColor];
     [self.contentHeaderView addObserver:self
                              forKeyPath:NSStringFromSelector(@selector(frame))
                                 options:NSKeyValueObservingOptionNew
