@@ -88,7 +88,6 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     
     //CONTENT HEDAER VIEW
     self.contentHeaderView = [[UIView alloc] init];
-    self.contentHeaderView.backgroundColor = [UIColor clearColor];
     [self.contentHeaderView addObserver:self
                              forKeyPath:NSStringFromSelector(@selector(frame))
                                 options:NSKeyValueObservingOptionNew
@@ -103,6 +102,20 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                             options:NSKeyValueObservingOptionNew
                             context:KMPageViewControllerKVOContext];
     [self.contentHeaderView addSubview:self.navigationBar];
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    if (self.navigationBar.hidden && self.headerView == nil)
+    {
+        self.contentHeaderView.backgroundColor = [UIColor clearColor];
+    }
+    else
+    {
+        self.contentHeaderView.backgroundColor = self.view.backgroundColor;
+    }
 }
 
 - (void)viewWillLayoutSubviews
@@ -218,11 +231,11 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     CGFloat headerY = -(self.navigationBar.frame.size.height - self.topLayoutGuide.length);
     BOOL isFullScreen = NO;
     
-    if (_enableNavigationBar == YES && self.navigationBar.hidden == NO && (CGRectGetMaxY(self.contentHeaderView.frame) == headerY))
+    if (_enableNavigationBar == YES && self.navigationBar.hidden == NO && (CGRectGetMinY(self.contentHeaderView.frame) == headerY))
     {
         isFullScreen = YES;
     }
-    else if (_enableTabBar == YES && (CGRectGetMaxY(self.tabBarController.tabBar.frame) == tabBarY))
+    else if (_enableTabBar == YES && (CGRectGetMinY(self.tabBarController.tabBar.frame) == tabBarY))
     {
         isFullScreen = YES;
     }
