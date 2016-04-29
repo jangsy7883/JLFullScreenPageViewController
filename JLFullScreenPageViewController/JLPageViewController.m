@@ -383,20 +383,23 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     if (_currentIndex != currentIndex)
     {
         BOOL isForwards = currentIndex > self.currentIndex;
-        NSArray *viewControllers = self.pageViewController.viewControllers;
         UIViewController *viewController = [self viewControllerAtIndex:currentIndex];
         
-        typeof(self) __weak weakSelf = self;
+        __weak UIPageViewController* pvcw = self.pageViewController;
         [self.pageViewController setViewControllers:@[viewController]
                                           direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
                                            animated:animated
-                                         completion:^(BOOL finished) {
-                                             typeof(weakSelf) __strong strongSelf = weakSelf;
-                                             [strongSelf pageViewController:strongSelf.pageViewController
-                                                         didFinishAnimating:YES
-                                                    previousViewControllers:viewControllers
-                                                        transitionCompleted:YES];
-                                         }];
+                                         completion:^(BOOL finished)
+         {
+             UIPageViewController* pvcs = pvcw;
+             if (!pvcs) return;
+             dispatch_async(dispatch_get_main_queue(), ^{
+                 [pvcs setViewControllers:@[viewController]
+                                direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
+                                 animated:NO
+                               completion:nil];
+             });
+         }];
     }
 }
 
