@@ -30,6 +30,8 @@
 
 @property (nonatomic, strong) NSArray *viewControllers;
 
+
+
 @end
 
 @implementation JLPageViewController
@@ -171,66 +173,35 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 {
     if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentPosition:)] )
     {
-        NSUInteger nextIndex = NSNotFound;
+        NSUInteger nextIndex = _nextIndex;
         NSUInteger index = (_currentIndex == NSNotFound) ? 0 : _currentIndex;
         CGFloat offsetX = scrollView.contentOffset.x;
         CGFloat width = scrollView.frame.size.width;
         CGFloat position = 0;
         CGFloat percent = fabs(offsetX - width)/width;
         
-        //
-        if (offsetX < width)
+        if (index < nextIndex)
         {
-            for (UIViewController *viewController in  self.pageViewController.childViewControllers)
-            {
-                NSUInteger aIndex = [self indexOfViewController:viewController];
-                
-                if (aIndex < index)
-                {
-                    nextIndex = aIndex;
-                    break;
-                }
-            }
+            position = ((nextIndex - index) * percent) + index;
         }
-        else if (offsetX > width)
+        else if (index > nextIndex)
         {
-            for (UIViewController *viewController in  self.pageViewController.childViewControllers)
-            {
-                NSUInteger aIndex = [self indexOfViewController:viewController];
-                
-                if (aIndex > index)
-                {
-                    nextIndex = aIndex;
-                    break;
-                }
-            }
+            position = ((index - nextIndex) * (1-percent)) + nextIndex;
         }
         else
         {
-            nextIndex = index;
+            position = index;
         }
         
-        if (nextIndex != NSNotFound)
-        {
-            if (index < nextIndex)
-            {
-                position = ((nextIndex - index) * percent) + index;
-            }
-            else if (index > nextIndex)
-            {
-                position = ((index - nextIndex) * (1-percent)) + nextIndex;
-            }
-            else
-            {
-                position = index;
-            }
-            
-            [self.delegate pageViewController:self didScrollToCurrentPosition:position];
-        }
-    }
+        [self.delegate pageViewController:self didScrollToCurrentPosition:position];    }
 }
 
 #pragma  mark - pageviewcontroller datasource
+
+- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers
+{
+    _nextIndex = [self indexOfViewController:pendingViewControllers.firstObject];
+}
 
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
@@ -382,24 +353,35 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 {
     if (_currentIndex != currentIndex)
     {
+        _nextIndex = currentIndex;
+        
         BOOL isForwards = currentIndex > self.currentIndex;
+        NSArray *viewControllers = self.pageViewController.viewControllers;
         UIViewController *viewController = [self viewControllerAtIndex:currentIndex];
         
+        typeof(self) __weak weakSelf = self;
         __weak UIPageViewController* pvcw = self.pageViewController;
+        
         [self.pageViewController setViewControllers:@[viewController]
                                           direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
                                            animated:animated
-                                         completion:^(BOOL finished)
-         {
-             UIPageViewController* pvcs = pvcw;
-             if (!pvcs) return;
-             dispatch_async(dispatch_get_main_queue(), ^{
-                 [pvcs setViewControllers:@[viewController]
-                                direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
-                                 animated:NO
-                               completion:nil];
-             });
-         }];
+                                         completion:^(BOOL finished) {
+                                             typeof(weakSelf) __strong strongSelf = weakSelf;
+                                             [strongSelf pageViewController:strongSelf.pageViewController
+                                                         didFinishAnimating:YES
+                                                    previousViewControllers:viewControllers
+                                                        transitionCompleted:YES];
+                                             
+                                             UIPageViewController* pvcs = pvcw;
+                                             if (!pvcs) return;
+                                             dispatch_async(dispatch_get_main_queue(), ^{
+                                                 [pvcs setViewControllers:@[viewController]
+                                                                direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
+                                                                 animated:NO
+                                                               completion:nil];
+                                             });
+                                             
+                                         }];
     }
 }
 
@@ -415,6 +397,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         self.scrollView.scrollEnabled = scrollPagingEnabled;
     }
 }
+
 #pragma mark - GETTERS
 
 - (UIViewController*)currentViewController

@@ -29,6 +29,7 @@
 @interface JLPageViewController : UIViewController
 
 @property (nonatomic, assign) NSUInteger currentIndex;
+@property (nonatomic, readonly) NSUInteger nextIndex;
 
 @property (nonatomic, assign, getter = isScrollPagingEnabled) BOOL scrollPagingEnabled;
 
@@ -40,7 +41,6 @@
 @property (nonatomic, weak) id<JLPageViewControllerDataSource>dataSource;
 
 - (void)reloadData;
-
 - (void)setCurrentIndex:(NSUInteger)currentIndex animated:(BOOL)animated;
 
 @end
