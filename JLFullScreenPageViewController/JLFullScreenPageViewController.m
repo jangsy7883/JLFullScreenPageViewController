@@ -72,6 +72,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 {
     [super viewDidLoad];
     
+    _topInset = 0;
     _enableNavigationBar = YES;
     _enableTabBar = YES;
     _fullScreenStyle = JLFullScreenStyleAutomatic;
@@ -183,7 +184,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 - (void)layoutContentInsetAllChildScrollViews
 {
-    CGFloat maxY = CGRectGetMaxY(self.contentHeaderView.frame);
+    CGFloat maxY = CGRectGetMaxY(self.contentHeaderView.frame) + _topInset;
     
     for (UIViewController *viewController in self.pageViewController.viewControllers)
     {

@@ -29,6 +29,8 @@ typedef NS_ENUM(NSInteger, JLFullScreenStyle)
 @property (nonatomic, assign, getter = isEnableNavigationBar) BOOL enableNavigationBar;
 @property (nonatomic, assign, getter = isEnableTabBar) BOOL enableTabBar;
 
+@property (nonatomic, assign) CGFloat topInset;
+
 - (void)updateNeedSubviews;
 
 - (void)fullSceenViewControllerWillChangeFullsceenState:(BOOL)isFullScreen
