@@ -175,7 +175,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     {
         UIEdgeInsets contentInset = scrollView.contentInset;
         contentInset.top = insetTop;
-        contentInset.bottom = self.tabBarController.tabBar ? CGRectGetHeight(self.tabBarController.tabBar.frame) : 0;
+        contentInset.bottom = (self.tabBarController.tabBar && _enableTabBar == NO) ? CGRectGetHeight(self.tabBarController.tabBar.frame) : 0;
         scrollView.contentInset = contentInset;
         
         scrollView.scrollIndicatorInsets = contentInset;
@@ -439,17 +439,14 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
                                  }
                              }
                              completion:^(BOOL finished) {
-                                 if (finished)
+                                 _animating = NO;
+                                 
+                                 if (completion)
                                  {
-                                     _animating = NO;
-                                     
-                                     if (completion)
-                                     {
-                                         completion();
-                                     }
-                                     
-                                     [self updateNeedSubviews];
+                                     completion();
                                  }
+                                 
+                                 [self updateNeedSubviews];
                              }];
         }
         else
