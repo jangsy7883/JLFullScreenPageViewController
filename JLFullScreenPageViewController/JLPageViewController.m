@@ -193,7 +193,8 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
             position = index;
         }
         
-        [self.delegate pageViewController:self didScrollToCurrentPosition:position];    }
+        [self.delegate pageViewController:self didScrollToCurrentPosition:position];
+    }
 }
 
 #pragma  mark - pageviewcontroller datasource
@@ -290,7 +291,17 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
             
             NSUInteger index = [self indexOfViewController:scrollView.jl_superViewController];
             
-            if (index != NSNotFound && index == _currentIndex)
+            if ([keyPath isEqualToString:@"contentInset"])
+            {
+                UIEdgeInsets new = [change[NSKeyValueChangeNewKey] UIEdgeInsetsValue];
+                UIEdgeInsets old = [change[NSKeyValueChangeOldKey] UIEdgeInsetsValue];
+                
+                if (-old.top == scrollView.contentOffset.y)
+                {
+                    [scrollView setContentOffset:CGPointMake(0, -new.top) animated:NO];
+                }
+            }
+            else if (index != NSNotFound && index == _currentIndex)
             {
                 if ([keyPath isEqualToString:@"contentOffset"])
                 {
@@ -447,6 +458,5 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     }
     return _scrollView;
 }
-
 
 @end

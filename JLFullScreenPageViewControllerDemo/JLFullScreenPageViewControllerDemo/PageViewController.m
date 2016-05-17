@@ -46,8 +46,6 @@
     
     self.enableTabBar = NO;
     
-    self.topInset = 20;
-    
     self.segmentedBar = [[JLSegmentedBar alloc] init];
     self.segmentedBar.backgroundColor = [UIColor darkGrayColor];
     self.segmentedBar.barStyle = JLSegmentedBarStyleEqualSegment;
