@@ -1,4 +1,4 @@
-@version = "1.0.21"
+@version = "1.0.22"
 Pod::Spec.new do |s|
   s.name         = "JLFullScreenPageViewController"
   s.version      = @version

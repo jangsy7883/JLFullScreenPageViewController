@@ -34,7 +34,7 @@
 {
     [super viewDidLoad];
     
-    self.fullScreenStyle = JLFullScreenStyleScrolling;
+    self.fullScreenStyle = JLFullScreenStyleAutomatic;
     
     UILabel *titleLabel = [[UILabel alloc] init];
     titleLabel.text = @"KMPageView";
@@ -43,7 +43,10 @@
     self.navigationBar.topItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
                                                                                                   target:self
                                                                                                   action:@selector(pressedCancel:)];
-    self.navigationBar.hidden = YES;
+    
+    self.enableTabBar = NO;
+    
+    self.topInset = 20;
     
     self.segmentedBar = [[JLSegmentedBar alloc] init];
     self.segmentedBar.backgroundColor = [UIColor darkGrayColor];

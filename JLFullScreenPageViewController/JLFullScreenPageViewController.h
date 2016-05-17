@@ -29,8 +29,6 @@ typedef NS_ENUM(NSInteger, JLFullScreenStyle)
 @property (nonatomic, assign, getter = isEnableNavigationBar) BOOL enableNavigationBar;
 @property (nonatomic, assign, getter = isEnableTabBar) BOOL enableTabBar;
 
-@property (nonatomic, assign) CGFloat topInset;
-
 - (void)updateNeedSubviews;
 
 - (void)fullSceenViewControllerWillChangeFullsceenState:(BOOL)isFullScreen
@@ -40,6 +38,8 @@ typedef NS_ENUM(NSInteger, JLFullScreenStyle)
                                                 options:(UIViewAnimationOptions)options;
 
 - (void)fullSceenViewControllerDidChangeFullsceenState:(BOOL)isFullScreen;
+
+- (void)setFullScreen:(BOOL)isFullScreen animated:(BOOL)animated;
 
 @end
 

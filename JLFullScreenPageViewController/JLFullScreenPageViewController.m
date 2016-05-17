@@ -72,7 +72,6 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 {
     [super viewDidLoad];
     
-    _topInset = 0;
     _enableNavigationBar = YES;
     _enableTabBar = YES;
     _fullScreenStyle = JLFullScreenStyleAutomatic;
@@ -176,6 +175,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     {
         UIEdgeInsets contentInset = scrollView.contentInset;
         contentInset.top = insetTop;
+        contentInset.bottom = self.tabBarController.tabBar ? CGRectGetHeight(self.tabBarController.tabBar.frame) : 0;
         scrollView.contentInset = contentInset;
         
         scrollView.scrollIndicatorInsets = contentInset;
@@ -184,7 +184,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 - (void)layoutContentInsetAllChildScrollViews
 {
-    CGFloat maxY = CGRectGetMaxY(self.contentHeaderView.frame) + _topInset;
+    CGFloat maxY = CGRectGetMaxY(self.contentHeaderView.frame);
     
     for (UIViewController *viewController in self.pageViewController.viewControllers)
     {
@@ -382,6 +382,11 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 }
 
 #pragma mark - navigation bar
+
+- (void)setFullScreen:(BOOL)isFullScreen animated:(BOOL)animated
+{
+    [self setFullScreen:isFullScreen animated:animated completion:nil];
+}
 
 - (void)setFullScreen:(BOOL)isFullScreen animated:(BOOL)animated completion:(void (^)(void))completion
 {
