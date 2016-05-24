@@ -371,6 +371,26 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         UIViewController *viewController = [self viewControllerAtIndex:currentIndex];
         
         typeof(self) __weak weakSelf = self;
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.pageViewController setViewControllers:@[viewController]
+                                              direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
+                                               animated:animated
+                                             completion:^(BOOL finished) {
+                                                 typeof(weakSelf) __strong strongSelf = weakSelf;
+                                                 [strongSelf pageViewController:strongSelf.pageViewController
+                                                             didFinishAnimating:animated
+                                                        previousViewControllers:viewControllers
+                                                            transitionCompleted:YES];
+                                             }];
+        });
+
+/*
+        BOOL isForwards = currentIndex > self.currentIndex;
+        NSArray *viewControllers = self.pageViewController.viewControllers;
+        UIViewController *viewController = [self viewControllerAtIndex:currentIndex];
+        
+        typeof(self) __weak weakSelf = self;
         __weak UIPageViewController* pvcw = self.pageViewController;
         
         [self.pageViewController setViewControllers:@[viewController]
@@ -393,6 +413,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
                                              });
                                              
                                          }];
+ */
     }
 }
 

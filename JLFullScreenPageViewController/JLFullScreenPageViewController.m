@@ -175,7 +175,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     {
         UIEdgeInsets contentInset = scrollView.contentInset;
         contentInset.top = insetTop;
-        contentInset.bottom = (self.tabBarController.tabBar && _enableTabBar == NO) ? CGRectGetHeight(self.tabBarController.tabBar.frame) : 0;
+        contentInset.bottom = (self.tabBarController.tabBar && self.tabBarController.tabBar.translucent == YES && _enableTabBar == NO) ? CGRectGetHeight(self.tabBarController.tabBar.frame) : 0;
         scrollView.contentInset = contentInset;
         
         scrollView.scrollIndicatorInsets = contentInset;
