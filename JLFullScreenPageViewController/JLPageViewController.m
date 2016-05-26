@@ -376,7 +376,8 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
             [self.pageViewController setViewControllers:@[viewController]
                                               direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
                                                animated:animated
-                                             completion:^(BOOL finished) {
+                                             completion:^(BOOL finished)
+            {
                                                  typeof(weakSelf) __strong strongSelf = weakSelf;
                                                  [strongSelf pageViewController:strongSelf.pageViewController
                                                              didFinishAnimating:animated
