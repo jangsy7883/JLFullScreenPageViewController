@@ -152,18 +152,22 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     }
     
     UIViewController *viewController = [self viewControllerAtIndex:_currentIndex];
-    [self.pageViewController setViewControllers:@[viewController]
-                                      direction:UIPageViewControllerNavigationDirectionForward
-                                       animated:NO
-                                     completion:nil];
     
-    if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentPosition:)] )
+    if (viewController)
     {
-        [self.delegate pageViewController:self didScrollToCurrentPosition:_currentIndex];
-    }
-    if ([self.delegate respondsToSelector:@selector(pageViewController:didChangeToCurrentIndex:fromIndex:)])
-    {
-        [self.delegate pageViewController:self didChangeToCurrentIndex:_currentIndex fromIndex:NSNotFound];
+        [self.pageViewController setViewControllers:@[viewController]
+                                          direction:UIPageViewControllerNavigationDirectionForward
+                                           animated:NO
+                                         completion:nil];
+        
+        if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentPosition:)] )
+        {
+            [self.delegate pageViewController:self didScrollToCurrentPosition:_currentIndex];
+        }
+        if ([self.delegate respondsToSelector:@selector(pageViewController:didChangeToCurrentIndex:fromIndex:)])
+        {
+            [self.delegate pageViewController:self didChangeToCurrentIndex:_currentIndex fromIndex:NSNotFound];
+        }
     }
 }
 
@@ -346,7 +350,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
 - (UIViewController *)viewControllerAtIndex:(NSInteger)index
 {
-    if (index < self.viewControllers.count)
+    if (self.viewControllers.count > 0 && index < self.viewControllers.count)
     {
         return self.viewControllers[index];
     }
@@ -364,27 +368,30 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 {
     if (_currentIndex != currentIndex)
     {
-        _nextIndex = currentIndex;
-        
-        BOOL isForwards = currentIndex > self.currentIndex;
-        NSArray *viewControllers = self.pageViewController.viewControllers;
         UIViewController *viewController = [self viewControllerAtIndex:currentIndex];
-        
-        typeof(self) __weak weakSelf = self;
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.pageViewController setViewControllers:@[viewController]
-                                              direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
-                                               animated:animated
-                                             completion:^(BOOL finished)
-            {
-                                                 typeof(weakSelf) __strong strongSelf = weakSelf;
-                                                 [strongSelf pageViewController:strongSelf.pageViewController
-                                                             didFinishAnimating:animated
-                                                        previousViewControllers:viewControllers
-                                                            transitionCompleted:YES];
-                                             }];
-        });
+
+        if (viewController)
+        {
+            _nextIndex = currentIndex;
+            
+            typeof(self) __weak weakSelf = self;
+            BOOL isForwards = currentIndex > self.currentIndex;
+            NSArray *viewControllers = self.pageViewController.viewControllers;
+
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.pageViewController setViewControllers:@[viewController]
+                                                  direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
+                                                   animated:animated
+                                                 completion:^(BOOL finished)
+                 {
+                     typeof(weakSelf) __strong strongSelf = weakSelf;
+                     [strongSelf pageViewController:strongSelf.pageViewController
+                                 didFinishAnimating:animated
+                            previousViewControllers:viewControllers
+                                transitionCompleted:YES];
+                 }];
+            });
+        }
 
 /*
         BOOL isForwards = currentIndex > self.currentIndex;
