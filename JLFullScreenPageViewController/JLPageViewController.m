@@ -242,12 +242,13 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         NSUInteger fromIndex = _currentIndex;
         _currentIndex = [self indexOfViewController:self.pageViewController.viewControllers.firstObject];
         
-        for (UIViewController *viewController in self.childViewControllers)
+        for (UIViewController *viewController in self.pageViewController.childViewControllers)
         {
             NSUInteger index =  [self indexOfViewController:viewController];
+        
             UIScrollView *scrollView = viewController.jl_scrollView;
             
-            if (scrollView)
+            if (index == NSNotFound && scrollView)
             {
                 scrollView.scrollsToTop = (_currentIndex == index);
             }
