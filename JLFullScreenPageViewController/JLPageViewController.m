@@ -248,7 +248,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         
             UIScrollView *scrollView = viewController.jl_scrollView;
             
-            if (index == NSNotFound && scrollView)
+            if (index != NSNotFound && scrollView)
             {
                 scrollView.scrollsToTop = (_currentIndex == index);
             }
