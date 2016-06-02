@@ -72,6 +72,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 {
     [super viewDidLoad];
     
+    _contentTopInset = 0;
     _enableNavigationBar = YES;
     _enableTabBar = YES;
     _fullScreenStyle = JLFullScreenStyleAutomatic;
@@ -174,7 +175,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     if ([scrollView isKindOfClass:[UIScrollView class]])
     {
         UIEdgeInsets contentInset = scrollView.contentInset;
-        contentInset.top = insetTop;
+        contentInset.top = insetTop - _contentTopInset;
         contentInset.bottom = (self.tabBarController.tabBar && self.tabBarController.tabBar.translucent == YES && _enableTabBar == NO) ? CGRectGetHeight(self.tabBarController.tabBar.frame) : 0;
         scrollView.contentInset = contentInset;
         

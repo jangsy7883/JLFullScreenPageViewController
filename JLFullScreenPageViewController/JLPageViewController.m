@@ -155,18 +155,24 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     
     if (viewController)
     {
+        typeof(self) __weak weakSelf = self;
+        NSArray *viewControllers = self.pageViewController.viewControllers;
+
         [self.pageViewController setViewControllers:@[viewController]
                                           direction:UIPageViewControllerNavigationDirectionForward
                                            animated:NO
-                                         completion:nil];
+                                         completion:^(BOOL finished)
+         {
+             typeof(weakSelf) __strong strongSelf = weakSelf;
+             [strongSelf pageViewController:strongSelf.pageViewController
+                         didFinishAnimating:NO
+                    previousViewControllers:viewControllers
+                        transitionCompleted:YES];
+         }];
         
         if ([self.delegate respondsToSelector:@selector(pageViewController:didScrollToCurrentPosition:)] )
         {
             [self.delegate pageViewController:self didScrollToCurrentPosition:_currentIndex];
-        }
-        if ([self.delegate respondsToSelector:@selector(pageViewController:didChangeToCurrentIndex:fromIndex:)])
-        {
-            [self.delegate pageViewController:self didChangeToCurrentIndex:_currentIndex fromIndex:NSNotFound];
         }
     }
 }
