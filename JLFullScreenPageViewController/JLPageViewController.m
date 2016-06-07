@@ -380,11 +380,11 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
         if (viewController)
         {
             _nextIndex = currentIndex;
-            
-            typeof(self) __weak weakSelf = self;
-            BOOL isForwards = currentIndex > self.currentIndex;
-            NSArray *viewControllers = self.pageViewController.viewControllers;
 
+            typeof(self) __weak weakSelf = self;
+            UIPageViewControllerNavigationDirection direction = currentIndex > self.currentIndex ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse;
+            NSArray *viewControllers = self.pageViewController.viewControllers;
+/*
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.pageViewController setViewControllers:@[viewController]
                                                   direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
@@ -398,37 +398,36 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
                                 transitionCompleted:YES];
                  }];
             });
-        }
-
-/*
-        BOOL isForwards = currentIndex > self.currentIndex;
-        NSArray *viewControllers = self.pageViewController.viewControllers;
-        UIViewController *viewController = [self viewControllerAtIndex:currentIndex];
-        
-        typeof(self) __weak weakSelf = self;
-        __weak UIPageViewController* pvcw = self.pageViewController;
-        
-        [self.pageViewController setViewControllers:@[viewController]
-                                          direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
-                                           animated:animated
-                                         completion:^(BOOL finished) {
-                                             typeof(weakSelf) __strong strongSelf = weakSelf;
-                                             [strongSelf pageViewController:strongSelf.pageViewController
-                                                         didFinishAnimating:YES
-                                                    previousViewControllers:viewControllers
-                                                        transitionCompleted:YES];
-                                             
-                                             UIPageViewController* pvcs = pvcw;
-                                             if (!pvcs) return;
-                                             dispatch_async(dispatch_get_main_queue(), ^{
-                                                 [pvcs setViewControllers:@[viewController]
-                                                                direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
-                                                                 animated:NO
-                                                               completion:nil];
-                                             });
-                                             
-                                         }];
  */
+            
+            __weak UIPageViewController* pvcw = self.pageViewController;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.pageViewController setViewControllers:@[viewController]
+                                                  direction:direction
+                                                   animated:animated
+                                                 completion:^(BOOL finished)
+                 {
+                     if (finished)
+                     {
+                         [weakSelf pageViewController:weakSelf.pageViewController
+                                   didFinishAnimating:animated
+                              previousViewControllers:viewControllers
+                                  transitionCompleted:YES];
+                         
+                         if (animated)
+                         {
+                             dispatch_async(dispatch_get_main_queue(), ^{
+                                 [pvcw setViewControllers:@[viewController]
+                                                direction:direction
+                                                 animated:NO
+                                               completion:nil];
+                             });
+                         }
+                     }
+                 }];
+            });
+        }
     }
 }
 
