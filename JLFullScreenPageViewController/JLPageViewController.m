@@ -377,56 +377,34 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     {
         UIViewController *viewController = [self viewControllerAtIndex:currentIndex];
 
-        if (viewController)
+        if (viewController && [self.pageViewController.viewControllers.firstObject isEqual:viewController] == NO)
         {
             _nextIndex = currentIndex;
 
-            typeof(self) __weak weakSelf = self;
+            __weak JLPageViewController *blocksafeSelf = self;
             UIPageViewControllerNavigationDirection direction = currentIndex > self.currentIndex ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse;
             NSArray *viewControllers = self.pageViewController.viewControllers;
-/*
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.pageViewController setViewControllers:@[viewController]
-                                                  direction:isForwards ? UIPageViewControllerNavigationDirectionForward : UIPageViewControllerNavigationDirectionReverse
-                                                   animated:animated
-                                                 completion:^(BOOL finished)
+
+            [self.pageViewController setViewControllers:@[viewController]
+                                              direction:direction
+                                               animated:animated
+                                             completion:^(BOOL finished)
+             {
+                 if (finished)
                  {
-                     typeof(weakSelf) __strong strongSelf = weakSelf;
-                     [strongSelf pageViewController:strongSelf.pageViewController
-                                 didFinishAnimating:animated
-                            previousViewControllers:viewControllers
-                                transitionCompleted:YES];
-                 }];
-            });
- */
-            
-            __weak UIPageViewController* pvcw = self.pageViewController;
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [self.pageViewController setViewControllers:@[viewController]
-                                                  direction:direction
-                                                   animated:animated
-                                                 completion:^(BOOL finished)
-                 {
-                     if (finished)
-                     {
-                         [weakSelf pageViewController:weakSelf.pageViewController
-                                   didFinishAnimating:animated
-                              previousViewControllers:viewControllers
-                                  transitionCompleted:YES];
-                         
-                         if (animated)
-                         {
-                             dispatch_async(dispatch_get_main_queue(), ^{
-                                 [pvcw setViewControllers:@[viewController]
-                                                direction:direction
-                                                 animated:NO
-                                               completion:nil];
-                             });
-                         }
-                     }
-                 }];
-            });
+                     [blocksafeSelf pageViewController:blocksafeSelf.pageViewController
+                                    didFinishAnimating:animated
+                               previousViewControllers:viewControllers
+                                   transitionCompleted:YES];
+                     
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         [blocksafeSelf.pageViewController setViewControllers:@[viewController]
+                                                                    direction:direction
+                                                                     animated:NO
+                                                                   completion:nil];
+                     });
+                 }
+             }];
         }
     }
 }
