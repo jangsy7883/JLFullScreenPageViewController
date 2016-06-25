@@ -29,7 +29,7 @@
 @property (nonatomic, weak) JLFullScreenPageViewController *fullScreenPageViewController;
 
 @property (nonatomic, strong) NSArray *viewControllers;
-
+@property (nonatomic, assign) BOOL transitionInProgress;
 
 
 @end
@@ -64,6 +64,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     {
         _scrollPagingEnabled = NO;
         _currentIndex = 0;
+        _transitionInProgress = NO;
     }
     return self;
 }
@@ -209,11 +210,6 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
 #pragma  mark - pageviewcontroller datasource
 
-- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers
-{
-    _nextIndex = [self indexOfViewController:pendingViewControllers.firstObject];
-}
-
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerAfterViewController:(UIViewController *)viewController
 {
     NSInteger index = [self indexOfViewController:viewController];
@@ -237,6 +233,14 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 }
 
 #pragma  mark - pageviewcontroller delegate
+
+
+- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers
+{
+    _transitionInProgress = YES;
+    
+    _nextIndex = [self indexOfViewController:pendingViewControllers.firstObject];
+}
 
 - (void)pageViewController:(UIPageViewController *)pageViewController
         didFinishAnimating:(BOOL)finished
@@ -267,6 +271,8 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
             }
         }
     }
+    
+    _transitionInProgress = NO;
 }
 
 #pragma  mark - KOV
@@ -373,7 +379,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
 - (void)setCurrentIndex:(NSUInteger)currentIndex animated:(BOOL)animated
 {
-    if (_currentIndex != currentIndex)
+    if (_currentIndex != currentIndex && _transitionInProgress == NO)
     {
         UIViewController *viewController = [self viewControllerAtIndex:currentIndex];
 
