@@ -1,0 +1,12 @@
+PODS:
+  - JLPageViewController (1.2)
+
+DEPENDENCIES:
+  - JLPageViewController
+
+SPEC CHECKSUMS:
+  JLPageViewController: 187c3b72c509065a6d633831a828e2cde0a06bbe
+
+PODFILE CHECKSUM: 54b2ad06c8abb3c9bb363e4d87050bcaa32e23fb
+
+COCOAPODS: 1.0.1

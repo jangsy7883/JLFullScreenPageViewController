@@ -36,7 +36,7 @@ CGRectReplaceY(CGRect rect, CGFloat y)
 
 static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControllerKVOContext;
 
-@interface JLFullScreenPageViewController ()
+@interface JLFullScreenPageViewController ()<JLPageViewControllerDataSource,JLPageViewControllerDelegate,JLContentPageViewControllerDataSource>
 
 @property (nonatomic, getter = isFullScreen) BOOL fullScreen;
 
@@ -46,7 +46,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 @property (nonatomic, strong) UINavigationBar *navigationBar;
 @property (nonatomic, strong) UIView *contentHeaderView;
-@property (nonatomic, strong) JLPageViewController *pageViewController;
+@property (nonatomic, strong) JLContentPageViewController *pageViewController;
 
 @property (nonatomic, readonly, getter=isTabBarHidden) BOOL tabBarHidden;
 @end
@@ -80,7 +80,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     self.automaticallyAdjustsScrollViewInsets = NO;
     
     //PAGEVIEW
-    self.pageViewController = [[JLPageViewController alloc] init];
+    self.pageViewController = [[JLContentPageViewController alloc] init];
     self.pageViewController.dataSource = self;
     self.pageViewController.delegate = self;
     [self addChildViewController:self.pageViewController];
@@ -466,28 +466,20 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
     }
 }
 
-#pragma mark - KMPagerView datasource
+#pragma mark - JLContentPageViewController datasource
 
 - (NSArray *)viewControllersForPageViewController:(JLPageViewController *)pageView
 {
     return nil;
 }
 
-- (NSInteger)defaultPageIndexForPageViewController:(JLPageViewController *)pageViewController
+- (UIViewController *)pageViewController:(JLPageViewController *)pageViewController viewControllerForIndex:(NSInteger)index
 {
-    return 0;
-}
-
-#pragma mark - KMPagerView delegate
-
-- (void)pageViewController:(JLPageViewController*)pageView didScrollToCurrentOffset:(CGPoint)contentOffset
-{
-    
-}
-
-- (void)pageViewController:(JLPageViewController*)viewController didChangeToCurrentIndex:(NSUInteger)currentIndex fromIndex:(NSUInteger)fromIndex
-{
-    
+    if (self.pageViewController.viewControllers.count > index && self.pageViewController.viewControllers.count > 0)
+    {
+        return self.pageViewController.viewControllers[index];
+    }
+    return nil;
 }
 
 #pragma mark - SETTERS

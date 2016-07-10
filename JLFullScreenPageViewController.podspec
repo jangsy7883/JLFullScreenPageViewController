@@ -1,4 +1,4 @@
-@version = "1.0.32"
+@version = "1.1"
 Pod::Spec.new do |s|
   s.name         = "JLFullScreenPageViewController"
   s.version      = @version
@@ -9,5 +9,6 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/jangsy7883/JLFullScreenPageViewController.git", :tag => @version }
   s.source_files = 'JLFullScreenPageViewController/*.{h,m}','JLFullScreenPageViewController/Categorys/*.{h,m}'
   s.requires_arc = true
-  s.ios.deployment_target = '7.0'
+  s.ios.deployment_target = '8.0'
+  s.dependency 'JLPageViewController'
 end

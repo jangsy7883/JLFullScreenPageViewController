@@ -49,6 +49,7 @@
     self.segmentedBar = [[JLSegmentedBar alloc] init];
     self.segmentedBar.backgroundColor = [UIColor darkGrayColor];
     self.segmentedBar.barStyle = JLSegmentedBarStyleEqualSegment;
+    self.segmentedBar.selectedIndex = self.pageViewController.currentIndex;
     self.segmentedBar.titleColor = [UIColor blackColor];
     self.segmentedBar.highlightedTitleColor = [UIColor whiteColor];
     self.segmentedBar.separatorColor = [UIColor whiteColor];
@@ -61,8 +62,7 @@
     [self.segmentedBar reloadData];
     self.headerView = self.segmentedBar;
     
-    self.pageViewController.scrollPagingEnabled = YES;
-    [self.pageViewController reloadData];
+    self.pageViewController.scrollView.pagingEnabled = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -80,7 +80,7 @@
 
 #pragma mark - KMPagerView datasource
 
-- (NSArray *)viewControllersForPageViewController:(JLPageViewController *)viewController
+- (NSArray *)viewControllersForPageViewController:(JLContentPageViewController *)viewController
 {
     NSMutableArray *viewControllers = [NSMutableArray array];
     
@@ -113,21 +113,21 @@
     return viewControllers;
 }
 
-- (NSInteger)defaultPageIndexForPageViewController:(JLPageViewController *)pageViewController
+- (NSInteger)defaultPageIndexForPageViewController:(JLContentPageViewController *)pageViewController
 {
     return 1;
 }
 
 #pragma mark - KMPagerView delegate
 
-- (void)pageViewController:(JLPageViewController*)pageViewController didScrollToCurrentPosition:(CGFloat)currentPosition
+- (void)pageViewController:(JLContentPageViewController*)pageViewController didScrollToCurrentPosition:(CGFloat)currentPosition
 {
     [self.segmentedBar scrollDidContentOffset:currentPosition];
 }
 
-- (void)pageViewController:(JLPageViewController*)pageViewController didChangeToCurrentIndex:(NSUInteger)currentIndex fromIndex:(NSUInteger)fromIndex
+- (void)pageViewController:(JLPageViewController *)pageViewController didChangeToCurrentIndex:(NSInteger)index fromIndex:(NSUInteger)fromIndex
 {
-    
+    self.segmentedBar.selectedIndex = index;
 }
 
 #pragma mark - KMSegmentedView delegate

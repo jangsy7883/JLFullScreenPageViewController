@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "JLPageViewController.h"
+#import "JLContentPageViewController.h"
 #import "JLSegmentedBar.h"
 
 typedef NS_ENUM(NSInteger, JLFullScreenStyle)
@@ -16,10 +16,10 @@ typedef NS_ENUM(NSInteger, JLFullScreenStyle)
     JLFullScreenStyleScrolling,
 };
 
-@interface JLFullScreenPageViewController : UIViewController<JLPageViewControllerDataSource,JLPageViewControllerDelegate>
+@interface JLFullScreenPageViewController : UIViewController
 
 @property (nonatomic, strong, readonly) UINavigationBar *navigationBar;
-@property (nonatomic, strong, readonly) JLPageViewController *pageViewController;
+@property (nonatomic, strong, readonly) JLContentPageViewController *pageViewController;
 @property (nonatomic, strong) UIView *headerView;
 
 @property (nonatomic, assign) JLFullScreenStyle fullScreenStyle;
