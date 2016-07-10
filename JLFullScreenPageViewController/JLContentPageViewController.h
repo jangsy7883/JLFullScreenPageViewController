@@ -6,7 +6,7 @@
 //  Copyright © 2015년 Dalkomm. All rights reserved.
 //
 
-#import <JLPageViewController/JLPageViewController.h>
+@import JLPageViewController;
 
 @class JLContentPageViewController;
 
