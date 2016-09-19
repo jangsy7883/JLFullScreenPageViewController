@@ -1,11 +1,11 @@
 PODS:
-  - JLPageViewController (1.9)
+  - JLPageViewController (1.11)
 
 DEPENDENCIES:
   - JLPageViewController
 
 SPEC CHECKSUMS:
-  JLPageViewController: e75d12b24f382708ca21ff1748dd92e2d5a11132
+  JLPageViewController: f88cdd5af43cd6af30c7fda1c85ffb4b4aa92f5c
 
 PODFILE CHECKSUM: 54b2ad06c8abb3c9bb363e4d87050bcaa32e23fb
 

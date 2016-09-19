@@ -187,7 +187,7 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 {
     CGFloat maxY = CGRectGetMaxY(self.contentHeaderView.frame);
     
-    for (UIViewController *viewController in self.pageViewController.viewControllers)
+    for (UIViewController *viewController in self.pageViewController.contentViewControllers)
     {
         [self layoutContentInsetForScrollView:viewController.jl_scrollView
                             atContentInsetTop:maxY];
@@ -468,16 +468,16 @@ static void * const KMPageViewControllerKVOContext = (void*)&KMPageViewControlle
 
 #pragma mark - JLContentPageViewController datasource
 
-- (NSArray *)viewControllersForPageViewController:(JLPageViewController *)pageView
+- (NSArray *)contentViewControllersForPageViewController:(JLPageViewController *)pageView
 {
     return nil;
 }
 
 - (UIViewController *)pageViewController:(JLPageViewController *)pageViewController viewControllerForIndex:(NSInteger)index
 {
-    if (self.pageViewController.viewControllers.count > index && self.pageViewController.viewControllers.count > 0)
+    if (self.pageViewController.contentViewControllers.count > index && self.pageViewController.contentViewControllers.count > 0)
     {
-        return self.pageViewController.viewControllers[index];
+        return self.pageViewController.contentViewControllers[index];
     }
     return nil;
 }

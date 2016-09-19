@@ -14,13 +14,13 @@
 
 @required
 
-- (NSArray<UIViewController*> *)viewControllersForPageViewController:(JLPageViewController *)pageViewController;
+- (NSArray<UIViewController*> *)contentViewControllersForPageViewController:(JLPageViewController *)pageViewController;
 
 @end
 
 @interface JLContentPageViewController : JLPageViewController
 
-@property (nonatomic, readonly) NSArray *viewControllers;
+@property (nonatomic, readonly) NSArray *contentViewControllers;
 @property (nonatomic, weak) id<JLContentPageViewControllerDataSource> dataSource;
 
 @end

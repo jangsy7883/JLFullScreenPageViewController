@@ -30,7 +30,7 @@
 @interface JLContentPageViewController ()
 
 @property (nonatomic, weak) JLFullScreenPageViewController *fullScreenPageViewController;
-@property (nonatomic, strong) NSArray *viewControllers;
+@property (nonatomic, strong) NSArray *contentViewControllers;
 
 @end
 
@@ -46,7 +46,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 {
     [super removeObservers];
     
-    for (UIViewController *viewController in self.viewControllers)
+    for (UIViewController *viewController in self.contentViewControllers)
     {
         UIScrollView *scrollView = viewController.jl_scrollView;
         
@@ -64,7 +64,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 - (void)reloadData
 {
     //RESET VIEWCONTROLLER
-    for (UIViewController *viewController in self.viewControllers)
+    for (UIViewController *viewController in self.contentViewControllers)
     {
         UIScrollView *scrollView = viewController.jl_scrollView;
         
@@ -77,12 +77,12 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
     }
     
     //RELOAD VIEW CONTROLLER
-    if ([self.dataSource respondsToSelector:@selector(viewControllersForPageViewController:)])
+    if ([self.dataSource respondsToSelector:@selector(contentViewControllersForPageViewController:)])
     {
-        self.viewControllers = [self.dataSource viewControllersForPageViewController:self];
+        self.contentViewControllers = [self.dataSource contentViewControllersForPageViewController:self];
     }
     
-    for (UIViewController *viewController in self.viewControllers)
+    for (UIViewController *viewController in self.contentViewControllers)
     {
         UIScrollView *scrollView = viewController.jl_scrollView;
         
@@ -198,7 +198,7 @@ static void * const KMPagerViewKVOContext = (void*)&KMPagerViewKVOContext;
 
 - (NSInteger)indexOfViewController:(UIViewController *)viewController
 {
-    return [self.viewControllers indexOfObject:viewController];
+    return [self.contentViewControllers indexOfObject:viewController];
 }
 
 #pragma mark - GETTERS

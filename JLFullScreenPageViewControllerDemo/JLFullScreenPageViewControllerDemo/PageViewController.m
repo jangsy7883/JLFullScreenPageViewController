@@ -78,9 +78,9 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-#pragma mark - KMPagerView datasource
+#pragma mark - JLContentPageViewController datasource
 
-- (NSArray *)viewControllersForPageViewController:(JLContentPageViewController *)viewController
+- (NSArray *)contentViewControllersForPageViewController:(JLContentPageViewController *)viewController
 {
     NSMutableArray *viewControllers = [NSMutableArray array];
     
@@ -118,7 +118,7 @@
     return 1;
 }
 
-#pragma mark - KMPagerView delegate
+#pragma mark - JLContentPageViewController delegate
 
 - (void)pageViewController:(JLContentPageViewController*)pageViewController didScrollToCurrentPosition:(CGFloat)currentPosition
 {
